@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 import 'package:powerapp/base/reuseables/widgets/currentMode.dart';
-import 'package:powerapp/screens/home/homewidget/AllTicketScreen.dart';
 
 class Symmetrictext extends StatelessWidget {
   const Symmetrictext(
@@ -16,35 +15,33 @@ class Symmetrictext extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isdarkMode = isDarkMode(context);
-    return Container(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            bigText,
-            style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 15,
-                color: isdarkMode ? Colors.white : Colors.black),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          bigText,
+          style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: 15,
+              color: isdarkMode ? Colors.white : Colors.black),
+        ),
+        InkWell(
+          onTap: func,
+          child: Row(
+            children: [
+              Text(
+                smallText,
+                style: AppStyles.h3(context),
+              ),
+              Icon(
+                Icons.keyboard_arrow_right,
+                color: AppStyles.cardBlueColor,
+                size: 17,
+              )
+            ],
           ),
-          InkWell(
-            onTap: func,
-            child: Row(
-              children: [
-                Text(
-                  smallText,
-                  style: AppStyles.h3(context),
-                ),
-                Icon(
-                  Icons.keyboard_arrow_right,
-                  color: AppStyles.cardBlueColor,
-                  size: 17,
-                )
-              ],
-            ),
-          )
-        ],
-      ),
+        )
+      ],
     );
   }
 }

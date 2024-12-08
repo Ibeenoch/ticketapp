@@ -30,6 +30,10 @@ class AppStyles {
     return isDarkMode(context) ? Colors.white : Colors.black;
   }
 
+  static Color textWhite(BuildContext context) {
+    return Colors.white;
+  }
+
   static Color textGray(BuildContext context) {
     return isDarkMode(context) ? Colors.grey : Colors.grey;
   }
@@ -58,11 +62,11 @@ class AppStyles {
     );
   }
 
-  static TextStyle h3WhiteBlack(BuildContext context) {
+  static TextStyle h3White(BuildContext context) {
     return TextStyle(
-      fontSize: 14,
+      fontSize: 18,
       fontWeight: FontWeight.w600,
-      color: textWhiteBlack(context),
+      color: textWhite(context),
     );
   }
 

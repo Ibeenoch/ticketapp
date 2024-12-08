@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 import 'package:powerapp/base/reuseables/widgets/symmetricText.dart';
+import 'package:powerapp/base/reuseables/widgets/ticketTab.dart';
 import 'package:powerapp/screens/search/searchWidget/ArrivalType.dart';
+import 'package:powerapp/screens/search/searchWidget/EmojiContainer.dart';
 
 class Search extends StatelessWidget {
   const Search({super.key});
@@ -22,48 +24,15 @@ class Search extends StatelessWidget {
                   fontWeight: FontWeight.bold,
                   color: AppStyles.textWhiteBlack(context)),
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             Container(
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
               ),
-              child: Row(
-                children: [
-                  Container(
-                    width: size.width * 0.44,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.only(
-                            topLeft: Radius.circular(12),
-                            bottomLeft: Radius.circular(12)),
-                        color: Colors.white),
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    child: Text(
-                      'All Tickets',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500,
-                          color: AppStyles.cardBlueColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Container(
-                    width: size.width * 0.44,
-                    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                    decoration: BoxDecoration(
-                        color: AppStyles.cardBlueColor,
-                        borderRadius: const BorderRadius.only(
-                            topRight: Radius.circular(12),
-                            bottomRight: Radius.circular(12))),
-                    child: const Text(
-                      'Hotels',
-                      style: TextStyle(
-                          fontWeight: FontWeight.w500, color: Colors.white),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ],
-              ),
+              child:
+                  const Tickettab(leftText: 'All Tickets', rightText: 'Hotels'),
             ),
             const SizedBox(
               height: 25,
@@ -89,7 +58,7 @@ class Search extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
               child: const Center(
                 child: Text(
-                  'All Tickets',
+                  'Find Tickets',
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 14,
@@ -106,16 +75,22 @@ class Search extends StatelessWidget {
               height: 25,
             ),
             Row(
-              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Container(
                     width: size.width * 0.44,
-                    height: 350,
-                    padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                    height: 435,
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(15),
-                    ),
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(15),
+                        boxShadow: const [
+                          BoxShadow(
+                              blurRadius: 1,
+                              spreadRadius: 1,
+                              color: Colors.white12),
+                        ]),
                     child: Column(
                       children: [
                         Container(
@@ -139,31 +114,89 @@ class Search extends StatelessWidget {
                         )
                       ],
                     )),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(15),
-                      color: AppStyles.cardBlueColor),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Discount For \n Ticket Survey',
-                        style: AppStyles.h3WhiteBlack(context),
+                Column(
+                  children: [
+                    Stack(
+                      children: [
+                        Container(
+                          width: size.width * 0.44,
+                          height: 180,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 15, vertical: 15),
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(15),
+                              color: AppStyles.cardBlueColor),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Discount For\nTicket Survey',
+                                style: AppStyles.h3White(context),
+                              ),
+                              const SizedBox(
+                                height: 2,
+                              ),
+                              const Text(
+                                'Take a short survey about our service  and get a discount',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w400,
+                                    color: Colors.white),
+                              )
+                            ],
+                          ),
+                        ),
+                        Positioned(
+                            top: -45,
+                            right: -50,
+                            child: Container(
+                              padding: const EdgeInsets.all(30),
+                              decoration: BoxDecoration(
+                                  border: Border.all(
+                                      width: 18, color: AppStyles.cardRedColor),
+                                  shape: BoxShape.circle),
+                            ))
+                      ],
+                    ),
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    Container(
+                      width: size.width * 0.44,
+                      height: 210,
+                      padding: const EdgeInsets.all(15),
+                      decoration: BoxDecoration(
+                          color: AppStyles.cardRedColor,
+                          borderRadius: BorderRadius.circular(15)),
+                      child: const Column(
+                        children: [
+                          Text(
+                            'Show Care',
+                            style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          SizedBox(
+                            height: 20,
+                          ),
+                          Center(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Emojicontainer(text: '🥰'),
+                                Emojicontainer(text: '😍'),
+                                Emojicontainer(text: '🤗'),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
-                      SizedBox(
-                        height: 2,
-                      ),
-                      Text(
-                        'Take Our ticket survey aboutour service  and get a discount',
-                        style: TextStyle(fontSize: 13),
-                      )
-                    ],
-                  ),
-                )
+                    )
+                  ],
+                ),
               ],
-            )
+            ),
           ],
         ),
       ),

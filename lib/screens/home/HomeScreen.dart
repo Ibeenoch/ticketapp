@@ -21,62 +21,60 @@ class Homescreen extends StatelessWidget {
           const SizedBox(
             height: 40,
           ),
-          Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Good Morning',
+                        style: AppStyles.h5(context),
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      Text('Wanna Buy Ticket?', style: AppStyles.h1(context))
+                    ],
+                  ),
+                  Container(
+                    width: 50,
+                    height: 50,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(13),
+                        image:
+                            DecorationImage(image: AssetImage(AppMedia.logo))),
+                  )
+                ],
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(7)),
+                child: Row(
                   children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Good Morning',
-                          style: AppStyles.h5(context),
-                        ),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        Text('Wanna Buy Ticket?', style: AppStyles.h1(context))
-                      ],
+                    Icon(
+                      Icons.search,
+                      color: AppStyles.cardBlueColor,
                     ),
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(13),
-                          image: DecorationImage(
-                              image: AssetImage(AppMedia.logo))),
+                    Text(
+                      'Search',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w400,
+                          color: AppStyles.cardBlueColor),
                     )
                   ],
                 ),
-                const SizedBox(
-                  height: 20,
-                ),
-                Container(
-                  padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                  decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(7)),
-                  child: Row(
-                    children: [
-                      Icon(
-                        Icons.search,
-                        color: AppStyles.cardBlueColor,
-                      ),
-                      Text(
-                        'Search',
-                        style: TextStyle(
-                            fontSize: 14,
-                            fontWeight: FontWeight.w400,
-                            color: AppStyles.cardBlueColor),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
           const SizedBox(
             height: 40,

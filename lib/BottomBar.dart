@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:powerapp/screens/home/HomeScreen.dart';
 import 'package:powerapp/screens/search/search.dart';
+import 'package:powerapp/screens/ticket/ticketScreen.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
@@ -21,9 +22,7 @@ class _BottomBarState extends State<BottomBar> {
   final appScreens = [
     const Homescreen(),
     const Search(),
-    const Center(
-      child: Text('TicketScreen'),
-    ),
+    const Ticketscreen(),
     const Center(
       child: Text('ProfileScreen'),
     ),

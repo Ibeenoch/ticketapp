@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 import 'package:powerapp/base/reuseables/widgets/cardTitle.dart';
 
 class Hoteltext extends StatelessWidget {
