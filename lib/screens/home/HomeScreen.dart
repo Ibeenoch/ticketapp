@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powerapp/AppRoutes.dart';
 import 'package:powerapp/base/reuseables/media/App_Media.dart';
 import 'package:powerapp/base/reuseables/resources/dummyJson.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
@@ -45,8 +46,8 @@ class Homescreen extends StatelessWidget {
                     height: 50,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(13),
-                        image:
-                            DecorationImage(image: AssetImage(AppMedia.logo))),
+                        image: const DecorationImage(
+                            image: AssetImage(AppMedia.logo))),
                   )
                 ],
               ),
@@ -54,7 +55,8 @@ class Homescreen extends StatelessWidget {
                 height: 20,
               ),
               Container(
-                padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                 decoration: BoxDecoration(
                     color: Colors.white,
                     borderRadius: BorderRadius.circular(7)),
@@ -107,11 +109,7 @@ class Homescreen extends StatelessWidget {
             bigText: 'Hotel',
             smallText: 'View All',
             func: () {
-              Navigator.push(context, MaterialPageRoute<void>(
-                builder: (BuildContext context) {
-                  return const Allhotelviews();
-                },
-              ));
+              Navigator.pushNamed(context, AppRoutes.allHotels);
             },
           ),
           Align(

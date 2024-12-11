@@ -18,6 +18,7 @@ class _TickettabState extends State<Tickettab> {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
       children: [
         InkWell(
           onTap: () {
@@ -28,7 +29,7 @@ class _TickettabState extends State<Tickettab> {
           child: Container(
             width: size.width * 0.44,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12)),
                 color: isLeft ? AppStyles.cardBlueColor : Colors.white),

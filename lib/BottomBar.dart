@@ -22,7 +22,9 @@ class _BottomBarState extends State<BottomBar> {
   final appScreens = [
     const Homescreen(),
     const Search(),
-    const Ticketscreen(),
+    const Ticketscreen(
+        // ticket: [],
+        ),
     const Center(
       child: Text('ProfileScreen'),
     ),

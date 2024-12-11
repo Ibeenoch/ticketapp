@@ -4,12 +4,18 @@ import 'package:powerapp/base/reuseables/widgets/cardTitle.dart';
 class Columntext extends StatelessWidget {
   final String bigtext;
   final String smalltext;
-  final TextAlign align;
+  final TextAlign alignBig;
+  final TextAlign alignsmall;
+  final bool showColor;
+  final bool hasWidth;
   const Columntext(
       {super.key,
       required this.bigtext,
       required this.smalltext,
-      this.align = TextAlign.start});
+      this.alignBig = TextAlign.start,
+      this.alignsmall = TextAlign.start,
+      this.showColor = true,
+      this.hasWidth = false});
 
   @override
   Widget build(BuildContext context) {
@@ -20,12 +26,16 @@ class Columntext extends StatelessWidget {
           text: bigtext,
           sizeType: 'h3',
           weightType: 'bold',
-          align: align,
+          align: alignBig,
+          showColor: showColor,
+          hasWidth: hasWidth,
         ),
         Cardtitle(
           text: smalltext,
           sizeType: 'h4',
-          align: align,
+          align: alignsmall,
+          showColor: showColor,
+          hasWidth: hasWidth,
         ),
       ],
     );

@@ -8,160 +8,183 @@ import 'package:powerapp/screens/home/homewidget/halfCircular.dart';
 
 class Ticketview extends StatelessWidget {
   final Map<String, dynamic> ticket;
-  const Ticketview({super.key, required this.ticket});
+  final bool showColor;
+  final bool showHeight;
+  const Ticketview(
+      {super.key,
+      required this.ticket,
+      this.showColor = true,
+      this.showHeight = true});
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 10),
+      padding: const EdgeInsets.symmetric(
+        horizontal: 10,
+      ),
       child: SizedBox(
         width: size.width * 0.85,
-        height: 179,
+        height: showHeight ? 179 : null,
         //
-        child: Container(
-          child: Column(
-            // container shrinked because of the column warpping the children Container
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: AppStyles.cardBlueColor,
-                    borderRadius: const BorderRadius.only(
-                        topLeft: Radius.circular(12),
-                        topRight: Radius.circular(12))),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Cardtitle(
-                            text: ticket["from"]["code"],
-                            sizeType: 'h3',
-                            weightType: 'bold',
-                          ),
-                          Expanded(child: Container()),
-                          const RoundedDot(),
-                          Expanded(
-                              child: Stack(
-                            children: [
-                              const SizedBox(
-                                height: 18,
-                                child: Applayoutbuilder(
-                                  randomWidthNum: 7,
-                                ),
-                              ),
-                              Center(
-                                  child: Transform.rotate(
-                                angle: 1.57,
-                                child: const Icon(
-                                  Icons.airplanemode_active,
-                                  size: 17,
-                                  color: Colors.white,
-                                ),
-                              ))
-                            ],
-                          )),
-                          const RoundedDot(),
-                          Expanded(child: Container()),
-                          Cardtitle(
-                            text: ticket["to"]["code"],
-                            sizeType: 'h3',
-                            weightType: 'bold',
-                            align: TextAlign.end,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(
-                        height: 5,
-                      ),
-                      Row(
-                        children: [
-                          Cardtitle(
-                            text: ticket['from']['name'],
-                            sizeType: 'h4',
-                          ),
-                          Expanded(child: Container()),
-                          Cardtitle(
-                            text: ticket['flying_time'],
-                            sizeType: 'h4',
-                            align: TextAlign.center,
-                          ),
-                          Expanded(child: Container()),
-                          Cardtitle(
-                            text: ticket['to']['name'],
-                            sizeType: 'h4',
-                            align: TextAlign.end,
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              // middle container
-              Container(
-                height: 20,
-                decoration: BoxDecoration(color: AppStyles.cardRedColor),
-                child: const Row(
+        child: Column(
+          // container shrinked because of the column wrapping the children Container
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                  color: showColor ? AppStyles.cardBlueColor : Colors.white,
+                  borderRadius: const BorderRadius.only(
+                      topLeft: Radius.circular(12),
+                      topRight: Radius.circular(12))),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Column(
                   children: [
-                    Halfcircular(
-                      isLeft: false,
-                    ),
-                    Expanded(
-                        child: Stack(
+                    Row(
                       children: [
-                        SizedBox(
-                          height: 18,
-                          child: Applayoutbuilder(
-                            randomWidthNum: 7,
-                          ),
+                        Cardtitle(
+                          text: ticket["from"]["code"],
+                          sizeType: 'h3',
+                          weightType: 'bold',
+                          showColor: showColor,
+                        ),
+                        Expanded(child: Container()),
+                        RoundedDot(
+                          showColor: showColor,
+                        ),
+                        Expanded(
+                            child: Stack(
+                          children: [
+                            SizedBox(
+                              height: 18,
+                              child: Applayoutbuilder(
+                                randomWidthNum: 5,
+                                showColor: showColor,
+                              ),
+                            ),
+                            Center(
+                                child: Transform.rotate(
+                              angle: 1.57,
+                              child: Icon(
+                                Icons.airplanemode_active,
+                                size: 17,
+                                color: showColor
+                                    ? Colors.white
+                                    : AppStyles.cardBlueColor,
+                              ),
+                            ))
+                          ],
+                        )),
+                        RoundedDot(showColor: showColor),
+                        Expanded(child: Container()),
+                        Cardtitle(
+                          text: ticket["to"]["code"],
+                          sizeType: 'h3',
+                          weightType: 'bold',
+                          align: TextAlign.end,
+                          showColor: showColor,
                         ),
                       ],
-                    )),
-                    Halfcircular(
-                      isLeft: true,
+                    ),
+                    const SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      children: [
+                        Cardtitle(
+                          text: ticket['from']['name'],
+                          sizeType: 'h4',
+                          showColor: showColor,
+                        ),
+                        Expanded(child: Container()),
+                        Cardtitle(
+                          text: ticket['flying_time'],
+                          sizeType: 'h4',
+                          align: TextAlign.center,
+                          showColor: showColor,
+                        ),
+                        Expanded(child: Container()),
+                        Cardtitle(
+                          text: ticket['to']['name'],
+                          sizeType: 'h4',
+                          align: TextAlign.end,
+                          showColor: showColor,
+                        ),
+                      ],
                     ),
                   ],
                 ),
               ),
-              //bottom container
-              Container(
-                decoration: BoxDecoration(
-                    color: AppStyles.cardRedColor,
-                    borderRadius: const BorderRadius.only(
-                        bottomLeft: Radius.circular(12),
-                        bottomRight: Radius.circular(12))),
-                child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                  child: Column(
+            ),
+            // middle container
+            Container(
+              height: 20,
+              decoration: BoxDecoration(
+                  color: showColor ? AppStyles.cardRedColor : Colors.white),
+              child: const Row(
+                children: [
+                  Halfcircular(
+                    isLeft: false,
+                  ),
+                  Expanded(
+                      child: Stack(
                     children: [
-                      Row(
-                        children: [
-                          Columntext(
-                              bigtext: ticket['date'], smalltext: 'Date'),
-                          Expanded(child: Container()),
-                          Columntext(
-                            bigtext: ticket['depature_time'],
-                            smalltext: 'Departure Time',
-                            align: TextAlign.center,
-                          ),
-                          Expanded(child: Container()),
-                          Columntext(
-                            bigtext: ticket['number'].toString(),
-                            smalltext: 'Number',
-                            align: TextAlign.end,
-                          ),
-                        ],
+                      SizedBox(
+                        height: 18,
+                        child: Applayoutbuilder(
+                          randomWidthNum: 7,
+                        ),
                       ),
                     ],
+                  )),
+                  Halfcircular(
+                    isLeft: true,
                   ),
+                ],
+              ),
+            ),
+            //bottom container
+            Container(
+              decoration: BoxDecoration(
+                  color: showColor ? AppStyles.cardRedColor : Colors.white,
+                  borderRadius: showHeight
+                      ? const BorderRadius.only(
+                          bottomLeft: Radius.circular(12),
+                          bottomRight: Radius.circular(12))
+                      : null),
+              child: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Columntext(
+                          bigtext: ticket['date'],
+                          smalltext: 'Date',
+                          showColor: showColor,
+                        ),
+                        Expanded(child: Container()),
+                        Columntext(
+                            bigtext: ticket['depature_time'],
+                            smalltext: 'Departure Time',
+                            alignBig: TextAlign.center,
+                            showColor: showColor),
+                        Expanded(child: Container()),
+                        Columntext(
+                          bigtext: ticket['number'].toString(),
+                          smalltext: 'Number',
+                          alignsmall: TextAlign.end,
+                          showColor: showColor,
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

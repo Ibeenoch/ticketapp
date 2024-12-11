@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 
 class RoundedDot extends StatelessWidget {
-  const RoundedDot({super.key});
+  final bool showColor;
+  const RoundedDot({super.key, this.showColor = true});
 
   @override
   Widget build(BuildContext context) {
@@ -13,7 +15,7 @@ class RoundedDot extends StatelessWidget {
         decoration: BoxDecoration(
             border: Border.all(
               width: 2,
-              color: Colors.white,
+              color: showColor ? Colors.white : AppStyles.cardBlueColor,
             ),
             borderRadius: BorderRadius.circular(20)),
       ),

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 
 class Cardtitle extends StatelessWidget {
   final String text;
@@ -7,6 +8,7 @@ class Cardtitle extends StatelessWidget {
   final TextAlign align;
   final Color color;
   final bool hasWidth;
+  final bool showColor;
   const Cardtitle(
       {super.key,
       required this.text,
@@ -14,7 +16,8 @@ class Cardtitle extends StatelessWidget {
       this.weightType = 'normal',
       this.align = TextAlign.start,
       this.color = Colors.white,
-      this.hasWidth = true});
+      this.hasWidth = true,
+      this.showColor = true});
 
   @override
   Widget build(BuildContext context) {
@@ -24,7 +27,7 @@ class Cardtitle extends StatelessWidget {
         text,
         textAlign: align,
         style: TextStyle(
-            color: color,
+            color: showColor ? color : Colors.black,
             fontSize: sizeType == 'h2'
                 ? 16
                 : sizeType == 'h3'
