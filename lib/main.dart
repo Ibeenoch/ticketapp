@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/AppRoutes.dart';
 import 'package:powerapp/BottomBar.dart';
+import 'package:powerapp/screens/account/authWidget/login.dart';
+import 'package:powerapp/screens/account/authWidget/signup.dart';
 import 'package:powerapp/screens/home/homewidget/AllHotelViews.dart';
 import 'package:powerapp/screens/home/homewidget/AllTicketScreen.dart';
 import 'package:powerapp/screens/ticket/ticketScreen.dart';
@@ -29,6 +31,8 @@ class MyApp extends StatelessWidget {
             AppRoutes.allTickets: (context) => const Allticketscreen(),
             AppRoutes.allHotels: (context) => const Allhotelviews(),
             AppRoutes.ticketScreen: (context) => const Ticketscreen(),
+            AppRoutes.loginScreen: (context) => const Login(),
+            AppRoutes.signupScreen: (context) => const Signup(),
           },
           theme: ThemeData.light(),
           darkTheme: ThemeData.dark(),

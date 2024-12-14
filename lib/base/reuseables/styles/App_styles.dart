@@ -10,7 +10,8 @@ class AppStyles {
   static Color textColor = const Color(0xFF3b3b3b);
   static Color bgColor = const Color(0xFFF4F4F4);
 
-  static Color backgroundColorBlue = const Color(0xFF0E1A32);
+  static Color backgroundColorBlue = const Color(0xFF000E28);
+  static Color backgroundColorlightBlue = const Color(0xFF0E1A32);
   static Color backgroundColorwhite = const Color(0xFFF7F7F7);
 
   static Color primaryLightColor = const Color(0xFF0261EF);
@@ -24,7 +25,17 @@ class AppStyles {
   }
 
   static Color defaultBackGroundColor(BuildContext context) {
-    return isDarkMode(context) ? Color(0xFF0E1A32) : Color(0xFFF7F7F7);
+    return isDarkMode(context) ? backgroundColorBlue : Color(0xFFF7F7F7);
+  }
+
+  static Color borderBackGroundColor(BuildContext context) {
+    return isDarkMode(context) ? backgroundColorlightBlue : Colors.white;
+  }
+
+  static Color borderlineColor(BuildContext context) {
+    return isDarkMode(context)
+        ? backgroundColorlightBlue
+        : Colors.grey.shade200;
   }
 
   static Color textWhiteBlack(BuildContext context) {

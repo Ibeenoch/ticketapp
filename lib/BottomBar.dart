@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:powerapp/screens/home/HomeScreen.dart';
-import 'package:powerapp/screens/profile/profile.dart';
+import 'package:powerapp/screens/account/account.dart';
 import 'package:powerapp/screens/search/search.dart';
 import 'package:powerapp/screens/ticket/ticketScreen.dart';
 
@@ -24,7 +24,7 @@ class _BottomBarState extends State<BottomBar> {
     const Homescreen(),
     const Search(),
     const Ticketscreen(),
-    const Profile(),
+    const Account(),
   ];
 
   @override
@@ -42,7 +42,7 @@ class _BottomBarState extends State<BottomBar> {
             BottomNavigationBarItem(
                 icon: Icon(Icons.airplane_ticket), label: 'Ticket'),
             BottomNavigationBarItem(
-                icon: Icon(Icons.person_add_outlined), label: 'Profile'),
+                icon: Icon(Icons.person_add_outlined), label: 'Account'),
           ]),
     );
   }

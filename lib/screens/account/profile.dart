@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
+import 'package:powerapp/screens/account/authWidget/authBtn.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -11,6 +13,7 @@ class Profile extends StatefulWidget {
 class _ProfileState extends State<Profile> {
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         title: Text(
@@ -29,7 +32,25 @@ class _ProfileState extends State<Profile> {
         backgroundColor: AppStyles.defaultBackGroundColor(context),
       ),
       backgroundColor: AppStyles.defaultBackGroundColor(context),
-      body: const SafeArea(child: Column()),
+      body: SafeArea(
+          child: Column(children: [
+        SizedBox(
+          height: 30.h,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            AuthBtn(text: 'Log In', func: () {}),
+            SizedBox(
+              width: 15.w,
+            ),
+            AuthBtn(
+              text: 'Sign Up',
+              func: () {},
+            )
+          ],
+        )
+      ])),
     );
   }
 }
