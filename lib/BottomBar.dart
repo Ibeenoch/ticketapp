@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:powerapp/screens/home/HomeScreen.dart';
+import 'package:powerapp/screens/profile/profile.dart';
 import 'package:powerapp/screens/search/search.dart';
 import 'package:powerapp/screens/ticket/ticketScreen.dart';
 
@@ -22,12 +23,8 @@ class _BottomBarState extends State<BottomBar> {
   final appScreens = [
     const Homescreen(),
     const Search(),
-    const Ticketscreen(
-        // ticket: [],
-        ),
-    const Center(
-      child: Text('ProfileScreen'),
-    ),
+    const Ticketscreen(),
+    const Profile(),
   ];
 
   @override

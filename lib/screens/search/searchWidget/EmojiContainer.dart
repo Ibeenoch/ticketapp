@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Emojicontainer extends StatelessWidget {
   const Emojicontainer({super.key, required this.text});
@@ -7,13 +8,14 @@ class Emojicontainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 30,
-        height: 40,
+        width: 30.w,
+        height: 40.h,
         decoration: BoxDecoration(
-            color: Colors.transparent, borderRadius: BorderRadius.circular(10)),
+            color: Colors.transparent,
+            borderRadius: BorderRadius.circular(10.r)),
         child: Text(
           text,
-          style: const TextStyle(fontSize: 23, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
         ));
   }
 }

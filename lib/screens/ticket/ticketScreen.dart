@@ -22,9 +22,10 @@ class _TicketscreenState extends State<Ticketscreen> {
   int currentIndex = 0;
   @override
   void didChangeDependencies() {
-    var args = ModalRoute.of(context)!.settings.arguments as Map;
-    print('object index is ${args["index"]}');
-    currentIndex = args["index"];
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      var args = ModalRoute.of(context)!.settings.arguments as Map;
+      currentIndex = args["index"];
+    }
     super.didChangeDependencies();
   }
 

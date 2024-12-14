@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 import 'package:powerapp/screens/home/homewidget/hotelText.dart';
 
@@ -10,45 +11,45 @@ class Hotelview extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 15),
+      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
       child: Container(
         width: size.width * 0.6,
-        height: 300,
+        height: 300.h,
         decoration: BoxDecoration(
             color: AppStyles.cardBlueColor,
-            borderRadius: BorderRadius.circular(12)),
+            borderRadius: BorderRadius.circular(12.r)),
         child: Column(
           children: [
             Padding(
-              padding: const EdgeInsets.all(8.0),
+              padding: EdgeInsets.all(8.w),
               child: Container(
-                height: 180,
+                height: 180.h,
                 width: size.width * 0.6,
                 decoration: BoxDecoration(
                   color: AppStyles.cardBlueColor,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(10.r),
                   image: DecorationImage(
                       image: AssetImage('assets/images/${hotelItem['image']}'),
                       fit: BoxFit.cover),
                 ),
               ),
             ),
-            const SizedBox(
-              height: 5,
+            SizedBox(
+              height: 5.h,
             ),
             Hoteltext(
               text: hotelItem['name'],
               color: AppStyles.kaki,
             ),
-            const SizedBox(
-              height: 5,
+            SizedBox(
+              height: 5.h,
             ),
             Hoteltext(
               text: hotelItem['location'],
               sizeType: 'h3',
             ),
-            const SizedBox(
-              height: 5,
+            SizedBox(
+              height: 5.h,
             ),
             Hoteltext(
               text: '\$${hotelItem['amount'].toString()}/Night',

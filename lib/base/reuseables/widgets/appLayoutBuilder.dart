@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 
 class Applayoutbuilder extends StatelessWidget {
@@ -18,8 +19,8 @@ class Applayoutbuilder extends StatelessWidget {
         children: List.generate(
             (constraints.constrainWidth() / randomWidthNum).floor(),
             (index) => SizedBox(
-                  width: 3,
-                  height: 1,
+                  width: 3.w,
+                  height: 1.h,
                   child: DecoratedBox(
                       decoration: BoxDecoration(
                           color: showColor

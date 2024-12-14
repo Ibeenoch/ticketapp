@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 
 class Tickettab extends StatefulWidget {
@@ -27,13 +28,13 @@ class _TickettabState extends State<Tickettab> {
             });
           },
           child: Container(
-            width: size.width * 0.44,
+            width: size.width * 0.43,
             decoration: BoxDecoration(
                 borderRadius: const BorderRadius.only(
                     topLeft: Radius.circular(12),
                     bottomLeft: Radius.circular(12)),
                 color: isLeft ? AppStyles.cardBlueColor : Colors.white),
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
             child: Text(
               widget.leftText,
               style: TextStyle(
@@ -50,13 +51,13 @@ class _TickettabState extends State<Tickettab> {
             });
           },
           child: Container(
-            width: size.width * 0.44,
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+            width: size.width * 0.43,
+            padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
             decoration: BoxDecoration(
                 color: isLeft ? Colors.white : AppStyles.cardBlueColor,
-                borderRadius: const BorderRadius.only(
-                    topRight: Radius.circular(12),
-                    bottomRight: Radius.circular(12))),
+                borderRadius: BorderRadius.only(
+                    topRight: Radius.circular(12.r),
+                    bottomRight: Radius.circular(12.r))),
             child: Text(
               widget.rightText,
               style: TextStyle(
@@ -70,53 +71,3 @@ class _TickettabState extends State<Tickettab> {
     );
   }
 }
-
-// import 'package:flutter/material.dart';
-// import 'package:powerapp/base/reuseables/styles/App_styles.dart';
-
-// class Tickettab extends StatelessWidget {
-//   final String leftText;
-//   final String rightText;
-
-
-//   const Tickettab({super.key, required this.leftText, required this.rightText});
-
-//   @override
-//   Widget build(BuildContext context) {
-//     final size = MediaQuery.of(context).size;
-//     return Row(
-//       children: [
-//         Container(
-//           width: size.width * 0.44,
-//           decoration: const BoxDecoration(
-//               borderRadius: BorderRadius.only(
-//                   topLeft: Radius.circular(12),
-//                   bottomLeft: Radius.circular(12)),
-//               color: Colors.white),
-//           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-//           child: Text(
-//             leftText,
-//             style: TextStyle(
-//                 fontWeight: FontWeight.w500, color: AppStyles.cardBlueColor),
-//             textAlign: TextAlign.center,
-//           ),
-//         ),
-//         Container(
-//           width: size.width * 0.44,
-//           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-//           decoration: BoxDecoration(
-//               color: AppStyles.cardBlueColor,
-//               borderRadius: const BorderRadius.only(
-//                   topRight: Radius.circular(12),
-//                   bottomRight: Radius.circular(12))),
-//           child: Text(
-//             rightText,
-//             style: const TextStyle(
-//                 fontWeight: FontWeight.w500, color: Colors.white),
-//             textAlign: TextAlign.center,
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-// }

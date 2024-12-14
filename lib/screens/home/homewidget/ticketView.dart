@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 import 'package:powerapp/base/reuseables/widgets/ColumnText.dart';
 import 'package:powerapp/screens/home/homewidget/RoundedDot.dart';
@@ -25,7 +26,7 @@ class Ticketview extends StatelessWidget {
       ),
       child: SizedBox(
         width: size.width * 0.85,
-        height: showHeight ? 179 : null,
+        height: showHeight ? 150 : null,
         //
         child: Column(
           // container shrinked because of the column wrapping the children Container
@@ -33,12 +34,11 @@ class Ticketview extends StatelessWidget {
             Container(
               decoration: BoxDecoration(
                   color: showColor ? AppStyles.cardBlueColor : Colors.white,
-                  borderRadius: const BorderRadius.only(
-                      topLeft: Radius.circular(12),
-                      topRight: Radius.circular(12))),
+                  borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(12.r),
+                      topRight: Radius.circular(12.r))),
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
                 child: Column(
                   children: [
                     Row(
@@ -57,7 +57,7 @@ class Ticketview extends StatelessWidget {
                             child: Stack(
                           children: [
                             SizedBox(
-                              height: 18,
+                              height: 18.h,
                               child: Applayoutbuilder(
                                 randomWidthNum: 5,
                                 showColor: showColor,
@@ -68,7 +68,7 @@ class Ticketview extends StatelessWidget {
                               angle: 1.57,
                               child: Icon(
                                 Icons.airplanemode_active,
-                                size: 17,
+                                size: 17.sp,
                                 color: showColor
                                     ? Colors.white
                                     : AppStyles.cardBlueColor,
@@ -119,26 +119,26 @@ class Ticketview extends StatelessWidget {
             ),
             // middle container
             Container(
-              height: 20,
+              height: 20.h,
               decoration: BoxDecoration(
                   color: showColor ? AppStyles.cardRedColor : Colors.white),
-              child: const Row(
+              child: Row(
                 children: [
-                  Halfcircular(
+                  const Halfcircular(
                     isLeft: false,
                   ),
                   Expanded(
                       child: Stack(
                     children: [
                       SizedBox(
-                        height: 18,
-                        child: Applayoutbuilder(
+                        height: 18.h,
+                        child: const Applayoutbuilder(
                           randomWidthNum: 7,
                         ),
                       ),
                     ],
                   )),
-                  Halfcircular(
+                  const Halfcircular(
                     isLeft: true,
                   ),
                 ],
@@ -149,13 +149,12 @@ class Ticketview extends StatelessWidget {
               decoration: BoxDecoration(
                   color: showColor ? AppStyles.cardRedColor : Colors.white,
                   borderRadius: showHeight
-                      ? const BorderRadius.only(
-                          bottomLeft: Radius.circular(12),
-                          bottomRight: Radius.circular(12))
+                      ? BorderRadius.only(
+                          bottomLeft: Radius.circular(12.r),
+                          bottomRight: Radius.circular(12.r))
                       : null),
               child: Padding(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 10.h),
                 child: Column(
                   children: [
                     Row(

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/widgets/cardTitle.dart';
 
 class Hoteltext extends StatelessWidget {
@@ -18,7 +19,7 @@ class Hoteltext extends StatelessWidget {
     return Align(
       alignment: Alignment.centerLeft,
       child: Padding(
-        padding: const EdgeInsets.only(left: 10),
+        padding: EdgeInsets.only(left: 10.w),
         child: Cardtitle(
           text: text,
           sizeType: sizeType,

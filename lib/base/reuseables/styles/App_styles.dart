@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/widgets/currentMode.dart';
 
 Color primary = const Color(0xFF687daf);
@@ -40,7 +41,7 @@ class AppStyles {
 
   static TextStyle h1(BuildContext context) {
     return TextStyle(
-      fontSize: 22,
+      fontSize: 22.sp,
       fontWeight: FontWeight.bold,
       color: textWhiteBlack(context),
     );
@@ -48,7 +49,7 @@ class AppStyles {
 
   static TextStyle h4(BuildContext context) {
     return TextStyle(
-      fontSize: 15,
+      fontSize: 15.sp,
       fontWeight: FontWeight.bold,
       color: textWhiteBlack(context),
     );
@@ -56,7 +57,7 @@ class AppStyles {
 
   static TextStyle h3(BuildContext context) {
     return TextStyle(
-      fontSize: 12,
+      fontSize: 12.sp,
       fontWeight: FontWeight.w600,
       color: cardBlueColor,
     );
@@ -64,7 +65,7 @@ class AppStyles {
 
   static TextStyle h3White(BuildContext context) {
     return TextStyle(
-      fontSize: 18,
+      fontSize: 18.sp,
       fontWeight: FontWeight.w600,
       color: textWhite(context),
     );
@@ -72,14 +73,14 @@ class AppStyles {
 
   static TextStyle h5(BuildContext context) {
     return TextStyle(
-        fontSize: 15,
+        fontSize: 15.sp,
         fontWeight: FontWeight.w500,
         color: primaryColor(context));
   }
 
   static TextStyle h5White(BuildContext context) {
     return TextStyle(
-        fontSize: 12,
+        fontSize: 12.sp,
         fontWeight: FontWeight.w500,
         color: textWhiteBlack(context));
   }

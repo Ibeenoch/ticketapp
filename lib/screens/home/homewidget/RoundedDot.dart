@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 
 class RoundedDot extends StatelessWidget {
@@ -8,16 +9,16 @@ class RoundedDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.all(1.0),
+      padding: EdgeInsets.all(1.w),
       child: Container(
-        width: 8,
-        height: 8,
+        width: 8.w,
+        height: 8.h,
         decoration: BoxDecoration(
             border: Border.all(
-              width: 2,
+              width: 2.w,
               color: showColor ? Colors.white : AppStyles.cardBlueColor,
             ),
-            borderRadius: BorderRadius.circular(20)),
+            borderRadius: BorderRadius.circular(20.r)),
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/AppRoutes.dart';
 import 'package:powerapp/base/reuseables/media/App_Media.dart';
 import 'package:powerapp/base/reuseables/resources/dummyJson.dart';
@@ -9,18 +10,25 @@ import 'package:powerapp/screens/home/homewidget/ticketView.dart';
 import 'package:powerapp/screens/home/homewidget/AllHotelViews.dart';
 import 'package:powerapp/screens/home/homewidget/AllTicketScreen.dart';
 
-class Homescreen extends StatelessWidget {
+class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
 
+  @override
+  State<Homescreen> createState() => _HomescreenState();
+}
+
+class _HomescreenState extends State<Homescreen> {
+  final search = TextEditingController();
+  FocusNode search_F = FocusNode();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       body: ListView(
-        padding: const EdgeInsets.symmetric(horizontal: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20.w),
         children: [
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: 40.h,
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -35,15 +43,15 @@ class Homescreen extends StatelessWidget {
                         'Good Morning',
                         style: AppStyles.h5(context),
                       ),
-                      const SizedBox(
-                        height: 10,
+                      SizedBox(
+                        height: 10.h,
                       ),
-                      Text('Wanna Buy Ticket?', style: AppStyles.h1(context))
+                      Text('Wanna Buy Ticket?', style: AppStyles.h3(context))
                     ],
                   ),
                   Container(
-                    width: 50,
-                    height: 50,
+                    width: 50.w,
+                    height: 50.h,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(13),
                         image: const DecorationImage(
@@ -51,35 +59,34 @@ class Homescreen extends StatelessWidget {
                   )
                 ],
               ),
-              const SizedBox(
-                height: 20,
+              SizedBox(
+                height: 20.h,
               ),
               Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+                height: 40.h,
                 decoration: BoxDecoration(
                     color: Colors.white,
-                    borderRadius: BorderRadius.circular(7)),
-                child: Row(
-                  children: [
-                    Icon(
-                      Icons.search,
-                      color: AppStyles.cardBlueColor,
-                    ),
-                    Text(
-                      'Search',
-                      style: TextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w400,
-                          color: AppStyles.cardBlueColor),
-                    )
-                  ],
+                    borderRadius: BorderRadius.circular(7.r)),
+                child: TextField(
+                  controller: search,
+                  focusNode: search_F,
+                  autofocus: true,
+                  cursorColor: AppStyles.cardBlueColor,
+                  style: TextStyle(
+                      fontSize: 12.sp, color: AppStyles.cardBlueColor),
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Search for Hotel, Ticket',
+                      prefixIcon: Icon(
+                        Icons.search,
+                        color: AppStyles.cardBlueColor,
+                      )),
                 ),
               ),
             ],
           ),
-          const SizedBox(
-            height: 40,
+          SizedBox(
+            height: 40.h,
           ),
           Symmetrictext(
             bigText: 'Upcoming Flight',
@@ -92,8 +99,8 @@ class Homescreen extends StatelessWidget {
               ))
             },
           ),
-          const SizedBox(
-            height: 20,
+          SizedBox(
+            height: 20.h,
           ),
           SingleChildScrollView(
               scrollDirection: Axis.horizontal,
@@ -102,8 +109,8 @@ class Homescreen extends StatelessWidget {
                     .map((singleTicket) => Ticketview(ticket: singleTicket))
                     .toList(),
               )),
-          const SizedBox(
-            height: 10,
+          SizedBox(
+            height: 10.h,
           ),
           Symmetrictext(
             bigText: 'Hotel',

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 
 class Cardtitle extends StatelessWidget {
@@ -22,19 +23,19 @@ class Cardtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: hasWidth ? 70 : null,
+      width: hasWidth ? 70.w : null,
       child: Text(
         text,
         textAlign: align,
         style: TextStyle(
             color: showColor ? color : Colors.black,
             fontSize: sizeType == 'h2'
-                ? 16
+                ? 16.sp
                 : sizeType == 'h3'
-                    ? 12
+                    ? 12.sp
                     : sizeType == 'h4'
-                        ? 10
-                        : 8,
+                        ? 10.sp
+                        : 8.sp,
             fontWeight:
                 weightType == 'bold' ? FontWeight.bold : FontWeight.w400),
       ),

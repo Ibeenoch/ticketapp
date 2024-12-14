@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/AppRoutes.dart';
 import 'package:powerapp/BottomBar.dart';
 import 'package:powerapp/screens/home/homewidget/AllHotelViews.dart';
@@ -15,18 +16,25 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      home: const BottomBar(),
-      routes: {
-        // AppRoutes.homePage: (context) => const BottomBar(),
-        AppRoutes.allTickets: (context) => const Allticketscreen(),
-        AppRoutes.allHotels: (context) => const Allhotelviews(),
-        AppRoutes.ticketScreen: (context) => const Ticketscreen(),
+    return ScreenUtilInit(
+      designSize: const Size(315, 812), // set the design size
+      minTextAdapt: true, // adjust text size base on screen size
+      splitScreenMode: true, // split screen for multiple windows
+      builder: (context, child) {
+        return MaterialApp(
+          debugShowCheckedModeBanner: false,
+          home: const BottomBar(),
+          routes: {
+            // AppRoutes.homePage: (context) => const BottomBar(),
+            AppRoutes.allTickets: (context) => const Allticketscreen(),
+            AppRoutes.allHotels: (context) => const Allhotelviews(),
+            AppRoutes.ticketScreen: (context) => const Ticketscreen(),
+          },
+          theme: ThemeData.light(),
+          darkTheme: ThemeData.dark(),
+          themeMode: ThemeMode.system,
+        );
       },
-      theme: ThemeData.light(),
-      darkTheme: ThemeData.dark(),
-      themeMode: ThemeMode.system,
     );
   }
 }

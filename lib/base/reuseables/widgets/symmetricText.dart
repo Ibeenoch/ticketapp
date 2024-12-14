@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:powerapp/base/reuseables/styles/App_styles.dart';
 import 'package:powerapp/base/reuseables/widgets/currentMode.dart';
 
@@ -22,7 +23,7 @@ class Symmetrictext extends StatelessWidget {
           bigText,
           style: TextStyle(
               fontWeight: FontWeight.bold,
-              fontSize: 15,
+              fontSize: 15.sp,
               color: isdarkMode ? Colors.white : Colors.black),
         ),
         InkWell(
@@ -36,7 +37,7 @@ class Symmetrictext extends StatelessWidget {
               Icon(
                 Icons.keyboard_arrow_right,
                 color: AppStyles.cardBlueColor,
-                size: 17,
+                size: 17.sp,
               )
             ],
           ),
