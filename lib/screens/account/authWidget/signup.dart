@@ -16,12 +16,14 @@ class _SignupState extends State<Signup> {
   final TextEditingController bio = TextEditingController();
   final TextEditingController fullname = TextEditingController();
   final TextEditingController address = TextEditingController();
+  final TextEditingController country = TextEditingController();
 
   FocusNode email_f = FocusNode();
   FocusNode password_f = FocusNode();
   FocusNode bio_f = FocusNode();
   FocusNode fullname_f = FocusNode();
   FocusNode address_f = FocusNode();
+  FocusNode country_f = FocusNode();
 
   bool isPasswordVisible = false;
   String? fullnameError;
@@ -29,6 +31,7 @@ class _SignupState extends State<Signup> {
   String? addressError;
   String? emailError;
   String? passwordError;
+  String? countryError;
 
   @override
   void dispose() {
@@ -37,6 +40,7 @@ class _SignupState extends State<Signup> {
     bio.dispose();
     fullname.dispose();
     address.dispose();
+    country.dispose();
     super.dispose();
   }
 
@@ -150,6 +154,43 @@ class _SignupState extends State<Signup> {
     }
   }
 
+  void _openBottomSheet(BuildContext context) async {
+    final selectedCountry = await showModalBottomSheet<String>(
+        context: context,
+        isScrollControlled: true,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(16))),
+        builder: (BuildContext context) {
+          return DraggableScrollableSheet(
+              expand: false,
+              builder: (_, scrollController) {
+                return Container(
+                  padding: EdgeInsets.all(16.w),
+                  child: Column(
+                    children: [
+                      Text(
+                        'Choose an option',
+                        style: TextStyle(
+                            color: AppStyles.textWhiteBlack(context),
+                            fontSize: 12.sp),
+                      ),
+                      Expanded(
+                          child: ListView(
+                        controller: scrollController,
+                        children: [
+                          _buildOption(context, 'Nigeria'),
+                          _buildOption(context, 'Ghana'),
+                          _buildOption(context, 'Togo'),
+                          _buildOption(context, 'kenya'),
+                        ],
+                      ))
+                    ],
+                  ),
+                );
+              });
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -239,11 +280,46 @@ class _SignupState extends State<Signup> {
                   'Password'),
               if (passwordError != null) errorMessage(passwordError!),
               SizedBox(
+                height: 15.h,
+              ),
+              Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8.r),
+                      color: AppStyles.borderBackGroundColor(context)),
+                  child: Container(
+                    height: 40,
+                    decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.r),
+                        color: AppStyles.defaultBackGroundColor(context)),
+                    child: TextField(
+                      controller: country,
+                      readOnly: true,
+                      decoration: InputDecoration(
+                        contentPadding: EdgeInsets.symmetric(vertical: 3.h),
+                        hintText: 'Choose your country',
+                        hintStyle: TextStyle(fontSize: 12, color: Colors.grey),
+                        prefixIcon: Icon(
+                          Icons.public,
+                          size: 12.sp,
+                        ),
+                        enabledBorder: InputBorder.none,
+                        border: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                      ),
+                      onTap: () => _openBottomSheet(context),
+                    ),
+                  ),
+                ),
+              ),
+              SizedBox(
                 height: 30.h,
               ),
               actionBtn(),
               SizedBox(
-                height: 10,
+                height: 10.h,
               ),
               Padding(
                 padding: EdgeInsets.only(left: 17.w),
@@ -433,4 +509,13 @@ class _SignupState extends State<Signup> {
       }),
     );
   }
+}
+
+Widget _buildOption(BuildContext context, String option) {
+  return ListTile(
+    title: Text(option),
+    onTap: () {
+      Navigator.pop(context, option);
+    },
+  );
 }
