@@ -100,7 +100,6 @@ class _SignupState extends State<Signup> {
       setState(() {
         emailError = null;
       });
-      // emailError = null;
     }
   }
 
@@ -244,77 +243,87 @@ class _SignupState extends State<Signup> {
               ),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
-                child: Container(
-                  decoration: BoxDecoration(
-                      color: AppStyles.borderBackGroundColor(context),
-                      borderRadius: BorderRadius.circular(10.r)),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(
-                        height: 5.h,
-                      ),
-                      inputs(
-                          fullname,
-                          fullname_f,
-                          Icons.person,
-                          true,
-                          false,
-                          'Enter your full name',
-                          fullnameError != null ? true : false,
-                          'FullName'),
-                      if (fullnameError != null) errorMessage(fullnameError!),
-                      inputs(
-                          address,
-                          address_f,
-                          Icons.location_city,
-                          true,
-                          false,
-                          'Enter your address',
-                          addressError != null ? true : false,
-                          'Address'),
-                      if (addressError != null) errorMessage(addressError!),
-                      inputs(
-                          bio,
-                          bio_f,
-                          Icons.abc,
-                          true,
-                          false,
-                          'Tell us about yourself',
-                          bioError != null ? true : false,
-                          'Bio'),
-                      if (bioError != null) errorMessage(bioError!),
-                      inputs(
-                          email,
-                          email_f,
-                          Icons.email,
-                          true,
-                          false,
-                          'Enter your email address',
-                          emailError != null ? true : false,
-                          'Email'),
-                      if (emailError != null) errorMessage(emailError!),
-                      inputs(
-                          password,
-                          password_f,
-                          Icons.lock,
-                          true,
-                          true,
-                          'Enter your password',
-                          passwordError != null ? true : false,
-                          'Password'),
-                      if (passwordError != null) errorMessage(passwordError!),
-                      selectCountry(context),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      actionBtn(),
-                      SizedBox(
-                        height: 10.h,
-                      ),
-                      switchScreen(context)
-                    ],
-                  ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    inputs(
+                        fullname,
+                        fullname_f,
+                        Icons.person,
+                        true,
+                        false,
+                        'Enter your full name',
+                        fullnameError != null ? true : false,
+                        'FullName'),
+                    if (fullnameError != null) errorMessage(fullnameError!),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    inputs(
+                        address,
+                        address_f,
+                        Icons.location_city,
+                        true,
+                        false,
+                        'Enter your address',
+                        addressError != null ? true : false,
+                        'Address'),
+                    if (addressError != null) errorMessage(addressError!),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    inputs(
+                        bio,
+                        bio_f,
+                        Icons.abc,
+                        true,
+                        false,
+                        'Tell us about yourself',
+                        bioError != null ? true : false,
+                        'Bio'),
+                    if (bioError != null) errorMessage(bioError!),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    inputs(
+                        email,
+                        email_f,
+                        Icons.email,
+                        true,
+                        false,
+                        'Enter your email address',
+                        emailError != null ? true : false,
+                        'Email'),
+                    if (emailError != null) errorMessage(emailError!),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    inputs(
+                        password,
+                        password_f,
+                        Icons.lock,
+                        true,
+                        true,
+                        'Enter your password',
+                        passwordError != null ? true : false,
+                        'Password'),
+                    if (passwordError != null) errorMessage(passwordError!),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    selectCountry(context),
+                    SizedBox(
+                      height: 15.h,
+                    ),
+                    actionBtn(),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    switchScreen(context)
+                  ],
                 ),
               )
             ],
@@ -365,7 +374,7 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Padding selectCountry(BuildContext context) {
+  Widget selectCountry(BuildContext context) {
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 3.w),
       child: Container(
@@ -402,16 +411,16 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Padding actionBtn() {
+  Widget actionBtn() {
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 13.w),
+      padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: InkWell(
         onTap: () {},
         child: Container(
           width: double.infinity,
           height: 50.h,
           padding: EdgeInsets.symmetric(
-            horizontal: 12.w,
+            horizontal: 10.w,
           ),
           decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.r),
@@ -430,7 +439,7 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Padding errorMessage(String err) {
+  Widget errorMessage(String err) {
     return Padding(
       padding: EdgeInsets.only(left: 18.w, top: 1.h),
       child: Text(
@@ -440,7 +449,13 @@ class _SignupState extends State<Signup> {
     );
   }
 
-  Padding inputs(
+  // Container(
+  //                 decoration: BoxDecoration(
+  //                     color: AppStyles.borderBackGroundColor(context),
+  //                     borderRadius: BorderRadius.circular(10.r)),
+  //                 child:
+
+  Widget inputs(
     TextEditingController controller,
     FocusNode focus,
     IconData icon,
@@ -450,110 +465,116 @@ class _SignupState extends State<Signup> {
     bool hasErr,
     String focusname,
   ) {
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 1.w),
-      child: StatefulBuilder(builder: (context, setState) {
-        focus.addListener(() {
-          setState(() {});
-        });
+    return Container(
+      decoration: BoxDecoration(
+          color: AppStyles.borderBackGroundColor(context),
+          borderRadius: BorderRadius.circular(10.r)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 1.w),
+        child: StatefulBuilder(builder: (context, setState) {
+          focus.addListener(() {
+            setState(() {});
+          });
 
-        return Container(
-          padding:
-              EdgeInsets.only(left: 6.w, bottom: 8.h, right: 8.w, top: 0.h),
-          decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
-          child: Stack(children: [
-            Padding(
-              padding: EdgeInsets.only(top: 10.h),
-              child: Container(
-                height: 45.h,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(8.r),
-                  color: AppStyles.defaultBackGroundColor(context),
-                ),
-                child: TextField(
-                  controller: controller,
-                  focusNode: focus,
-                  obscureText: isPasswordVisible,
-                  onChanged: (value) {
-                    if (focusname == 'Email') {
-                      validateEmail();
-                    } else if (focusname == 'Password') {
-                      validatePassword();
-                    } else if (focusname == 'FullName') {
-                      validateFullname();
-                    } else if (focusname == 'Address') {
-                      validateAddress();
-                    } else if (focusname == 'Bio') {
-                      validateBio();
-                    } else {}
-                  },
-                  style: TextStyle(
-                    fontSize: 12.sp,
+          return Container(
+            padding:
+                EdgeInsets.only(left: 6.w, bottom: 8.h, right: 8.w, top: 0.h),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
+            child: Stack(children: [
+              Padding(
+                padding: EdgeInsets.only(top: 10.h),
+                child: Container(
+                  height: 45.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    color: AppStyles.defaultBackGroundColor(context),
                   ),
-                  cursorColor: AppStyles.cardBlueColor,
-                  decoration: InputDecoration(
-                      hintText: focus.hasFocus ? '' : hintText,
-                      hintStyle: TextStyle(fontSize: 10.sp, color: Colors.grey),
-                      contentPadding: EdgeInsets.symmetric(vertical: 9.h),
-                      prefixIcon: showPrefixIcon
-                          ? Icon(
-                              icon,
-                              size: 15.sp,
-                              color: Colors.grey,
-                            )
-                          : null,
-                      suffixIcon: showSuffixIcon
-                          ? GestureDetector(
-                              onTap: () {
-                                setState(() {
-                                  isPasswordVisible = !isPasswordVisible;
-                                });
-                              },
-                              child: Icon(
-                                isPasswordVisible
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
+                  child: TextField(
+                    controller: controller,
+                    focusNode: focus,
+                    obscureText: isPasswordVisible,
+                    onChanged: (value) {
+                      if (focusname == 'Email') {
+                        validateEmail();
+                      } else if (focusname == 'Password') {
+                        validatePassword();
+                      } else if (focusname == 'FullName') {
+                        validateFullname();
+                      } else if (focusname == 'Address') {
+                        validateAddress();
+                      } else if (focusname == 'Bio') {
+                        validateBio();
+                      } else {}
+                    },
+                    style: TextStyle(
+                      fontSize: 12.sp,
+                    ),
+                    cursorColor: AppStyles.cardBlueColor,
+                    decoration: InputDecoration(
+                        hintText: focus.hasFocus ? '' : hintText,
+                        hintStyle:
+                            TextStyle(fontSize: 10.sp, color: Colors.grey),
+                        contentPadding: EdgeInsets.symmetric(vertical: 9.h),
+                        prefixIcon: showPrefixIcon
+                            ? Icon(
+                                icon,
                                 size: 15.sp,
                                 color: Colors.grey,
-                              ),
-                            )
-                          : null,
-                      enabledBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                          borderSide: BorderSide(
-                              color: hasErr
-                                  ? Colors.red
-                                  : AppStyles.borderlineColor(context))),
-                      focusedBorder: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(8.r),
-                          borderSide:
-                              BorderSide(color: AppStyles.cardBlueColor))),
-                  autofillHints: null,
+                              )
+                            : null,
+                        suffixIcon: showSuffixIcon
+                            ? GestureDetector(
+                                onTap: () {
+                                  setState(() {
+                                    isPasswordVisible = !isPasswordVisible;
+                                  });
+                                },
+                                child: Icon(
+                                  isPasswordVisible
+                                      ? Icons.visibility
+                                      : Icons.visibility_off,
+                                  size: 15.sp,
+                                  color: Colors.grey,
+                                ),
+                              )
+                            : null,
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                            borderSide: BorderSide(
+                                color: hasErr
+                                    ? Colors.red
+                                    : AppStyles.borderlineColor(context))),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                            borderSide:
+                                BorderSide(color: AppStyles.cardBlueColor))),
+                    autofillHints: null,
+                  ),
                 ),
               ),
-            ),
-            (focus.hasFocus) // display the label overlapping the top border
-                ? Positioned(
-                    top: 3.h,
-                    left: 20.w,
-                    child: Container(
-                      decoration: BoxDecoration(
-                          color: AppStyles.defaultBackGroundColor(context)),
-                      child: Padding(
-                        padding: EdgeInsets.symmetric(horizontal: 2.w),
-                        child: Text(
-                          focusname,
-                          style: TextStyle(
-                            fontSize: 8.sp,
+              (focus.hasFocus) // display the label overlapping the top border
+                  ? Positioned(
+                      top: 3.h,
+                      left: 20.w,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: AppStyles.defaultBackGroundColor(context)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                          child: Text(
+                            focusname,
+                            style: TextStyle(
+                              fontSize: 8.sp,
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                  )
-                : Container(),
-          ]),
-        );
-      }),
+                    )
+                  : Container(),
+            ]),
+          );
+        }),
+      ),
     );
   }
 }

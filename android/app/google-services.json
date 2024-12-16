@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "162587604834",
+    "project_id": "airticket-7a246",
+    "storage_bucket": "airticket-7a246.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:162587604834:android:bc69dfb5ed0477ee195e3b",
+        "android_client_info": {
+          "package_name": "com.enterprise.powerapp"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBT0Uq-e4MrcoQXTjAAg_Ak_zCxsPa7Fn4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
