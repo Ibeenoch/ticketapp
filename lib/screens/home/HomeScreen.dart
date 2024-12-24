@@ -3,11 +3,13 @@ import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/symmetricText.dart';
+import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/AllTicketScreen.dart';
 import 'package:airlineticket/screens/home/homewidget/HotelView.dart';
 import 'package:airlineticket/screens/home/homewidget/ticketView.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
 class Homescreen extends StatefulWidget {
   const Homescreen({super.key});
@@ -21,6 +23,11 @@ class _HomescreenState extends State<Homescreen> {
   FocusNode search_F = FocusNode();
   @override
   Widget build(BuildContext context) {
+    String? username = 'Guest';
+    final userProvider = Provider.of<UserProvider>(context);
+    if (userProvider.isLoggedIn) {
+      username = userProvider.currentUser!.get<String>('fullname');
+    }
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       body: ListView(
@@ -39,7 +46,11 @@ class _HomescreenState extends State<Homescreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Good Morning',
+                        'Good Morning,',
+                        style: AppStyles.h5(context),
+                      ),
+                      Text(
+                        '$username',
                         style: AppStyles.h5(context),
                       ),
                       SizedBox(

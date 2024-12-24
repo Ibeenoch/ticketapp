@@ -9,6 +9,7 @@ import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 
 class Signup extends StatefulWidget {
@@ -313,6 +314,11 @@ class _SignupState extends State<Signup> {
           body: SafeArea(
               child: ListView(
             children: [
+              // Container(
+              //   width: 250.w,
+              //   child: SvgPicture.asset("assets/icons/spinster.svg"),
+              //   height: 70.h,
+              // ), // load custom svg
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 15.w),
                 child: Column(

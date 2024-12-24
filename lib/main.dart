@@ -1,5 +1,7 @@
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/BottomBar.dart';
+import 'package:airlineticket/providers/userProvider.dart';
+import 'package:airlineticket/screens/account/account.dart';
 import 'package:airlineticket/screens/account/authWidget/login.dart';
 import 'package:airlineticket/screens/account/authWidget/signup.dart';
 import 'package:airlineticket/screens/home/homewidget/AllHotelViews.dart';
@@ -9,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
+import 'package:provider/provider.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -48,20 +51,24 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true, // adjust text size base on screen size
       splitScreenMode: true, // split screen for multiple windows
       builder: (context, child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: const BottomBar(),
-          routes: {
-            // AppRoutes.homePage: (context) => const BottomBar(),
-            AppRoutes.allTickets: (context) => const Allticketscreen(),
-            AppRoutes.allHotels: (context) => const Allhotelviews(),
-            AppRoutes.ticketScreen: (context) => const Ticketscreen(),
-            AppRoutes.loginScreen: (context) => const Login(),
-            AppRoutes.signupScreen: (context) => const Signup(),
-          },
-          theme: ThemeData.light(),
-          darkTheme: ThemeData.dark(),
-          themeMode: ThemeMode.system,
+        return ChangeNotifierProvider(
+          create: (_) => UserProvider(),
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            home: const BottomBar(),
+            routes: {
+              // AppRoutes.homePage: (context) => const BottomBar(),
+              AppRoutes.allTickets: (context) => const Allticketscreen(),
+              AppRoutes.allHotels: (context) => const Allhotelviews(),
+              AppRoutes.ticketScreen: (context) => const Ticketscreen(),
+              AppRoutes.loginScreen: (context) => const Login(),
+              AppRoutes.signupScreen: (context) => const Signup(),
+              AppRoutes.accountScreen: (context) => const Account(),
+            },
+            theme: ThemeData.light(),
+            darkTheme: ThemeData.dark(),
+            themeMode: ThemeMode.system,
+          ),
         );
       },
     );

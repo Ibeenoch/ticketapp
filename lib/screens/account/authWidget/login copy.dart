@@ -82,40 +82,52 @@ class _LoginState extends State<Login> {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      children: [
-        GestureDetector(
-          onTap: () {
-            Navigator.pushNamed(context, AppRoutes.homePage);
-          },
-          child: SizedBox(
-            width: 80.w,
-            height: 80.h,
-            child: const Image(image: AssetImage(AppMedia.companyLogo)),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Log In',
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: AppStyles.defaultBackGroundColor(context),
+      ),
+      backgroundColor: AppStyles.defaultBackGroundColor(context),
+      body: SafeArea(
+          child: ListView(
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.homePage);
+            },
+            child: SizedBox(
+              width: 80.w,
+              height: 80.h,
+              child: const Image(image: AssetImage(AppMedia.companyLogo)),
+            ),
           ),
-        ),
-        SizedBox(
-          height: 5.h,
-        ),
-        inputText(context, email, email_f, 'Enter your email address',
-            Icons.email, false, 'Email'),
-        if (emailError != null) errorMessage(emailError!),
-        SizedBox(
-          height: 15.h,
-        ),
-        inputText(context, password, password_f, 'Enter your password',
-            Icons.lock, true, 'Password'),
-        if (passwordError != null) errorMessage(passwordError!),
-        forgotPassword(),
-        SizedBox(
-          height: 10.h,
-        ),
-        actonBtn(),
-        switchScreen(context),
-        SizedBox(
-          height: 10.h,
-        ),
-      ],
+          SizedBox(
+            height: 5.h,
+          ),
+          inputText(context, email, email_f, 'Enter your email address',
+              Icons.email, false, 'Email'),
+          if (emailError != null) errorMessage(emailError!),
+          SizedBox(
+            height: 15.h,
+          ),
+          inputText(context, password, password_f, 'Enter your password',
+              Icons.lock, true, 'Password'),
+          if (passwordError != null) errorMessage(passwordError!),
+          forgotPassword(),
+          SizedBox(
+            height: 10.h,
+          ),
+          actonBtn(),
+          switchScreen(context),
+          SizedBox(
+            height: 10.h,
+          ),
+        ],
+      )),
     );
   }
 

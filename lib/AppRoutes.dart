@@ -5,4 +5,5 @@ class AppRoutes {
   static const ticketScreen = "/view_ticket";
   static const loginScreen = "/login";
   static const signupScreen = "/signup";
+  static const accountScreen = "/account";
 }

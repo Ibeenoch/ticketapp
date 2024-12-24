@@ -38,6 +38,10 @@ class AppStyles {
         : Colors.grey.shade200;
   }
 
+  static Color? skeletonColor(BuildContext context) {
+    return isDarkMode(context) ? Colors.grey[600] : Colors.grey[200];
+  }
+
   static Color textWhiteBlack(BuildContext context) {
     return isDarkMode(context) ? Colors.white : Colors.black;
   }
