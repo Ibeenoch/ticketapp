@@ -32,7 +32,7 @@ class _AccountState extends State<Account> {
     }
 
     void logout() async {
-      UserProvider().logOut();
+      // UserProvider().logOut();
       Navigator.pushNamed(context, AppRoutes.loginScreen);
     }
 

@@ -18,6 +18,8 @@ class AppStyles {
   static Color primaryDarkColor = const Color(0xFFFFD75D);
   static Color cardBlueColor = const Color(0xFF526799);
   static Color cardRedColor = const Color(0xFFF37867);
+  static Color cardlightkakiColor = const Color(0xFFFEEBDD);
+  static Color carddeepOrangeColor = const Color(0xFFF0854A);
   static Color kaki = const Color(0xFFd2bdb6);
 
   static Color primaryColor(BuildContext context) {
@@ -26,6 +28,22 @@ class AppStyles {
 
   static Color defaultBackGroundColor(BuildContext context) {
     return isDarkMode(context) ? backgroundColorBlue : Color(0xFFF7F7F7);
+  }
+
+  static Color backGroundColorWhiteAndDeepBlue(BuildContext context) {
+    return isDarkMode(context) ? backgroundColorlightBlue : Color(0xFFFFFFFF);
+  }
+
+  static Color backGroundOfkakiContainer(BuildContext context) {
+    return isDarkMode(context) ? backgroundColorBlue : cardlightkakiColor;
+  }
+
+  static Color backGroundOfkakiIconContainer(BuildContext context) {
+    return isDarkMode(context) ? Colors.white : carddeepOrangeColor;
+  }
+
+  static Color reversedefaultBackGroundColor(BuildContext context) {
+    return isDarkMode(context) ? cardRedColor : cardBlueColor;
   }
 
   static Color borderBackGroundColor(BuildContext context) {
@@ -44,6 +62,14 @@ class AppStyles {
 
   static Color textWhiteBlack(BuildContext context) {
     return isDarkMode(context) ? Colors.white : Colors.black;
+  }
+
+  static Color textredBlue(BuildContext context) {
+    return isDarkMode(context) ? cardBlueColor : cardRedColor;
+  }
+
+  static Color reversetextWhiteBlack(BuildContext context) {
+    return isDarkMode(context) ? Colors.black : Colors.white;
   }
 
   static Color textWhite(BuildContext context) {

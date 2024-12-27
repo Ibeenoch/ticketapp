@@ -1,5 +1,7 @@
+import 'package:airlineticket/AppRoutes.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider extends ChangeNotifier {
   ParseUser? _currentUser;
@@ -28,10 +30,10 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> loggedInUser(String email, String password) async {
+  Future<bool> loggedInUser(String username, String password) async {
     try {
       final ParseResponse response =
-          await ParseUser(email, password, null).login();
+          await ParseUser(username, password, null).login();
       if (response.success) {
         _currentUser = response.result as ParseUser;
         print('current logged in user: $_currentUser');
@@ -54,13 +56,30 @@ class UserProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  void logOut() async {
+  Future<void> initializeUser() async {
+    _currentUser = await ParseUser.currentUser() as ParseUser;
+    notifyListeners();
+  }
+
+  Future<void> logOut(context) async {
     try {
       final user = await ParseUser.currentUser() as ParseUser;
       var response = await user.logout();
+      print('the respone logout status is $response, ${response.success}');
       if (response.success) {
         _currentUser = null;
+        // await ParseUser.currentUser() = null;
+
+        // Optionally, clear any other persistent data (e.g., SharedPreferences)
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.remove('fingerPrintId'); // Example of clearing saved data
+        await prefs.remove('isBiometricEnabled');
+        await prefs.remove('faceId');
+        await prefs.remove('isFaceRecognitionEnabled');
+
+        print('Logout successful!');
         notifyListeners();
+        Navigator.pushNamed(context, AppRoutes.accountScreen);
       }
     } catch (e) {
       print('Error during logout: $e');

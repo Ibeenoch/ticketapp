@@ -25,6 +25,14 @@ class Authentication {
       user.set<String>('country', country);
       user.set<String>('profile_img', ''); // Placeholder for now
 
+      // Create a new public ACL (Allow public read and write access)
+      final ParseACL publicACL = ParseACL()
+        ..setPublicReadAccess(allowed: true)
+        ..setPublicWriteAccess(allowed: true);
+
+      // Set the ACL for the user
+      user.setACL(publicACL);
+
       final ParseResponse response = await user.signUp();
 
       if (response.success) {
@@ -51,7 +59,7 @@ class Authentication {
         // Step 4: Navigate to the account screen
         Navigator.pushNamed(
           context,
-          AppRoutes.accountScreen,
+          AppRoutes.profileScreen,
           arguments: {'userId': user.objectId!},
         );
       } else {
@@ -140,16 +148,24 @@ class Authentication {
       required String password,
       required BuildContext context}) async {
     try {
-      bool success = await UserProvider().loggedInUser(email, password);
-      if (success) {
-        final userProvider = Provider.of<UserProvider>(context, listen: false);
-        final userdetails = userProvider.currentUser;
+      final String username = email;
+      print('user details email: $email, password: $password');
+
+      final user = ParseUser(username, password, null);
+
+      var response = await user.login();
+      if (response.success) {
+        // final userProvider = Provider.of<UserProvider>(context, listen: false);
+        final userdetails = response.result;
         print('login user details is $userdetails');
+
+        Provider.of<UserProvider>(context, listen: false)
+            .setUser(userdetails as ParseUser);
 
         // Navigate to the profile page on successful login
         Navigator.pushNamed(
           context,
-          AppRoutes.accountScreen,
+          AppRoutes.profileScreen,
         );
       } else {
         // Show an error message

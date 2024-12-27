@@ -8,11 +8,17 @@ import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/userProvider.dart';
+import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
 import 'package:airlineticket/screens/account/authWidget/login.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:local_auth/local_auth.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class Account extends StatefulWidget {
   const Account({super.key});
@@ -177,6 +183,181 @@ class _AccountState extends State<Account> {
       setState(() {
         emailError_l = null;
       });
+    }
+  }
+
+  Future<bool> _authenticateWithBiometrics() async {
+    final LocalAuthentication auth = LocalAuthentication();
+    try {
+      final bool isAutheticated = await auth.authenticate(
+          localizedReason: 'Please autheticate with biometrics to log in',
+          options: const AuthenticationOptions(
+            stickyAuth: true,
+            biometricOnly: true,
+          ));
+      return isAutheticated;
+    } catch (e) {
+      print('Error during biometric authetication $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error during biometric authetication : $e'),
+      ));
+      return false;
+    }
+  }
+
+  Future<void> _fetchUserProfile(String nameId) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      String? fingerPrintId = prefs.getString(nameId);
+
+      if (fingerPrintId == null) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('No $nameId found. Please enable biometrics first.'),
+        ));
+        return;
+      }
+
+      if (fingerPrintId != null) {
+        QueryBuilder<ParseUser> findFingerId =
+            QueryBuilder<ParseUser>(ParseUser.forQuery());
+        findFingerId.whereContains('fingerPrintId', fingerPrintId);
+
+        final ParseResponse response = await findFingerId.query();
+
+        print('user response is : $response');
+        print(
+            'the user with the $nameId is now: ${response.results}  ${response.results} or is: $response');
+
+        if (response.success &&
+            response.result != null &&
+            response.result!.isNotEmpty) {
+          print('retreive result: ${response.result!.first}');
+          // ParseObject userObject = response.results!.first as ParseObject;
+
+          // Update the User state globally
+          // Example: provider to update the user details globally
+
+          // Step 3: Set the user in the provider
+          Provider.of<UserProvider>(context, listen: false)
+              .setUser(response.result as ParseUser);
+
+          // Navigate to user profile screen
+          Navigator.pushNamed(context, AppRoutes.profileScreen);
+        }
+      }
+    } catch (e) {
+      print('Error fetching user profile: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error fetching user profile: $e'),
+      ));
+    }
+  }
+
+  void loginWithGoogle() async {
+    const List<String> scopes = <String>[
+      'email',
+      'https://www.googleapis.com/auth/contacts.readonly',
+    ];
+
+    GoogleSignIn _googleSignIn = GoogleSignIn(
+      // Optional clientId
+      // clientId: 'your-client_id.apps.googleusercontent.com',
+      clientId:
+          '242677198814-rcs4g65in4np21qdvu7bgo90i07fsvf6.apps.googleusercontent.com',
+      scopes: scopes,
+    );
+    try {
+      final res = await _googleSignIn.signIn();
+      print('got the user details:  $res');
+    } catch (e) {
+      print('Error while signing in to google $e');
+    }
+  }
+
+  void authWithFingerPrint() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isBiometricEnabled =
+        prefs.getBool('isBiometricEnabled') ?? false;
+
+    if (isBiometricEnabled) {
+      final bool isAutheticated = await _authenticateWithBiometrics();
+      if (isAutheticated) {
+        // retrieve user profile and use provider to make it available globally
+        await _fetchUserProfile('fingerPrintId');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Biometrics Authetication failed!'),
+        ));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Biometric authentication is not enabled!')),
+      );
+    }
+  }
+
+  Future<bool> _checkFacialRecognition() async {
+    final LocalAuthentication auth = await LocalAuthentication();
+    try {
+      final List<BiometricType> availableBiometrics =
+          await auth.getAvailableBiometrics();
+      return availableBiometrics.contains(BiometricType.face);
+    } catch (e) {
+      print('Error checking facial biometics $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error checking facial biometics $e')),
+      );
+      return false;
+    }
+  }
+
+  Future<bool> _authenticateWithFacialRecognition() async {
+    final LocalAuthentication auth = await LocalAuthentication();
+    try {
+      final bool isAutheticated = await auth.authenticate(
+          localizedReason:
+              'Please autheticate with facial recognition to continue',
+          options: const AuthenticationOptions(
+            stickyAuth: true,
+            biometricOnly: true,
+          ));
+      return isAutheticated;
+    } catch (e) {
+      print('Error during facial recognition authentication: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Error during facial recognition authentication: ')),
+      );
+      return false;
+    }
+  }
+
+  Future<void> authWithFacialId() async {
+    final prefs = await SharedPreferences.getInstance();
+    final bool isBiometricEnabled =
+        prefs.getBool('isFaceRecognitionEnabled') ?? false;
+    if (isBiometricEnabled) {
+      final bool isFacialRecognitionSupported = await _checkFacialRecognition();
+      if (!isFacialRecognitionSupported) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text(
+                'Login and enable facial recognition auth from your profile screen')));
+        return;
+      }
+
+      final bool isAutheticated = await _authenticateWithFacialRecognition();
+      if (isAutheticated) {
+        // retrive the user profile;
+        await _fetchUserProfile('faceId');
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Facial Recognition Authentication failed!'),
+        ));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text('Biometric authentication is not enabled!'),
+      ));
     }
   }
 
@@ -381,12 +562,22 @@ class _AccountState extends State<Account> {
     }
 
     if (userProvider.isLoggedIn) {
-      return Container(
-        child: Text('user is logged in'),
+      // Use Future.microtask to navigate asynchronously
+      Future.microtask(() {
+        Navigator.pushNamed(
+          context,
+          AppRoutes.profileScreen,
+        );
+      });
+      // Return an empty Scaffold or a loading widget
+      return Scaffold(
+        body: Center(
+          child: CircularProgressIndicator(),
+        ),
       );
     } else {
       return Scaffold(
-        backgroundColor: AppStyles.defaultBackGroundColor(context),
+        backgroundColor: AppStyles.reversedefaultBackGroundColor(context),
         body: SafeArea(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
@@ -394,7 +585,11 @@ class _AccountState extends State<Account> {
               SizedBox(height: 10.h),
               Text(
                 'RapidTik',
-                style: TextStyle(fontSize: 20.sp, fontWeight: FontWeight.bold),
+                style: TextStyle(
+                  fontSize: 20.sp,
+                  fontWeight: FontWeight.bold,
+                  color: AppStyles.textWhite(context),
+                ),
               ),
               GestureDetector(
                 onTap: () {
@@ -415,45 +610,110 @@ class _AccountState extends State<Account> {
               ),
               isLoginTab
                   ? Expanded(
-                      child: ListView(
-                        children: [
-                          SizedBox(
-                            height: 20.h,
-                          ),
-                          inputText(
-                              context,
-                              email_l,
-                              email_f_l,
-                              'Enter your email address',
-                              Icons.email,
-                              false,
-                              'Email'),
-                          if (emailError_l != null) errorMessage(emailError_l!),
-                          SizedBox(
-                            height: 15.h,
-                          ),
-                          inputText(
-                              context,
-                              password_l,
-                              password_f_l,
-                              'Enter your password',
-                              Icons.lock,
-                              true,
-                              'Password'),
-                          if (passwordError_l != null)
-                            errorMessage(passwordError_l!),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          forgotPassword(),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                          actonBtn(),
-                          SizedBox(
-                            height: 10.h,
-                          ),
-                        ],
+                      child: Container(
+                        color: AppStyles.defaultBackGroundColor(context),
+                        child: ListView(
+                          children: [
+                            SizedBox(
+                              height: 20.h,
+                            ),
+                            inputText(
+                                context,
+                                email_l,
+                                email_f_l,
+                                'Enter your email address',
+                                Icons.email,
+                                false,
+                                'Email'),
+                            if (emailError_l != null)
+                              errorMessage(emailError_l!),
+                            SizedBox(
+                              height: 15.h,
+                            ),
+                            inputText(
+                                context,
+                                password_l,
+                                password_f_l,
+                                'Enter your password',
+                                Icons.lock,
+                                true,
+                                'Password'),
+                            if (passwordError_l != null)
+                              errorMessage(passwordError_l!),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            forgotPassword(),
+                            SizedBox(
+                              height: 10.h,
+                            ),
+                            actonBtn(),
+                            SizedBox(
+                              height: 20.h,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Biometrics(
+                                    onTap: authWithFingerPrint,
+                                    icon: Icon(
+                                      Icons.fingerprint,
+                                      size: 30.w,
+                                      color: Colors.white,
+                                    ),
+                                    text: 'Use Fingerprint'),
+                                Biometrics(
+                                    onTap: authWithFacialId,
+                                    icon: SvgPicture.asset(
+                                      'assets/icons/faceid.svg',
+                                      width: 30.w,
+                                      height: 30.h,
+                                      color: Colors.white,
+                                    ),
+                                    text: 'Use Facial Recognition'),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 30.h,
+                            ),
+                            GestureDetector(
+                              onTap: () {
+                                loginWithGoogle();
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 40.w),
+                                child: Container(
+                                  alignment: Alignment.center,
+                                  padding: EdgeInsets.symmetric(
+                                      horizontal: 5.w, vertical: 10.h),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(7.r),
+                                    color: AppStyles.cardBlueColor,
+                                  ),
+                                  child: Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/icons/google.svg',
+                                          width: 30.w,
+                                          height: 30.h,
+                                          // color: Colors.white,
+                                        ),
+                                        SizedBox(
+                                          width: 30.w,
+                                        ),
+                                        Text('Login with Google',
+                                            style: TextStyle(
+                                                fontSize: 13.sp,
+                                                fontWeight: FontWeight.bold,
+                                                color: Colors.white))
+                                      ]),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     )
                   : Expanded(
@@ -461,117 +721,123 @@ class _AccountState extends State<Account> {
                         children: [
                           ListView(
                             children: [
-                              Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 15.w),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    SizedBox(
-                                      height: 30.h,
-                                    ),
-                                    userProfile(),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    inputs(
-                                        fullname,
-                                        fullname_f,
-                                        Icons.person,
-                                        true,
-                                        false,
-                                        'Enter your full name',
-                                        fullnameError != null ? true : false,
-                                        'FullName'),
-                                    if (fullnameError != null)
-                                      errorMessage(fullnameError!),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    inputs(
-                                        address,
-                                        address_f,
-                                        Icons.location_city,
-                                        true,
-                                        false,
-                                        'Enter your address',
-                                        addressError != null ? true : false,
-                                        'Address'),
-                                    if (addressError != null)
-                                      errorMessage(addressError!),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    inputs(
-                                        bio,
-                                        bio_f,
-                                        Icons.abc,
-                                        true,
-                                        false,
-                                        'Tell us about yourself',
-                                        bioError != null ? true : false,
-                                        'Bio'),
-                                    if (bioError != null)
-                                      errorMessage(bioError!),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    userId != null && userId.isNotEmpty
-                                        ? Container()
-                                        : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              inputs(
-                                                  email,
-                                                  email_f,
-                                                  Icons.email,
-                                                  true,
-                                                  false,
-                                                  'Enter your email address',
-                                                  emailError != null
-                                                      ? true
-                                                      : false,
-                                                  'Email'),
-                                              if (emailError != null)
-                                                errorMessage(emailError!),
-                                              SizedBox(
-                                                height: 15.h,
-                                              )
-                                            ],
-                                          ),
-                                    userId != null && userId.isNotEmpty
-                                        ? Container()
-                                        : Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              inputs(
-                                                  password,
-                                                  password_f,
-                                                  Icons.lock,
-                                                  true,
-                                                  true,
-                                                  'Enter your password',
-                                                  passwordError != null
-                                                      ? true
-                                                      : false,
-                                                  'Password'),
-                                              if (passwordError != null)
-                                                errorMessage(passwordError!),
-                                              SizedBox(
-                                                height: 15.h,
-                                              ),
-                                            ],
-                                          ),
-                                    selectCountry(context),
-                                    SizedBox(
-                                      height: 15.h,
-                                    ),
-                                    actionBtn(),
-                                    SizedBox(
-                                      height: 20.h,
-                                    ),
-                                  ],
+                              Container(
+                                color:
+                                    AppStyles.defaultBackGroundColor(context),
+                                child: Padding(
+                                  padding:
+                                      EdgeInsets.symmetric(horizontal: 15.w),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        height: 30.h,
+                                      ),
+                                      userProfile(),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      inputs(
+                                          fullname,
+                                          fullname_f,
+                                          Icons.person,
+                                          true,
+                                          false,
+                                          'Enter your first and last name ',
+                                          fullnameError != null ? true : false,
+                                          'FullName'),
+                                      if (fullnameError != null)
+                                        errorMessage(fullnameError!),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      inputs(
+                                          address,
+                                          address_f,
+                                          Icons.location_city,
+                                          true,
+                                          false,
+                                          'Enter your address',
+                                          addressError != null ? true : false,
+                                          'Address'),
+                                      if (addressError != null)
+                                        errorMessage(addressError!),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      inputs(
+                                          bio,
+                                          bio_f,
+                                          Icons.abc,
+                                          true,
+                                          false,
+                                          'Tell us about yourself',
+                                          bioError != null ? true : false,
+                                          'Bio'),
+                                      if (bioError != null)
+                                        errorMessage(bioError!),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      userId != null && userId.isNotEmpty
+                                          ? Container()
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                inputs(
+                                                    email,
+                                                    email_f,
+                                                    Icons.email,
+                                                    true,
+                                                    false,
+                                                    'Enter your email address',
+                                                    emailError != null
+                                                        ? true
+                                                        : false,
+                                                    'Email'),
+                                                if (emailError != null)
+                                                  errorMessage(emailError!),
+                                                SizedBox(
+                                                  height: 15.h,
+                                                )
+                                              ],
+                                            ),
+                                      userId != null && userId.isNotEmpty
+                                          ? Container()
+                                          : Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                inputs(
+                                                    password,
+                                                    password_f,
+                                                    Icons.lock,
+                                                    true,
+                                                    true,
+                                                    'Enter your password',
+                                                    passwordError != null
+                                                        ? true
+                                                        : false,
+                                                    'Password'),
+                                                if (passwordError != null)
+                                                  errorMessage(passwordError!),
+                                                SizedBox(
+                                                  height: 15.h,
+                                                ),
+                                              ],
+                                            ),
+                                      selectCountry(context),
+                                      SizedBox(
+                                        height: 15.h,
+                                      ),
+                                      actionBtn(),
+                                      SizedBox(
+                                        height: 20.h,
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               )
                             ],
@@ -600,16 +866,16 @@ class _AccountState extends State<Account> {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        width: size.width * 0.5,
+        width: size.width * 0.42,
         alignment: Alignment.center,
         decoration: BoxDecoration(
             border: showBorder!
                 ? Border(
                     bottom: BorderSide(
                         color: showBorder
-                            ? AppStyles.cardBlueColor
+                            ? Colors.white
                             : AppStyles.textWhiteBlack(context),
-                        width: 2.w),
+                        width: 3.w),
                   )
                 : null),
         child: Container(
@@ -619,9 +885,7 @@ class _AccountState extends State<Account> {
             style: TextStyle(
               fontSize: 14.sp,
               fontWeight: FontWeight.bold,
-              color: showBorder
-                  ? AppStyles.cardBlueColor
-                  : AppStyles.textWhiteBlack(context),
+              color: showBorder ? Colors.white : AppStyles.textredBlue(context),
             ),
           ),
         ),
@@ -1003,7 +1267,9 @@ class _AccountState extends State<Account> {
         onTap: () async {
           try {
             Authentication().login(
-                email: email.text, password: password.text, context: context);
+                email: email_l.text,
+                password: password_l.text,
+                context: context);
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
