@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/data/supabaseServices/authetication.dart';
-import 'package:airlineticket/base/data/supabaseServices/imageUploads.dart';
+import 'package:airlineticket/base/data/services/authetication.dart';
+import 'package:airlineticket/base/data/services/imageUploads.dart';
 import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
@@ -1302,9 +1302,21 @@ class _AccountState extends State<Account> {
 Widget errorMessage(String err) {
   return Padding(
     padding: EdgeInsets.only(left: 18.w, top: 1.h),
-    child: Text(
-      err,
-      style: TextStyle(color: Colors.red, fontSize: 8.sp),
+    child: Row(
+      children: [
+        Icon(
+          Icons.info,
+          size: 10.sp,
+          color: Colors.red,
+        ),
+        SizedBox(
+          width: 3.w,
+        ),
+        Text(
+          err,
+          style: TextStyle(color: Colors.red, fontSize: 9.sp),
+        ),
+      ],
     ),
   );
 }

@@ -2,8 +2,8 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/data/supabaseServices/authetication.dart';
-import 'package:airlineticket/base/data/supabaseServices/imageUploads.dart';
+import 'package:airlineticket/base/data/services/authetication.dart';
+import 'package:airlineticket/base/data/services/imageUploads.dart';
 import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';

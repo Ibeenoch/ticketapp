@@ -1,5 +1,6 @@
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/BottomBar.dart';
+import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
 import 'package:airlineticket/screens/account/authWidget/login.dart';
@@ -8,7 +9,7 @@ import 'package:airlineticket/screens/account/profile.dart';
 import 'package:airlineticket/screens/home/homewidget/AllHotelViews.dart';
 import 'package:airlineticket/screens/home/homewidget/AllTicketScreen.dart';
 import 'package:airlineticket/screens/hostel/HostelForm.dart';
-import 'package:airlineticket/screens/ticket/ticketForm.dart';
+import 'package:airlineticket/screens/ticket/TicketForm.dart';
 import 'package:airlineticket/screens/ticket/ticketScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -54,8 +55,15 @@ class MyApp extends StatelessWidget {
       minTextAdapt: true, // adjust text size base on screen size
       splitScreenMode: true, // split screen for multiple windows
       builder: (context, child) {
-        return ChangeNotifierProvider(
-          create: (_) => UserProvider(),
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider(
+              create: (_) => UserProvider(),
+            ),
+            ChangeNotifierProvider(
+              create: (_) => Ticketprovider(),
+            ),
+          ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
             home: const BottomBar(),

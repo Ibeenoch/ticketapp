@@ -1,5 +1,5 @@
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/data/supabaseServices/authetication.dart';
+import 'package:airlineticket/base/data/services/authetication.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/utils/timeFormatter.dart';
 import 'package:airlineticket/providers/userProvider.dart';
@@ -218,19 +218,12 @@ class _ProfileState extends State<Profile> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Text(
-                  '$firstName',
-                  style: TextStyle(
-                      fontSize: 30.sp,
-                      fontWeight: FontWeight.bold,
-                      color: AppStyles.textWhiteBlack(context)),
-                ),
-                Text(
-                  '$lastName',
-                  style: TextStyle(
-                      fontSize: 30.sp,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.grey),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    userName(firstName, context, lastName),
+                    homeIcon(context)
+                  ],
                 ),
                 SizedBox(
                   height: 30.h,
@@ -320,11 +313,49 @@ class _ProfileState extends State<Profile> {
     );
   }
 
+  Column userName(String firstName, BuildContext context, String lastName) {
+    return Column(
+      children: [
+        Text(
+          '$firstName',
+          style: TextStyle(
+              fontSize: 30.sp,
+              fontWeight: FontWeight.bold,
+              color: AppStyles.textWhiteBlack(context)),
+        ),
+        Text(
+          '$lastName',
+          style: TextStyle(
+              fontSize: 30.sp, fontWeight: FontWeight.bold, color: Colors.grey),
+        ),
+      ],
+    );
+  }
+
+  GestureDetector homeIcon(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, AppRoutes.homePage);
+      },
+      child: Container(
+        padding: EdgeInsets.all(10.sp),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: AppStyles.backGroundColorWhiteAndDeepBlue(context)),
+        child: Icon(
+          Icons.home,
+          size: 30.sp,
+          color: AppStyles.backGroundOfkakiIconContainer(context),
+        ),
+      ),
+    );
+  }
+
   Widget logOut(BuildContext context) {
     return GestureDetector(
       onTap: logout,
       child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 9.w, vertical: 4.w),
+        padding: EdgeInsets.symmetric(horizontal: 10.w, vertical: 7.w),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(7.r),
             color: AppStyles.backGroundColorWhiteAndDeepBlue(context)),
@@ -337,12 +368,12 @@ class _ProfileState extends State<Profile> {
               color: AppStyles.backGroundOfkakiIconContainer(context),
             ),
             SizedBox(
-              width: 10.w,
+              width: 5.w,
             ),
             Text(
               'Logout',
               style: TextStyle(
-                  fontSize: 11.sp,
+                  fontSize: 12.sp,
                   fontWeight: FontWeight.bold,
                   color: AppStyles.backGroundOfkakiIconContainer(context)),
             ),

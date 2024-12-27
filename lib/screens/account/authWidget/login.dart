@@ -1,5 +1,5 @@
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/data/supabaseServices/authetication.dart';
+import 'package:airlineticket/base/data/services/authetication.dart';
 import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:flutter/material.dart';
