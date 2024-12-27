@@ -20,6 +20,7 @@ class Ticketprovider extends ChangeNotifier {
       final ParseResponse response = await queryTickets.query();
       if (response.success && response.results != null) {
         _tickets = response.results as List<ParseObject>;
+        print('fetched all tickets: ${_ticket} ');
         notifyListeners();
       }
     } catch (e) {

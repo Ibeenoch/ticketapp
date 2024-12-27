@@ -1,3 +1,4 @@
+import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/ColumnText.dart';
 import 'package:airlineticket/base/reuseables/widgets/appLayoutBuilder.dart';
@@ -19,6 +20,27 @@ class Ticketview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //  String departureCode = ticket['departure_country'];
+
+    String? getCountryName(String code) {
+      final country = abbreviatedCountries.firstWhere(
+        (country) => country['code'] == code,
+        orElse: () => <String, String>{},
+      );
+      return country?['name'];
+    }
+
+    print('preveiw ticket $ticket');
+    // extract the data from the Lists of ticket
+    //             String departureCountry = singleTicket.get<String>('departure_country') ?? '';
+    //             String arrivalCountry = singleTicket.get<String>('arrival_country') ?? '';
+    // String flightDurationHours = singleTicket.get<String>('flight_duration_hrs') ?? '';
+    // String flightDurationMinutes = singleTicket.get<String>('flight_duration_minutes') ?? '';
+    // String flightMonth = singleTicket.get<String>('flight_month') ?? '';
+    // String flightDay = singleTicket.get<String>('flight_day') ?? '';
+    // String departureTimeHours = singleTicket.get<String>('departure_time_hrs') ?? '';
+    // String departureTimeMinutes = singleTicket.get<String>('departure_time_minutes') ?? '';
+
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -44,7 +66,8 @@ class Ticketview extends StatelessWidget {
                     Row(
                       children: [
                         Cardtitle(
-                          text: ticket["from"]["code"],
+                          // text: ticket["from"]["code"],
+                          text: ticket['departure_country'] ?? '',
                           sizeType: 'h3',
                           weightType: 'bold',
                           showColor: showColor,
@@ -79,7 +102,8 @@ class Ticketview extends StatelessWidget {
                         RoundedDot(showColor: showColor),
                         Expanded(child: Container()),
                         Cardtitle(
-                          text: ticket["to"]["code"],
+                          // text: ticket["to"]["code"],
+                          text: ticket['arrival_country'],
                           sizeType: 'h3',
                           weightType: 'bold',
                           align: TextAlign.end,
@@ -93,20 +117,28 @@ class Ticketview extends StatelessWidget {
                     Row(
                       children: [
                         Cardtitle(
-                          text: ticket['from']['name'],
+                          // text: ticket['from']['name'],
+                          text: getCountryName(
+                                  ticket['departure_country'] ?? '') ??
+                              'Departure Country',
                           sizeType: 'h4',
                           showColor: showColor,
                         ),
                         Expanded(child: Container()),
                         Cardtitle(
-                          text: ticket['flying_time'],
+                          // text: ticket['flying_time'],
+                          text:
+                              '${ticket['flight_duration_hrs'] ?? ''}h ${ticket['flight_duration_minutes'] ?? ''}m',
                           sizeType: 'h4',
                           align: TextAlign.center,
                           showColor: showColor,
                         ),
                         Expanded(child: Container()),
                         Cardtitle(
-                          text: ticket['to']['name'],
+                          // text: ticket['to']['name'],
+                          text:
+                              getCountryName(ticket['arrival_country'] ?? '') ??
+                                  'Arrival Country',
                           sizeType: 'h4',
                           align: TextAlign.end,
                           showColor: showColor,
@@ -160,19 +192,22 @@ class Ticketview extends StatelessWidget {
                     Row(
                       children: [
                         Columntext(
-                          bigtext: ticket['date'],
+                          // bigtext: ticket['date'],
+                          bigtext:
+                              "${ticket['flight_day' ?? '']} ${ticket['flight_month'] ?? ''}",
                           smalltext: 'Date',
                           showColor: showColor,
                         ),
                         Expanded(child: Container()),
                         Columntext(
-                            bigtext: ticket['depature_time'],
+                            bigtext:
+                                "${ticket['departure_time_hrs'] ?? ''} ${ticket['departure_time_minutes'] ?? ''}",
                             smalltext: 'Departure Time',
                             alignBig: TextAlign.center,
                             showColor: showColor),
                         Expanded(child: Container()),
                         Columntext(
-                          bigtext: ticket['number'].toString(),
+                          bigtext: ticket['objectId'] ?? '',
                           smalltext: 'Number',
                           alignsmall: TextAlign.end,
                           showColor: showColor,
