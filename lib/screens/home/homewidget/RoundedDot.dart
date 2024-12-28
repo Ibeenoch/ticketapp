@@ -9,16 +9,16 @@ class RoundedDot extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: EdgeInsets.all(1.w),
+      padding: EdgeInsets.all(2.w),
       child: Container(
         width: 8.w,
-        height: 8.h,
+        height: 9.h,
         decoration: BoxDecoration(
             border: Border.all(
-              width: 2.w,
+              width: 1.7.w,
               color: showColor ? Colors.white : AppStyles.cardBlueColor,
             ),
-            borderRadius: BorderRadius.circular(20.r)),
+            borderRadius: BorderRadius.circular(50.r)),
       ),
     );
   }

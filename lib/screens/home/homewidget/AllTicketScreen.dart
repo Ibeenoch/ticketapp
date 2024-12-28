@@ -1,5 +1,4 @@
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/ticketView.dart';
@@ -48,7 +47,7 @@ class _AllticketscreenState extends State<Allticketscreen> {
                       // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
                       final indexObj = singleTicket.toJson();
                       final index = indexObj['objectId'];
-
+                      print('index pushed is $index');
                       Navigator.pushNamed(context, AppRoutes.ticketScreen,
                           arguments: {'index': index});
                     },

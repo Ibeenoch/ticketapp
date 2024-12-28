@@ -1,6 +1,7 @@
 import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/appLayoutBuilder.dart';
+import 'package:airlineticket/base/reuseables/widgets/editDeleteBtn.dart';
 import 'package:airlineticket/base/reuseables/widgets/ticketTab.dart';
 import 'package:airlineticket/base/utils/stringFormatter.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
@@ -9,6 +10,7 @@ import 'package:airlineticket/screens/ticket/ticketwidget/CurrencyText.dart';
 import 'package:airlineticket/screens/ticket/ticketwidget/RowText.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
 
@@ -28,23 +30,12 @@ class _TicketscreenState extends State<Ticketscreen> {
   @override
   void didChangeDependencies() {
     if (ModalRoute.of(context)!.settings.arguments != null) {
-      // final ticketProvider =
-      //     Provider.of<Ticketprovider>(context, listen: false);
-      // //find a default id to load the bottom nav bar if no id was passed
-      // final allTickets = ticketProvider.tickets;
-      // final oneTicket = allTickets.take(1).first;
-      // final one_id_ticket = oneTicket.get("objectId");
-
       var args = ModalRoute.of(context)!.settings.arguments as Map;
       currentIndex = args["index"];
-
-      print(
-          'final one_id_ticket from changedependence is: currentIndex ${currentIndex}, arg ${args?["index"]} or $args');
     }
     super.didChangeDependencies();
   }
 
-  @override
   @override
   void initState() {
     // TODO: implement initState
@@ -71,11 +62,11 @@ class _TicketscreenState extends State<Ticketscreen> {
     );
 
     final currentTicket = foundTicket.toJson();
-    print('current ticket so far: $currentTicket');
 
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: AppStyles.defaultBackGroundColor(context),
         title: const Text(
           'Tickets',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
@@ -172,12 +163,34 @@ class _TicketscreenState extends State<Ticketscreen> {
                         barcode: Barcode.code128()),
                   ),
                 ),
+                SizedBox(
+                  height: 20.h,
+                ),
+                EditDeleteBtn(
+                  leftText: 'Edit',
+                  rightText: 'Delete',
+                  ticketId: currentIndex,
+                ),
                 const SizedBox(
-                  height: 30,
+                  height: 20,
                 ),
                 Ticketview(
                   ticket: currentTicket,
                   showHeight: true,
+                ),
+                SizedBox(
+                  height: 10.h,
+                ),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 10.w),
+                  child: Container(
+                    height: 400.h,
+                    width: double.infinity,
+                    decoration: BoxDecoration(color: AppStyles.cardBlueColor),
+                  ),
+                ),
+                SizedBox(
+                  height: 20.h,
                 ),
               ],
             ),

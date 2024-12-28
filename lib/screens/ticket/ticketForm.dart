@@ -2,11 +2,14 @@ import 'package:airlineticket/base/data/services/ticketServices.dart';
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/resources/time.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/utils/getCountryName.dart';
+import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
 
 class Ticketform extends StatefulWidget {
@@ -17,6 +20,9 @@ class Ticketform extends StatefulWidget {
 }
 
 class _TicketformState extends State<Ticketform> {
+  bool isBtnClicked = false;
+  String? ticketId;
+
   String? _selectedCountry;
   FocusNode selectedCountry_f = FocusNode();
   String? selectedCountryErr;
@@ -165,6 +171,49 @@ class _TicketformState extends State<Ticketform> {
         validatePrice();
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      var args = ModalRoute.of(context)!.settings.arguments as Map;
+      ticketId = args["ticketId"];
+
+      if (ticketId != null) {
+        final ticketProvider =
+            Provider.of<Ticketprovider>(context, listen: false);
+        final allTickets = ticketProvider.tickets;
+
+        ParseObject? findTicket = allTickets.firstWhere(
+            (ticket) => ticket.get<String>("objectId") == ticketId, orElse: () {
+          throw Exception("Ticket not found");
+        });
+
+        final currentTicket = findTicket.toJson();
+        print(
+            'the ticket that needs update is: $currentTicket, the ticketId is $ticketId');
+
+        if (currentTicket != null) {
+          _selectedCountry = currentTicket['departure_country'];
+          // getCountryName();
+          _selectedArrivalCountry = currentTicket['arrival_country'];
+          _durationMonth = currentTicket['flight_month'] ?? '';
+          _durationHour = currentTicket['flight_duration_hrs'] ?? '';
+          _durationMinutes = currentTicket['flight_duration_minutes'] ?? '';
+          _durationDay = currentTicket['flight_day'] ?? '';
+          _departureHour = currentTicket['departure_time_hrs'] ?? '';
+          _departureMinutes = currentTicket['departure_time_minutes'] ?? '';
+          _pilot.text = currentTicket['pilot'] ?? '';
+          _passport.text = currentTicket['passport'] ?? '';
+          _ticketNo.text = currentTicket['ticketNo'] ?? '';
+          _bookingNo.text = currentTicket['bookingNo'] ?? '';
+          _paymentMethod.text = currentTicket['paymentMethod'] ?? '';
+          _price.text = currentTicket['price'] ?? '';
+          print('updated departure country is $_durationMonth');
+        }
+      }
+    }
   }
 
   void validatePrice() {
@@ -342,6 +391,9 @@ class _TicketformState extends State<Ticketform> {
   }
 
   void handleTicketCreation() async {
+    setState(() {
+      isBtnClicked = true;
+    });
     try {
       await TicketServices().createTicket(
           departure_country: _selectedCountry!,
@@ -362,7 +414,47 @@ class _TicketformState extends State<Ticketform> {
           context: context);
     } catch (e) {
       print('Error creating ticket $e');
+      setState(() {
+        isBtnClicked = false;
+      });
     }
+    setState(() {
+      isBtnClicked = false;
+    });
+  }
+
+  void updateTicket() async {
+    setState(() {
+      isBtnClicked = true;
+    });
+    try {
+      await TicketServices().updateTicket(
+          departure_country: _selectedCountry!,
+          arrival_country: _selectedArrivalCountry!,
+          flight_duration_hrs: _durationHour!,
+          flight_duration_minutes: _durationMinutes!,
+          flight_month: _durationMonth!,
+          flight_day: _durationDay!,
+          ticketId: ticketId!,
+          userId: userId!,
+          departure_time_hrs: _departureHour!,
+          departure_time_minutes: _departureMinutes!,
+          pilot: _pilot.text,
+          passport: _passport.text,
+          ticketNo: _ticketNo.text,
+          bookingNo: _bookingNo.text,
+          paymentMethod: _paymentMethod.text,
+          price: _price.text,
+          context: context);
+    } catch (e) {
+      print('Error creating ticket $e');
+      setState(() {
+        isBtnClicked = false;
+      });
+    }
+    setState(() {
+      isBtnClicked = false;
+    });
   }
 
   @override
@@ -408,7 +500,7 @@ class _TicketformState extends State<Ticketform> {
                   children: [
                     Center(
                       child: Text(
-                        'Create Tickets',
+                        ticketId == null ? 'Create Ticket' : 'Edit Ticket',
                         style: TextStyle(
                             color: AppStyles.textWhiteBlack(context),
                             fontSize: 16.sp,
@@ -698,7 +790,7 @@ class _TicketformState extends State<Ticketform> {
 
   GestureDetector submitTicket() {
     return GestureDetector(
-      onTap: handleTicketCreation,
+      onTap: ticketId == null ? handleTicketCreation : updateTicket,
       child: Container(
         alignment: Alignment.center,
         width: double.infinity,
@@ -707,13 +799,23 @@ class _TicketformState extends State<Ticketform> {
           color: AppStyles.cardBlueColor,
           borderRadius: BorderRadius.circular(7.r),
         ),
-        child: Text(
-          'Create',
-          style: TextStyle(
-              color: Colors.white,
-              fontSize: 15.sp,
-              fontWeight: FontWeight.bold),
-        ),
+        child: isBtnClicked
+            ? Container(
+                height: 15.h,
+                width: 15.h,
+                child: const Center(
+                  child: CircularProgressIndicator(
+                    color: Colors.white,
+                  ),
+                ),
+              )
+            : Text(
+                ticketId == null ? 'Create' : 'Update',
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 15.sp,
+                    fontWeight: FontWeight.bold),
+              ),
       ),
     );
   }
@@ -757,6 +859,7 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
+        value: selectedVal,
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
@@ -805,6 +908,7 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
+        value: selectedVal,
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
@@ -863,6 +967,7 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
+        value: selectedVal,
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(

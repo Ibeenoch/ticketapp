@@ -8,6 +8,7 @@ class Columntext extends StatelessWidget {
   final TextAlign alignsmall;
   final bool showColor;
   final bool hasWidth;
+  final String alignSide;
   const Columntext(
       {super.key,
       required this.bigtext,
@@ -15,11 +16,17 @@ class Columntext extends StatelessWidget {
       this.alignBig = TextAlign.start,
       this.alignsmall = TextAlign.start,
       this.showColor = true,
-      this.hasWidth = false});
+      this.hasWidth = false,
+      this.alignSide = 'center'});
 
   @override
   Widget build(BuildContext context) {
     return Column(
+      crossAxisAlignment: alignSide == 'start'
+          ? CrossAxisAlignment.start
+          : alignSide == 'end'
+              ? CrossAxisAlignment.end
+              : CrossAxisAlignment.center,
       children: [
         Cardtitle(
           // text: '1 May',

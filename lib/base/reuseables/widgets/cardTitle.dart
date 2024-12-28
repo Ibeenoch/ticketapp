@@ -22,7 +22,7 @@ class Cardtitle extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      width: hasWidth ? 70.w : null,
+      width: hasWidth ? 82.w : null,
       child: Text(
         text,
         textAlign: align,

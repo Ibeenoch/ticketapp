@@ -60,7 +60,7 @@ class MyApp extends StatelessWidget {
             ChangeNotifierProvider(
               create: (_) {
                 final userProvider = UserProvider();
-                userProvider.checkUserSession();
+                userProvider.initializeUser();
                 return userProvider;
               },
             ),
@@ -80,8 +80,6 @@ class MyApp extends StatelessWidget {
               AppRoutes.allTickets: (context) => const Allticketscreen(),
               AppRoutes.allHotels: (context) => const Allhotelviews(),
               AppRoutes.ticketScreen: (context) => const Ticketscreen(),
-              AppRoutes.loginScreen: (context) => const Login(),
-              AppRoutes.signupScreen: (context) => const Signup(),
               AppRoutes.accountScreen: (context) => const Account(),
               AppRoutes.profileScreen: (context) => const Profile(),
               AppRoutes.hostelForm: (context) => const Hostelform(),

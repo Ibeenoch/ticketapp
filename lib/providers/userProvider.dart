@@ -79,7 +79,6 @@ class UserProvider extends ChangeNotifier {
 
         print('Logout successful!');
         notifyListeners();
-        Navigator.pushNamed(context, AppRoutes.accountScreen);
       }
     } catch (e) {
       print('Error during logout: $e');

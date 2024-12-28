@@ -111,7 +111,7 @@ class _HomescreenState extends State<Homescreen> {
             func: () => {
               Navigator.push(context, MaterialPageRoute<void>(
                 builder: (BuildContext context) {
-                  return Allticketscreen();
+                  return const Allticketscreen();
                 },
               ))
             },
@@ -166,7 +166,7 @@ class _HomescreenState extends State<Homescreen> {
                 } else {
                   final tickets =
                       Provider.of<Ticketprovider>(context, listen: false);
-                  // print('loaded this ticket ${tickets.tickets}');
+                  print('loaded this ticket ${tickets.tickets}');
                   final getTickets = tickets.tickets;
                   return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,

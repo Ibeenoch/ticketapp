@@ -6,7 +6,9 @@ String formatNumber(String number) {
   final buffer = StringBuffer();
   for (int i = 0; i < number.length; i += 4) {
     if (i > 0) buffer.write(' '); // Add a space between groups
-    buffer.write(number.substring(i, i + 4));
+    // Ensure we do not exceed the string length
+    buffer.write(
+        number.substring(i, i + 4 > number.length ? number.length : i + 4));
   }
 
   return buffer.toString();
