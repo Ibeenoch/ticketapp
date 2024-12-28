@@ -2,7 +2,6 @@ import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/authWidget/authBtn.dart';
-import 'package:airlineticket/screens/account/authWidget/signup.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
@@ -19,7 +18,7 @@ class _AccountState extends State<Account> {
   Widget build(BuildContext context) {
     final userProvider = Provider.of<UserProvider>(context, listen: false);
     final user = userProvider.currentUser;
-    print('the accont details $user');
+    // print('the accont details $user');
     final profileImg = userProvider.currentUser?.get('profile_img');
     final fullname = userProvider.currentUser?.get('fullname');
     final email = userProvider.currentUser?.get('email');

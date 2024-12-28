@@ -30,17 +30,6 @@ class Ticketview extends StatelessWidget {
       return country?['name'];
     }
 
-    print('preveiw ticket $ticket');
-    // extract the data from the Lists of ticket
-    //             String departureCountry = singleTicket.get<String>('departure_country') ?? '';
-    //             String arrivalCountry = singleTicket.get<String>('arrival_country') ?? '';
-    // String flightDurationHours = singleTicket.get<String>('flight_duration_hrs') ?? '';
-    // String flightDurationMinutes = singleTicket.get<String>('flight_duration_minutes') ?? '';
-    // String flightMonth = singleTicket.get<String>('flight_month') ?? '';
-    // String flightDay = singleTicket.get<String>('flight_day') ?? '';
-    // String departureTimeHours = singleTicket.get<String>('departure_time_hrs') ?? '';
-    // String departureTimeMinutes = singleTicket.get<String>('departure_time_minutes') ?? '';
-
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -194,14 +183,14 @@ class Ticketview extends StatelessWidget {
                         Columntext(
                           // bigtext: ticket['date'],
                           bigtext:
-                              "${ticket['flight_day' ?? '']} ${ticket['flight_month'] ?? ''}",
+                              "${ticket['flight_day'] ?? ''} ${ticket['flight_month'] ?? ''}",
                           smalltext: 'Date',
                           showColor: showColor,
                         ),
                         Expanded(child: Container()),
                         Columntext(
                             bigtext:
-                                "${ticket['departure_time_hrs'] ?? ''} ${ticket['departure_time_minutes'] ?? ''}",
+                                "${ticket['departure_time_hrs'] ?? ''} : ${ticket['departure_time_minutes'] ?? ''}",
                             smalltext: 'Departure Time',
                             alignBig: TextAlign.center,
                             showColor: showColor),

@@ -2,10 +2,10 @@ import 'package:airlineticket/base/data/services/ticketServices.dart';
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/resources/time.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
-import 'package:airlineticket/base/reuseables/widgets/reuseableDropDown.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
@@ -57,6 +57,30 @@ class _TicketformState extends State<Ticketform> {
   String? departureMinutesErr;
   final List<String> departureMinutesList = timesDoubleZero;
 
+  TextEditingController _pilot = TextEditingController();
+  FocusNode pilot_f = FocusNode();
+  String? pilotErr;
+
+  TextEditingController _passport = TextEditingController();
+  FocusNode passport_f = FocusNode();
+  String? passportErr;
+
+  TextEditingController _ticketNo = TextEditingController();
+  FocusNode ticketNo_f = FocusNode();
+  String? ticketNoErr;
+
+  TextEditingController _bookingNo = TextEditingController();
+  FocusNode bookingNo_f = FocusNode();
+  String? bookingNoErr;
+
+  TextEditingController _paymentMethod = TextEditingController();
+  FocusNode paymentMethod_f = FocusNode();
+  String? paymentMethodErr;
+
+  TextEditingController _price = TextEditingController();
+  FocusNode price_f = FocusNode();
+  String? priceErr;
+
   String? userId;
 
   @override
@@ -105,6 +129,120 @@ class _TicketformState extends State<Ticketform> {
         validateDepartureMinutes();
       }
     });
+
+    pilot_f.addListener(() {
+      if (!pilot_f.hasFocus) {
+        validatePilot();
+      }
+    });
+
+    passport_f.addListener(() {
+      if (!passport_f.hasFocus) {
+        validatePassport();
+      }
+    });
+
+    ticketNo_f.addListener(() {
+      if (!ticketNo_f.hasFocus) {
+        validateTicketNo();
+      }
+    });
+
+    bookingNo_f.addListener(() {
+      if (!bookingNo_f.hasFocus) {
+        validateBookingNo();
+      }
+    });
+
+    paymentMethod_f.addListener(() {
+      if (!paymentMethod_f.hasFocus) {
+        validatePaymentMethod();
+      }
+    });
+
+    price_f.addListener(() {
+      if (!price_f.hasFocus) {
+        validatePrice();
+      }
+    });
+  }
+
+  void validatePrice() {
+    final priceText = _price.text;
+    if (priceText.isEmpty) {
+      setState(() {
+        priceErr = 'Price is required';
+      });
+    } else {
+      setState(() {
+        priceErr = null;
+      });
+    }
+  }
+
+  void validatePaymentMethod() {
+    final paymentMethod = _paymentMethod.text;
+    if (paymentMethod.isEmpty) {
+      setState(() {
+        paymentMethodErr = 'Payment Method is required';
+      });
+    } else {
+      setState(() {
+        paymentMethodErr = null;
+      });
+    }
+  }
+
+  void validateBookingNo() {
+    final bookingNo = _bookingNo.text;
+    if (bookingNo.isEmpty) {
+      setState(() {
+        bookingNoErr = 'Booking No is required';
+      });
+    } else {
+      setState(() {
+        bookingNoErr = null;
+      });
+    }
+  }
+
+  void validateTicketNo() {
+    final ticketNo = _ticketNo.text;
+    if (ticketNo.isEmpty) {
+      setState(() {
+        ticketNoErr = 'Ticket is required';
+      });
+    } else {
+      setState(() {
+        ticketNoErr = null;
+      });
+    }
+  }
+
+  void validatePassport() {
+    final passport = _passport.text;
+    if (passport.isEmpty) {
+      setState(() {
+        passportErr = 'Passport is required';
+      });
+    } else {
+      setState(() {
+        passportErr = null;
+      });
+    }
+  }
+
+  void validatePilot() {
+    final pilot = _pilot.text;
+    if (pilot.isEmpty) {
+      setState(() {
+        pilotErr = 'Pilot is required';
+      });
+    } else {
+      setState(() {
+        pilotErr = null;
+      });
+    }
   }
 
   void validateSelectedCountry() {
@@ -204,16 +342,6 @@ class _TicketformState extends State<Ticketform> {
   }
 
   void handleTicketCreation() async {
-    print('_selectedCountry: $_selectedCountry');
-    print('_selectedArrivalCountry: $_selectedArrivalCountry');
-    print('_durationHour: $_durationHour');
-    print('_durationMinutes: $_durationMinutes');
-    print('_durationMonth: $_durationMonth');
-    print('_durationDay: $_durationDay');
-    print('userId: $userId');
-    print('_departureHour: $_departureHour');
-    print('_departureMinutes: $_departureMinutes');
-
     try {
       await TicketServices().createTicket(
           departure_country: _selectedCountry!,
@@ -225,6 +353,12 @@ class _TicketformState extends State<Ticketform> {
           userId: userId!,
           departure_time_hrs: _departureHour!,
           departure_time_minutes: _departureMinutes!,
+          pilot: _pilot.text,
+          passport: _passport.text,
+          ticketNo: _ticketNo.text,
+          bookingNo: _bookingNo.text,
+          paymentMethod: _paymentMethod.text,
+          price: _price.text,
           context: context);
     } catch (e) {
       print('Error creating ticket $e');
@@ -243,6 +377,12 @@ class _TicketformState extends State<Ticketform> {
     durationDay_f.dispose();
     departureHour_f.dispose();
     departureMinutes_f.dispose();
+    pilot_f.dispose();
+    passport_f.dispose();
+    ticketNo_f.dispose();
+    bookingNo_f.dispose();
+    paymentMethod_f.dispose();
+    price_f.dispose();
   }
 
   @override
@@ -254,232 +394,302 @@ class _TicketformState extends State<Ticketform> {
 
     final size = MediaQuery.of(context).size;
     return Scaffold(
-      appBar: AppBar(),
+      backgroundColor: AppStyles.defaultBackGroundColor(context),
+      appBar: AppBar(
+        backgroundColor: AppStyles.defaultBackGroundColor(context),
+      ),
       body: SafeArea(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 15.w),
-          child: Expanded(
-            child: ListView(
-              children: [
-                Center(
-                  child: Text(
-                    'Create Tickets',
-                    style: TextStyle(
-                        color: AppStyles.textWhiteBlack(context),
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.bold),
-                  ),
-                ),
-                SizedBox(
-                  height: 30.h,
-                ),
+          child: Column(
+            children: [
+              Expanded(
+                child: ListView(
+                  children: [
+                    Center(
+                      child: Text(
+                        'Create Tickets',
+                        style: TextStyle(
+                            color: AppStyles.textWhiteBlack(context),
+                            fontSize: 16.sp,
+                            fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 30.h,
+                    ),
 
-                labelTitle(context, 'Departure Country'),
-                SizedBox(
-                  height: 5.h,
-                ),
+                    labelTitle(context, 'Departure Country'),
+                    SizedBox(
+                      height: 5.h,
+                    ),
 
-                inputCountry(
-                  'choose depature country',
-                  selectedCountryErr,
-                  selectedCountry_f,
-                  _countries,
-                  _selectedCountry,
-                  (String? newValue) {
-                    // Callback to update _departureMinutes
-                    setState(() {
-                      _selectedCountry = newValue;
-                    });
-                  },
-                ),
-                if (selectedCountryErr != null &&
-                    selectedCountryErr!.isNotEmpty)
-                  errorMessage(selectedCountryErr!),
-                SizedBox(
-                  height: 10.h,
-                ),
-                labelTitle(context, 'Arrival Country'),
+                    inputCountry(
+                      'choose depature country',
+                      selectedCountryErr,
+                      selectedCountry_f,
+                      _countries,
+                      _selectedCountry,
+                      (String? newValue) {
+                        // Callback to update _departureMinutes
+                        setState(() {
+                          _selectedCountry = newValue;
+                        });
+                      },
+                    ),
+                    if (selectedCountryErr != null &&
+                        selectedCountryErr!.isNotEmpty)
+                      errorMessage(selectedCountryErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Arrival Country'),
 
-                SizedBox(
-                  height: 5.h,
-                ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
 
-                inputCountry(
-                  'choose arrival country',
-                  selectedArrivalCountryErr,
-                  selectedArrivalCountry_f,
-                  _arrivalcountries,
-                  _selectedArrivalCountry,
-                  (String? newValue) {
-                    // Callback to update _departureMinutes
-                    setState(() {
-                      _selectedArrivalCountry = newValue;
-                    });
-                  },
-                ),
-                if (selectedArrivalCountryErr != null &&
-                    selectedArrivalCountryErr!.isNotEmpty)
-                  errorMessage(selectedArrivalCountryErr!),
-                SizedBox(
-                  height: 10.h,
-                ),
-                labelTitle(context, 'Flight Duration (Hours)'),
+                    inputCountry(
+                      'choose arrival country',
+                      selectedArrivalCountryErr,
+                      selectedArrivalCountry_f,
+                      _arrivalcountries,
+                      _selectedArrivalCountry,
+                      (String? newValue) {
+                        // Callback to update _departureMinutes
+                        setState(() {
+                          _selectedArrivalCountry = newValue;
+                        });
+                      },
+                    ),
+                    if (selectedArrivalCountryErr != null &&
+                        selectedArrivalCountryErr!.isNotEmpty)
+                      errorMessage(selectedArrivalCountryErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Flight Duration (Hours)'),
 
-                SizedBox(
-                  height: 5.h,
-                ),
-                Container(
-                  child: inputTimeNum(
-                      'Hours Expected',
-                      durationHourErr,
-                      durationHour_f,
-                      durationHourList,
-                      _durationHour, (String? newValue) {
-                    setState(() {
-                      _durationHour = newValue;
-                    });
-                  }),
-                ),
-                if (durationHourErr != null && durationHourErr!.isNotEmpty)
-                  errorMessage(durationHourErr!),
-                SizedBox(
-                  height: 10.w,
-                ),
-                labelTitle(context, 'Flight Duration (Minutes)'),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Container(
+                      child: inputTimeNum(
+                          'Hours Expected',
+                          durationHourErr,
+                          durationHour_f,
+                          durationHourList,
+                          _durationHour, (String? newValue) {
+                        setState(() {
+                          _durationHour = newValue;
+                        });
+                      }),
+                    ),
+                    if (durationHourErr != null && durationHourErr!.isNotEmpty)
+                      errorMessage(durationHourErr!),
+                    SizedBox(
+                      height: 10.w,
+                    ),
+                    labelTitle(context, 'Flight Duration (Minutes)'),
 
-                SizedBox(
-                  height: 5.h,
-                ),
-                Container(
-                  child: inputTimeNum(
-                      'Minutes Expected',
-                      durationMinutesErr,
-                      durationMinutes_f,
-                      durationMinutesList,
-                      _durationMinutes, (String? newValue) {
-                    setState(() {
-                      _durationMinutes = newValue;
-                    });
-                  }),
-                ),
-                if (durationMinutesErr != null &&
-                    durationMinutesErr!.isNotEmpty)
-                  errorMessage(durationMinutesErr!),
-                SizedBox(
-                  height: 10.h,
-                ),
-                labelTitle(context, 'Flight Date (Month)'),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Container(
+                      child: inputTimeNum(
+                          'Minutes Expected',
+                          durationMinutesErr,
+                          durationMinutes_f,
+                          durationMinutesList,
+                          _durationMinutes, (String? newValue) {
+                        setState(() {
+                          _durationMinutes = newValue;
+                        });
+                      }),
+                    ),
+                    if (durationMinutesErr != null &&
+                        durationMinutesErr!.isNotEmpty)
+                      errorMessage(durationMinutesErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Flight Date (Month)'),
 
-                SizedBox(
-                  height: 5.h,
-                ),
-                Container(
-                  child: inputTimeStr(
-                      'Select Flight Month',
-                      durationMonthErr,
-                      durationMonth_f,
-                      durationMonthList,
-                      _durationMonth, (String? newValue) {
-                    setState(() {
-                      _durationMonth = newValue;
-                    });
-                  }),
-                ),
-                if (durationMonthErr != null && durationMonthErr!.isNotEmpty)
-                  errorMessage(durationMonthErr!),
-                SizedBox(
-                  height: 10.h,
-                ),
-                labelTitle(context, 'Flight Date (Day)'),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Container(
+                      child: inputTimeStr(
+                          'Select Flight Month',
+                          durationMonthErr,
+                          durationMonth_f,
+                          durationMonthList,
+                          _durationMonth, (String? newValue) {
+                        setState(() {
+                          _durationMonth = newValue;
+                        });
+                      }),
+                    ),
+                    if (durationMonthErr != null &&
+                        durationMonthErr!.isNotEmpty)
+                      errorMessage(durationMonthErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Flight Date (Day)'),
 
-                SizedBox(
-                  height: 5.h,
-                ),
-                Container(
-                  child: inputTimeStr(
-                      'Select Flight Day',
-                      durationDayErr,
-                      durationDay_f,
-                      durationDayList,
-                      _durationDay, (String? newValue) {
-                    setState(() {
-                      _durationDay = newValue;
-                    });
-                  }),
-                ),
-                if (durationDayErr != null && durationDayErr!.isNotEmpty)
-                  errorMessage(durationDayErr!),
-                SizedBox(
-                  height: 10.h,
-                ),
-                labelTitle(context, 'Departure Time (Hours)'),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Container(
+                      child: inputTimeStr(
+                          'Select Flight Day',
+                          durationDayErr,
+                          durationDay_f,
+                          durationDayList,
+                          _durationDay, (String? newValue) {
+                        setState(() {
+                          _durationDay = newValue;
+                        });
+                      }),
+                    ),
+                    if (durationDayErr != null && durationDayErr!.isNotEmpty)
+                      errorMessage(durationDayErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Departure Time (Hours)'),
 
-                SizedBox(
-                  height: 5.h,
-                ),
-                Container(
-                  child: inputTimeNum(
-                      'Select Departure Hour',
-                      departureHourErr,
-                      departureHour_f,
-                      departureHourList,
-                      _departureHour, (String? newValue) {
-                    setState(() {
-                      _departureHour = newValue;
-                    });
-                  }),
-                ),
-                if (departureHourErr != null && departureHourErr!.isNotEmpty)
-                  errorMessage(departureHourErr!),
-                SizedBox(
-                  height: 10.h,
-                ),
-                labelTitle(context, 'Departure Time (Minutes)'),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Container(
+                      child: inputTimeNum(
+                          'Select Departure Hour',
+                          departureHourErr,
+                          departureHour_f,
+                          departureHourList,
+                          _departureHour, (String? newValue) {
+                        setState(() {
+                          _departureHour = newValue;
+                        });
+                      }),
+                    ),
+                    if (departureHourErr != null &&
+                        departureHourErr!.isNotEmpty)
+                      errorMessage(departureHourErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Departure Time (Minutes)'),
 
-                SizedBox(
-                  height: 5.h,
-                ),
-                Container(
-                  child: inputTimeStr(
-                      'Select Departure Minutes',
-                      departureMinutesErr,
-                      departureMinutes_f,
-                      departureMinutesList,
-                      _departureMinutes, (String? newValue) {
-                    setState(() {
-                      _departureMinutes = newValue;
-                    });
-                  }),
-                ),
-                if (departureMinutesErr != null &&
-                    departureMinutesErr!.isNotEmpty)
-                  errorMessage(departureMinutesErr!),
-                SizedBox(
-                  height: 20.h,
-                ),
+                    SizedBox(
+                      height: 5.h,
+                    ),
+                    Container(
+                      child: inputTimeStr(
+                          'Select Departure Minutes',
+                          departureMinutesErr,
+                          departureMinutes_f,
+                          departureMinutesList,
+                          _departureMinutes, (String? newValue) {
+                        setState(() {
+                          _departureMinutes = newValue;
+                        });
+                      }),
+                    ),
+                    if (departureMinutesErr != null &&
+                        departureMinutesErr!.isNotEmpty)
+                      errorMessage(departureMinutesErr!),
 
-                submitTicket(),
-                SizedBox(
-                  height: 30.h,
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Pilot Name'),
+                    inputs(_pilot, pilot_f, Icons.person_off, 'Pilot Name',
+                        pilotErr != null ? true : false, 'Pilot Name', false),
+                    if (pilotErr != null) errorMessage(pilotErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Passport No'),
+                    inputs(
+                        _passport,
+                        passport_f,
+                        Icons.book,
+                        'Passport No',
+                        passportErr != null ? true : false,
+                        'Passport No',
+                        true),
+                    if (passportErr != null) errorMessage(passportErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Ticket No'),
+                    inputs(
+                        _ticketNo,
+                        ticketNo_f,
+                        Icons.calendar_view_day_sharp,
+                        'Ticket No',
+                        ticketNoErr != null ? true : false,
+                        'Ticket No',
+                        true),
+                    if (ticketNoErr != null) errorMessage(ticketNoErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Booking No'),
+                    inputs(
+                        _bookingNo,
+                        bookingNo_f,
+                        Icons.calendar_view_day_sharp,
+                        'Booking No',
+                        bookingNoErr != null ? true : false,
+                        'Booking No',
+                        false,
+                        maxLength: 6),
+                    if (bookingNoErr != null) errorMessage(bookingNoErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Payment Method'),
+                    inputs(
+                        _paymentMethod,
+                        paymentMethod_f,
+                        Icons.calendar_view_day,
+                        'Payment Method',
+                        paymentMethodErr != null ? true : false,
+                        'Payment Method',
+                        true,
+                        maxLength: 4),
+                    if (paymentMethodErr != null)
+                      errorMessage(paymentMethodErr!),
+                    SizedBox(
+                      height: 10.h,
+                    ),
+                    labelTitle(context, 'Price'),
+                    inputs(
+                        _price,
+                        price_f,
+                        Icons.price_change_outlined,
+                        'Price',
+                        priceErr != null ? true : false,
+                        'Price',
+                        true),
+                    if (priceErr != null) errorMessage(priceErr!),
+                    SizedBox(
+                      height: 20.h,
+                    ),
+                    //pilot passport, ticketNo, bookingNo, paymentMethod, price
+
+                    submitTicket(),
+                    SizedBox(
+                      height: 30.h,
+                    ),
+                  ],
                 ),
-
-                //  {
-                //   'from': { departure_country arrival_country flight_time_hrs flight_duration_minutes flight_month flight_day userId departure_time_hrs  departure_time_minutes
-
-                //     'code': "NYC",
-                //     'name': "New York City",
-                //   },
-                //   'to': {
-                //     'code': "LND",
-                //     'name': "London",
-                //   },
-                //   'flying_time': "8h 30m",
-                //   'date': "1st May",
-                //   'depature_time': "8:00am",
-                //   'number': 23,
-                // },
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -571,7 +781,9 @@ class _TicketformState extends State<Ticketform> {
         items: countries.map((country) {
           return DropdownMenuItem(
             value: country['code'] ?? '',
-            child: Text(country['name'] ?? ''),
+            child: Container(
+                color: AppStyles.defaultBackGroundColor(context),
+                child: Text(country['name'] ?? '')),
           );
         }).toList(),
         onChanged: (String? newValue) {
@@ -622,9 +834,12 @@ class _TicketformState extends State<Ticketform> {
             value: country.toString(),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w),
-              child: Text(
-                country.toString(),
-                overflow: TextOverflow.ellipsis, // Handle long text
+              child: Container(
+                color: AppStyles.defaultBackGroundColor(context),
+                child: Text(
+                  country.toString(),
+                  overflow: TextOverflow.ellipsis, // Handle long text
+                ),
               ),
             ),
           );
@@ -677,9 +892,12 @@ class _TicketformState extends State<Ticketform> {
             value: country,
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 8.w),
-              child: Text(
-                country,
-                overflow: TextOverflow.ellipsis, // Handle long text
+              child: Container(
+                color: AppStyles.defaultBackGroundColor(context),
+                child: Text(
+                  country,
+                  overflow: TextOverflow.ellipsis, // Handle long text
+                ),
               ),
             ),
           );
@@ -688,6 +906,107 @@ class _TicketformState extends State<Ticketform> {
           print('new changed val str is $newValue');
           onValueChanged(newValue);
         },
+      ),
+    );
+  }
+
+  Widget inputs(
+      TextEditingController controller,
+      FocusNode focus,
+      IconData icon,
+      String hintText,
+      bool hasErr,
+      String focusname,
+      bool useNum,
+      {int maxLength = 9}) {
+    return Container(
+      decoration: BoxDecoration(
+          color: AppStyles.borderBackGroundColor(context),
+          borderRadius: BorderRadius.circular(10.r)),
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 1.w),
+        child: StatefulBuilder(builder: (context, setState) {
+          focus.addListener(() {
+            setState(() {});
+          });
+
+          return Container(
+            padding:
+                EdgeInsets.only(left: 6.w, bottom: 8.h, right: 8.w, top: 0.h),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(8.r)),
+            child: Stack(children: [
+              Padding(
+                padding: EdgeInsets.only(top: 10.h),
+                child: Container(
+                  height: 45.h,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(8.r),
+                    color: AppStyles.defaultBackGroundColor(context),
+                  ),
+                  child: TextField(
+                    controller: controller,
+                    inputFormatters: [
+                      LengthLimitingTextInputFormatter(maxLength)
+                    ],
+                    keyboardType: useNum ? TextInputType.number : null,
+                    focusNode: focus,
+                    onChanged: (value) {
+                      if (focusname == 'Email') {
+                        //pilot passport, ticketNo, bookingNo, paymentMethod, price
+
+                        validatePassport();
+                      } else {}
+                    },
+                    style: TextStyle(
+                      fontSize: 8.sp,
+                    ),
+                    cursorColor: AppStyles.cardBlueColor,
+                    decoration: InputDecoration(
+                        hintText: focus.hasFocus ? '' : hintText,
+                        hintStyle:
+                            TextStyle(fontSize: 8.sp, color: Colors.grey),
+                        contentPadding: EdgeInsets.symmetric(vertical: 9.h),
+                        prefixIcon: Icon(
+                          icon,
+                          size: 15.sp,
+                          color: Colors.grey,
+                        ),
+                        enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                            borderSide: BorderSide(
+                                color: hasErr
+                                    ? Colors.red
+                                    : AppStyles.borderlineColor(context))),
+                        focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(8.r),
+                            borderSide:
+                                BorderSide(color: AppStyles.cardBlueColor))),
+                    autofillHints: null,
+                  ),
+                ),
+              ),
+              (focus.hasFocus) // display the label overlapping the top border
+                  ? Positioned(
+                      top: 3.h,
+                      left: 20.w,
+                      child: Container(
+                        decoration: BoxDecoration(
+                            color: AppStyles.defaultBackGroundColor(context)),
+                        child: Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 2.w),
+                          child: Text(
+                            focusname,
+                            style: TextStyle(
+                              fontSize: 8.sp,
+                            ),
+                          ),
+                        ),
+                      ),
+                    )
+                  : Container(),
+            ]),
+          );
+        }),
       ),
     );
   }

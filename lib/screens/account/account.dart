@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:io';
 import 'dart:ui';
 
@@ -9,9 +11,7 @@ import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
-import 'package:airlineticket/screens/account/authWidget/login.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
@@ -30,9 +30,9 @@ class Account extends StatefulWidget {
 class _AccountState extends State<Account> {
   bool isLoginTab = true;
   final TextEditingController email = TextEditingController();
-  final TextEditingController email_l = TextEditingController();
+  final TextEditingController emailL = TextEditingController();
   final TextEditingController password = TextEditingController();
-  final TextEditingController password_l = TextEditingController();
+  final TextEditingController passwordL = TextEditingController();
   final TextEditingController bio = TextEditingController();
   final TextEditingController fullname = TextEditingController();
   final TextEditingController address = TextEditingController();
@@ -40,23 +40,23 @@ class _AccountState extends State<Account> {
 
   Map<String, dynamic>? initialData;
 
-  FocusNode email_f = FocusNode();
-  FocusNode email_f_l = FocusNode();
-  FocusNode password_f = FocusNode();
-  FocusNode password_f_l = FocusNode();
-  FocusNode bio_f = FocusNode();
-  FocusNode fullname_f = FocusNode();
-  FocusNode address_f = FocusNode();
-  FocusNode country_f = FocusNode();
+  FocusNode emailF = FocusNode();
+  FocusNode emailFL = FocusNode();
+  FocusNode passwordF = FocusNode();
+  FocusNode passwordFL = FocusNode();
+  FocusNode bioF = FocusNode();
+  FocusNode fullnameF = FocusNode();
+  FocusNode addressF = FocusNode();
+  FocusNode countryF = FocusNode();
 
   bool isPasswordVisible = false;
   String? fullnameError;
   String? bioError;
   String? addressError;
   String? emailError;
-  String? emailError_l;
+  String? emailErrorL;
   String? passwordError;
-  String? passwordError_l;
+  String? passwordErrorL;
   String? countryError;
   String _selectedCountry = '';
   String userId = '';
@@ -67,9 +67,9 @@ class _AccountState extends State<Account> {
   @override
   void dispose() {
     email.dispose();
-    email_l.dispose();
+    emailL.dispose();
     password.dispose();
-    password_l.dispose();
+    passwordL.dispose();
     bio.dispose();
     fullname.dispose();
     address.dispose();
@@ -107,44 +107,44 @@ class _AccountState extends State<Account> {
     //   text: widget.initialData?['fullname']
     // )
 
-    email_f.addListener(() {
-      if (!email_f.hasFocus) {
+    emailF.addListener(() {
+      if (!emailF.hasFocus) {
         validateEmail();
       }
     });
 
-    email_f_l.addListener(() {
-      if (!email_f_l.hasFocus) {
+    emailFL.addListener(() {
+      if (!emailFL.hasFocus) {
         validateEmailLogin();
       }
     });
 
-    password_f.addListener(() {
-      if (!password_f.hasFocus) {
+    passwordF.addListener(() {
+      if (!passwordF.hasFocus) {
         validatePassword();
       }
     });
 
-    password_f_l.addListener(() {
-      if (!password_f_l.hasFocus) {
+    passwordFL.addListener(() {
+      if (!passwordFL.hasFocus) {
         validatePasswordLogin();
       }
     });
 
-    fullname_f.addListener(() {
-      if (!fullname_f.hasFocus) {
+    fullnameF.addListener(() {
+      if (!fullnameF.hasFocus) {
         validateFullname();
       }
     });
 
-    bio_f.addListener(() {
-      if (!bio_f.hasFocus) {
+    bioF.addListener(() {
+      if (!bioF.hasFocus) {
         validateBio();
       }
     });
 
-    address_f.addListener(() {
-      if (!address_f.hasFocus) {
+    addressF.addListener(() {
+      if (!addressF.hasFocus) {
         validateAddress();
       }
     });
@@ -169,19 +169,19 @@ class _AccountState extends State<Account> {
   }
 
   void validateEmailLogin() {
-    final emailText = email_l.text.trim();
+    final emailText = emailL.text.trim();
     if (emailText.isEmpty) {
       setState(() {
-        emailError_l = 'Email is required';
+        emailErrorL = 'Email is required';
       });
     } else if (!RegExp(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$')
         .hasMatch(emailText)) {
       setState(() {
-        emailError_l = 'Enter a valid email address';
+        emailErrorL = 'Enter a valid email address';
       });
     } else {
       setState(() {
-        emailError_l = null;
+        emailErrorL = null;
       });
     }
   }
@@ -211,39 +211,38 @@ class _AccountState extends State<Account> {
       String? fingerPrintId = prefs.getString(nameId);
 
       if (fingerPrintId == null) {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
           content: Text('No $nameId found. Please enable biometrics first.'),
         ));
         return;
       }
 
-      if (fingerPrintId != null) {
-        QueryBuilder<ParseUser> findFingerId =
-            QueryBuilder<ParseUser>(ParseUser.forQuery());
-        findFingerId.whereContains('fingerPrintId', fingerPrintId);
+      QueryBuilder<ParseUser> findFingerId =
+          QueryBuilder<ParseUser>(ParseUser.forQuery());
+      findFingerId.whereContains('fingerPrintId', fingerPrintId);
 
-        final ParseResponse response = await findFingerId.query();
+      final ParseResponse response = await findFingerId.query();
 
-        print('user response is : $response');
-        print(
-            'the user with the $nameId is now: ${response.results}  ${response.results} or is: $response');
+      print('user response is : $response');
+      print(
+          'the user with the $nameId is now: ${response.results}  ${response.results} or is: $response');
 
-        if (response.success &&
-            response.result != null &&
-            response.result!.isNotEmpty) {
-          print('retreive result: ${response.result!.first}');
-          // ParseObject userObject = response.results!.first as ParseObject;
+      if (response.success &&
+          response.result != null &&
+          response.result!.isNotEmpty) {
+        print('retreive result: ${response.result!.first}');
+        // ParseObject userObject = response.results!.first as ParseObject;
 
-          // Update the User state globally
-          // Example: provider to update the user details globally
+        // Update the User state globally
+        // Example: provider to update the user details globally
 
-          // Step 3: Set the user in the provider
-          Provider.of<UserProvider>(context, listen: false)
-              .setUser(response.result as ParseUser);
+        // Step 3: Set the user in the provider
+        Provider.of<UserProvider>(context, listen: false)
+            .setUser(response.result as ParseUser);
 
-          // Navigate to user profile screen
-          Navigator.pushNamed(context, AppRoutes.profileScreen);
-        }
+        // Navigate to user profile screen
+        Navigator.pushNamed(context, AppRoutes.profileScreen);
       }
     } catch (e) {
       print('Error fetching user profile: $e');
@@ -291,13 +290,14 @@ class _AccountState extends State<Account> {
       }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Biometric authentication is not enabled!')),
+        const SnackBar(
+            content: Text('Biometric authentication is not enabled!')),
       );
     }
   }
 
   Future<bool> _checkFacialRecognition() async {
-    final LocalAuthentication auth = await LocalAuthentication();
+    final LocalAuthentication auth = LocalAuthentication();
     try {
       final List<BiometricType> availableBiometrics =
           await auth.getAvailableBiometrics();
@@ -312,7 +312,7 @@ class _AccountState extends State<Account> {
   }
 
   Future<bool> _authenticateWithFacialRecognition() async {
-    final LocalAuthentication auth = await LocalAuthentication();
+    final LocalAuthentication auth = LocalAuthentication();
     try {
       final bool isAutheticated = await auth.authenticate(
           localizedReason:
@@ -325,7 +325,7 @@ class _AccountState extends State<Account> {
     } catch (e) {
       print('Error during facial recognition authentication: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
             content: Text('Error during facial recognition authentication: ')),
       );
       return false;
@@ -379,18 +379,18 @@ class _AccountState extends State<Account> {
   }
 
   void validatePasswordLogin() {
-    final passwordText = password_l.text;
+    final passwordText = passwordL.text;
     if (passwordText.isEmpty) {
       setState(() {
-        passwordError_l = 'Password is required';
+        passwordErrorL = 'Password is required';
       });
     } else if (passwordText.length < 8) {
       setState(() {
-        passwordError_l = 'Password Length is too Short';
+        passwordErrorL = 'Password Length is too Short';
       });
     } else {
       setState(() {
-        passwordError_l = null;
+        passwordErrorL = null;
       });
     }
   }
@@ -619,27 +619,26 @@ class _AccountState extends State<Account> {
                             ),
                             inputText(
                                 context,
-                                email_l,
-                                email_f_l,
+                                emailL,
+                                emailFL,
                                 'Enter your email address',
                                 Icons.email,
                                 false,
                                 'Email'),
-                            if (emailError_l != null)
-                              errorMessage(emailError_l!),
+                            if (emailErrorL != null) errorMessage(emailErrorL!),
                             SizedBox(
                               height: 15.h,
                             ),
                             inputText(
                                 context,
-                                password_l,
-                                password_f_l,
+                                passwordL,
+                                passwordFL,
                                 'Enter your password',
                                 Icons.lock,
                                 true,
                                 'Password'),
-                            if (passwordError_l != null)
-                              errorMessage(passwordError_l!),
+                            if (passwordErrorL != null)
+                              errorMessage(passwordErrorL!),
                             SizedBox(
                               height: 10.h,
                             ),
@@ -740,7 +739,7 @@ class _AccountState extends State<Account> {
                                       ),
                                       inputs(
                                           fullname,
-                                          fullname_f,
+                                          fullnameF,
                                           Icons.person,
                                           true,
                                           false,
@@ -754,7 +753,7 @@ class _AccountState extends State<Account> {
                                       ),
                                       inputs(
                                           address,
-                                          address_f,
+                                          addressF,
                                           Icons.location_city,
                                           true,
                                           false,
@@ -768,7 +767,7 @@ class _AccountState extends State<Account> {
                                       ),
                                       inputs(
                                           bio,
-                                          bio_f,
+                                          bioF,
                                           Icons.abc,
                                           true,
                                           false,
@@ -780,7 +779,7 @@ class _AccountState extends State<Account> {
                                       SizedBox(
                                         height: 15.h,
                                       ),
-                                      userId != null && userId.isNotEmpty
+                                      userId.isNotEmpty
                                           ? Container()
                                           : Column(
                                               crossAxisAlignment:
@@ -788,7 +787,7 @@ class _AccountState extends State<Account> {
                                               children: [
                                                 inputs(
                                                     email,
-                                                    email_f,
+                                                    emailF,
                                                     Icons.email,
                                                     true,
                                                     false,
@@ -804,7 +803,7 @@ class _AccountState extends State<Account> {
                                                 )
                                               ],
                                             ),
-                                      userId != null && userId.isNotEmpty
+                                      userId.isNotEmpty
                                           ? Container()
                                           : Column(
                                               crossAxisAlignment:
@@ -812,7 +811,7 @@ class _AccountState extends State<Account> {
                                               children: [
                                                 inputs(
                                                     password,
-                                                    password_f,
+                                                    passwordF,
                                                     Icons.lock,
                                                     true,
                                                     true,
@@ -869,7 +868,7 @@ class _AccountState extends State<Account> {
         width: size.width * 0.42,
         alignment: Alignment.center,
         decoration: BoxDecoration(
-            border: showBorder!
+            border: showBorder
                 ? Border(
                     bottom: BorderSide(
                         color: showBorder
@@ -1053,9 +1052,7 @@ class _AccountState extends State<Account> {
       padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: InkWell(
         onTap: () async {
-          userId != null && userId.isNotEmpty
-              ? handleEditProfile()
-              : handleSignUp();
+          userId.isNotEmpty ? handleEditProfile() : handleSignUp();
         },
         child: Container(
           width: double.infinity,
@@ -1068,7 +1065,7 @@ class _AccountState extends State<Account> {
               color: AppStyles.cardBlueColor),
           child: Center(
             child: Text(
-              userId != null && userId.isNotEmpty ? 'Edit Profile' : 'Sign Up',
+              userId.isNotEmpty ? 'Edit Profile' : 'Sign Up',
               style: TextStyle(
                   fontWeight: FontWeight.bold,
                   fontSize: 13.sp,
@@ -1267,9 +1264,7 @@ class _AccountState extends State<Account> {
         onTap: () async {
           try {
             Authentication().login(
-                email: email_l.text,
-                password: password_l.text,
-                context: context);
+                email: emailL.text, password: passwordL.text, context: context);
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

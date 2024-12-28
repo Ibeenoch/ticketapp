@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:flutter/material.dart';
@@ -15,10 +17,16 @@ class TicketServices {
       required String userId,
       required String departure_time_hrs,
       required String departure_time_minutes,
+      required String pilot,
+      required String passport,
+      required String ticketNo,
+      required String bookingNo,
+      required String paymentMethod,
+      required String price,
       required BuildContext context}) async {
     try {
       print(
-          'ticket details are:  $departure_country , $arrival_country, $flight_duration_hrs, $flight_duration_minutes, $flight_month, $flight_day, $userId, $departure_time_hrs,  $departure_time_minutes');
+          'ticket details are: $pilot $passport $ticketNo $bookingNo $paymentMethod $price ');
       if (departure_country.isNotEmpty &&
           arrival_country.isNotEmpty &&
           flight_duration_hrs.isNotEmpty &&
@@ -27,8 +35,14 @@ class TicketServices {
           flight_day.isNotEmpty &&
           userId.isNotEmpty &&
           departure_time_hrs.isNotEmpty &&
-          departure_time_minutes.isNotEmpty) {
-        final ticketDetails = await ParseObject('tickets')
+          departure_time_minutes.isNotEmpty &&
+          pilot.isNotEmpty &&
+          passport.isNotEmpty &&
+          ticketNo.isNotEmpty &&
+          bookingNo.isNotEmpty &&
+          paymentMethod.isNotEmpty &&
+          price.isNotEmpty) {
+        final ticketDetails = ParseObject('tickets')
           ..set('departure_country', departure_country)
           ..set('arrival_country', arrival_country)
           ..set('flight_duration_hrs', flight_duration_hrs)
@@ -37,7 +51,13 @@ class TicketServices {
           ..set('flight_day', flight_day)
           ..set('userId', userId)
           ..set('departure_time_hrs', departure_time_hrs)
-          ..set('departure_time_minutes', departure_time_minutes);
+          ..set('departure_time_minutes', departure_time_minutes)
+          ..set('pilot', pilot)
+          ..set('passport', passport)
+          ..set('ticketNo', ticketNo)
+          ..set('bookingNo', bookingNo)
+          ..set('paymentMethod', paymentMethod)
+          ..set('price', price);
 
         final ParseResponse response = await ticketDetails.save();
 

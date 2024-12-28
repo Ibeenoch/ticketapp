@@ -2,11 +2,15 @@ import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/appLayoutBuilder.dart';
 import 'package:airlineticket/base/reuseables/widgets/ticketTab.dart';
+import 'package:airlineticket/base/utils/stringFormatter.dart';
+import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/ticketView.dart';
 import 'package:airlineticket/screens/ticket/ticketwidget/CurrencyText.dart';
 import 'package:airlineticket/screens/ticket/ticketwidget/RowText.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:parse_server_sdk/parse_server_sdk.dart';
+import 'package:provider/provider.dart';
 
 class Ticketscreen extends StatefulWidget {
   // final List<Map<String, dynamic>> ticket;
@@ -19,18 +23,56 @@ class Ticketscreen extends StatefulWidget {
 }
 
 class _TicketscreenState extends State<Ticketscreen> {
-  int currentIndex = 0;
+  // int currentIndex = 0;
+  String currentIndex = '';
   @override
   void didChangeDependencies() {
     if (ModalRoute.of(context)!.settings.arguments != null) {
+      // final ticketProvider =
+      //     Provider.of<Ticketprovider>(context, listen: false);
+      // //find a default id to load the bottom nav bar if no id was passed
+      // final allTickets = ticketProvider.tickets;
+      // final oneTicket = allTickets.take(1).first;
+      // final one_id_ticket = oneTicket.get("objectId");
+
       var args = ModalRoute.of(context)!.settings.arguments as Map;
       currentIndex = args["index"];
+
+      print(
+          'final one_id_ticket from changedependence is: currentIndex ${currentIndex}, arg ${args?["index"]} or $args');
     }
     super.didChangeDependencies();
   }
 
   @override
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
+    ticketProvider.fetchTicketById(currentIndex);
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
+    //find a default id to load the bottom nav bar if no id was passed
+    final allTickets = ticketProvider.tickets;
+
+    final oneTicket = allTickets.take(1).first;
+    final one_id_ticket = oneTicket.get("objectId");
+    currentIndex = one_id_ticket;
+
+    ParseObject? foundTicket = allTickets.firstWhere(
+      (ticket) => ticket.get<String>('objectId') == currentIndex,
+      orElse: () {
+        throw Exception("Ticket not found");
+      },
+    );
+
+    final currentTicket = foundTicket.toJson();
+    print('current ticket so far: $currentTicket');
+
     final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
@@ -58,7 +100,7 @@ class _TicketscreenState extends State<Ticketscreen> {
                   height: 25,
                 ),
                 Ticketview(
-                  ticket: TicketList[currentIndex],
+                  ticket: currentTicket,
                   showColor: false,
                   showHeight: false,
                 ),
@@ -70,33 +112,41 @@ class _TicketscreenState extends State<Ticketscreen> {
                         horizontal: 10, vertical: 15),
                     margin: const EdgeInsets.symmetric(horizontal: 12),
                     decoration: const BoxDecoration(color: Colors.white),
-                    child: const Column(
+                    child: Column(
                       children: [
                         Rowtext(
-                            bigTextLeft: 'Flutterwave',
-                            smallTextLeft: 'Passenger',
-                            bigTextRight: '5221 7383 7684',
+                            bigTextLeft:
+                                '${currentTicket['pilot'] ?? 'Edward'}',
+                            smallTextLeft: 'Pilot',
+                            // bigTextRight: '5221 7383 7684',
+                            bigTextRight: formatNumber(
+                                '${currentTicket['passport'] ?? '5221 7383 7684'}'),
                             smallTextRight: 'Passport'),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
-                        Applayoutbuilder(
+                        const Applayoutbuilder(
                           randomWidthNum: 7,
                           showColor: false,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         Rowtext(
-                            bigTextLeft: '3234 7389 9090',
+                            bigTextLeft: formatNumber(
+                                '${currentTicket['ticketNo'] ?? '2299 5619 0071 0185'}'),
                             smallTextLeft: 'E-Ticket No',
-                            bigTextRight: 'B2SG6G',
+                            bigTextRight:
+                                "${currentTicket['bookingNo'] ?? 'BCJYPM'}",
                             smallTextRight: 'Booking No'),
-                        SizedBox(
+                        const SizedBox(
                           height: 20,
                         ),
-                        Currencytext(),
-                        SizedBox(
+                        Currencytext(
+                            payment:
+                                "${currentTicket['paymentMethod'] ?? '1882'}",
+                            price: "${currentTicket['price'] ?? '2346'}"),
+                        const SizedBox(
                           height: 15,
                         ),
                       ],
@@ -126,7 +176,7 @@ class _TicketscreenState extends State<Ticketscreen> {
                   height: 30,
                 ),
                 Ticketview(
-                  ticket: TicketList[currentIndex],
+                  ticket: currentTicket,
                   showHeight: true,
                 ),
               ],

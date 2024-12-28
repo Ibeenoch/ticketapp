@@ -2,7 +2,9 @@ import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/reuseables/widgets/shimmerPlaceholder.dart';
 import 'package:airlineticket/base/reuseables/widgets/symmetricText.dart';
+import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/AllTicketScreen.dart';
 import 'package:airlineticket/screens/home/homewidget/HotelView.dart';
@@ -23,7 +25,12 @@ class _HomescreenState extends State<Homescreen> {
   FocusNode search_F = FocusNode();
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     String? username = 'Guest';
+
+    final ticketsProvider = Provider.of<Ticketprovider>(context, listen: false);
+    final TicketLists = ticketsProvider.tickets;
+    print('all tickets fetched from home screen are: $TicketLists');
     final userProvider = Provider.of<UserProvider>(context);
     if (userProvider.isLoggedIn) {
       username = userProvider.currentUser!.get<String>('fullname');
@@ -112,13 +119,66 @@ class _HomescreenState extends State<Homescreen> {
           SizedBox(
             height: 20.h,
           ),
-          SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: TicketList.take(3)
-                    .map((singleTicket) => Ticketview(ticket: singleTicket))
-                    .toList(),
-              )),
+          FutureBuilder(
+              future: Provider.of<Ticketprovider>(context, listen: false)
+                  .fetchTickets(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 15.w,
+                        ),
+                        ShimmerPlaceholder(
+                          width: size.width * 0.8,
+                          height: 140.toDouble(),
+                          borderRadius: 6.toDouble(),
+                        ),
+                        SizedBox(
+                          width: 15.w,
+                        ),
+                        ShimmerPlaceholder(
+                          width: size.width * 0.8,
+                          height: 140.toDouble(),
+                          borderRadius: 6.toDouble(),
+                        ),
+                        SizedBox(
+                          width: 15.w,
+                        ),
+                        ShimmerPlaceholder(
+                          width: size.width * 0.8,
+                          height: 140.toDouble(),
+                          borderRadius: 6.toDouble(),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Container(
+                    height: 100,
+                    color: Colors.red[100],
+                    child: Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    ),
+                  );
+                } else {
+                  final tickets =
+                      Provider.of<Ticketprovider>(context, listen: false);
+                  // print('loaded this ticket ${tickets.tickets}');
+                  final getTickets = tickets.tickets;
+                  return SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: getTickets
+                            .take(3)
+                            .map((singleTicket) =>
+                                Ticketview(ticket: singleTicket.toJson()))
+                            .toList(),
+                      ));
+                }
+              }),
           SizedBox(
             height: 10.h,
           ),

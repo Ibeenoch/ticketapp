@@ -1,8 +1,10 @@
+import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
 import 'package:airlineticket/screens/home/HomeScreen.dart';
 import 'package:airlineticket/screens/search/search.dart';
 import 'package:airlineticket/screens/ticket/ticketScreen.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class BottomBar extends StatefulWidget {
   const BottomBar({super.key});
@@ -13,6 +15,14 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   int _curindex = 0;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    final ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
+    ticketProvider.fetchTickets();
+  }
 
   void getIndex(int index) {
     setState(() {

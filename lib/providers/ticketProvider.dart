@@ -19,8 +19,9 @@ class Ticketprovider extends ChangeNotifier {
           QueryBuilder<ParseObject>(ParseObject('tickets'));
       final ParseResponse response = await queryTickets.query();
       if (response.success && response.results != null) {
-        _tickets = response.results as List<ParseObject>;
-        print('fetched all tickets: ${_ticket} ');
+        _tickets = response.result as List<ParseObject>;
+        print(
+            'fetched al tickets: ${_ticket}, ${response.result} and  ${response.results}');
         notifyListeners();
       }
     } catch (e) {
@@ -28,7 +29,7 @@ class Ticketprovider extends ChangeNotifier {
     }
   }
 
-  Future<void> fetchTicket(String ticketId) async {
+  Future<void> fetchTicketById(String ticketId) async {
     try {
       final QueryBuilder<ParseObject> queryTicket =
           QueryBuilder<ParseObject>(ParseObject('tickets'))

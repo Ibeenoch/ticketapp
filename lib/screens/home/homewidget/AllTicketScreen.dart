@@ -26,7 +26,6 @@ class _AllticketscreenState extends State<Allticketscreen> {
   Widget build(BuildContext context) {
     final ticketsProvider = Provider.of<Ticketprovider>(context, listen: false);
     final TicketLists = ticketsProvider.tickets;
-    print('all tickets are: $TicketLists');
 
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
@@ -41,21 +40,20 @@ class _AllticketscreenState extends State<Allticketscreen> {
           ? const Center(
               child: CircularProgressIndicator(),
             )
-          : Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: TicketLists.map((singleTicket) => GestureDetector(
-                      onTap: () {
-                        // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
-                        var index = TicketList.indexOf(singleTicket.toJson());
-
-                        Navigator.pushNamed(context, AppRoutes.ticketScreen,
-                            arguments: {'index': index});
-                      },
+          : SingleChildScrollView(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: TicketLists.map((singleTicket) => GestureDetector(
+                    onTap: () {
                       // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
-                      child:
-                          Ticketview(ticket: singleTicket.toJson()))).toList(),
-                ),
+                      final indexObj = singleTicket.toJson();
+                      final index = indexObj['objectId'];
+
+                      Navigator.pushNamed(context, AppRoutes.ticketScreen,
+                          arguments: {'index': index});
+                    },
+                    // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
+                    child: Ticketview(ticket: singleTicket.toJson()))).toList(),
               ),
             ),
     );
