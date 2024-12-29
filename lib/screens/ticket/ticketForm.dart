@@ -1,8 +1,6 @@
-import 'package:airlineticket/base/data/services/ticketServices.dart';
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/resources/time.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
-import 'package:airlineticket/base/utils/getCountryName.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
@@ -22,6 +20,18 @@ class Ticketform extends StatefulWidget {
 class _TicketformState extends State<Ticketform> {
   bool isBtnClicked = false;
   String? ticketId;
+  // received the ticket provider after calling it from the init state
+  Ticketprovider? ticketProvider;
+  // received the user provider after calling it from the init state
+  UserProvider? userProvider;
+  String myselectedCountry = '';
+  String myselectedArrivalCountry = '';
+  String mydurationMonth = '';
+  String mydurationHour = '';
+  String mydurationMinutes = '';
+  String mydurationDay = '';
+  String mydepartureHour = '';
+  String mydepartureMinutes = '';
 
   String? _selectedCountry;
   FocusNode selectedCountry_f = FocusNode();
@@ -93,6 +103,12 @@ class _TicketformState extends State<Ticketform> {
   void initState() {
     // TODO: implement initState
     super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
+        userProvider = Provider.of<UserProvider>(context, listen: false);
+      });
+    });
 
     selectedCountry_f.addListener(() {
       if (!selectedCountry_f.hasFocus) {
@@ -181,9 +197,7 @@ class _TicketformState extends State<Ticketform> {
       ticketId = args["ticketId"];
 
       if (ticketId != null) {
-        final ticketProvider =
-            Provider.of<Ticketprovider>(context, listen: false);
-        final allTickets = ticketProvider.tickets;
+        final allTickets = context.watch<Ticketprovider>().tickets;
 
         ParseObject? findTicket = allTickets.firstWhere(
             (ticket) => ticket.get<String>("objectId") == ticketId, orElse: () {
@@ -195,15 +209,14 @@ class _TicketformState extends State<Ticketform> {
             'the ticket that needs update is: $currentTicket, the ticketId is $ticketId');
 
         if (currentTicket != null) {
-          _selectedCountry = currentTicket['departure_country'];
-          // getCountryName();
-          _selectedArrivalCountry = currentTicket['arrival_country'];
-          _durationMonth = currentTicket['flight_month'] ?? '';
-          _durationHour = currentTicket['flight_duration_hrs'] ?? '';
-          _durationMinutes = currentTicket['flight_duration_minutes'] ?? '';
-          _durationDay = currentTicket['flight_day'] ?? '';
-          _departureHour = currentTicket['departure_time_hrs'] ?? '';
-          _departureMinutes = currentTicket['departure_time_minutes'] ?? '';
+          myselectedCountry = currentTicket['departure_country'];
+          myselectedArrivalCountry = currentTicket['arrival_country'];
+          mydurationMonth = currentTicket['flight_month'] ?? '';
+          mydurationHour = currentTicket['flight_duration_hrs'] ?? '';
+          mydurationMinutes = currentTicket['flight_duration_minutes'] ?? '';
+          mydurationDay = currentTicket['flight_day'] ?? '';
+          mydepartureHour = currentTicket['departure_time_hrs'] ?? '';
+          mydepartureMinutes = currentTicket['departure_time_minutes'] ?? '';
           _pilot.text = currentTicket['pilot'] ?? '';
           _passport.text = currentTicket['passport'] ?? '';
           _ticketNo.text = currentTicket['ticketNo'] ?? '';
@@ -395,7 +408,7 @@ class _TicketformState extends State<Ticketform> {
       isBtnClicked = true;
     });
     try {
-      await TicketServices().createTicket(
+      await ticketProvider!.createTicket(
           departure_country: _selectedCountry!,
           arrival_country: _selectedArrivalCountry!,
           flight_duration_hrs: _durationHour!,
@@ -428,7 +441,20 @@ class _TicketformState extends State<Ticketform> {
       isBtnClicked = true;
     });
     try {
-      await TicketServices().updateTicket(
+      setState(() {
+        _selectedCountry = _selectedCountry ?? myselectedCountry;
+        _selectedArrivalCountry =
+            _selectedArrivalCountry ?? myselectedArrivalCountry;
+        _durationHour = _durationHour ?? mydurationHour;
+        _durationMinutes = _durationMinutes ?? mydurationMinutes;
+        _durationMonth = _durationMonth ?? mydurationMonth;
+        _durationDay = _durationDay ?? mydurationDay;
+        _departureHour = _departureHour ?? mydepartureHour;
+        _departureMinutes = _departureMinutes ?? mydepartureMinutes;
+      });
+      print(
+          'my new selected country $_selectedCountry $_selectedArrivalCountry $_durationHour $_durationMinutes $_durationMonth $_durationDay $_departureHour $_departureMinutes');
+      await ticketProvider!.updateTicket(
           departure_country: _selectedCountry!,
           arrival_country: _selectedArrivalCountry!,
           flight_duration_hrs: _durationHour!,
@@ -452,9 +478,6 @@ class _TicketformState extends State<Ticketform> {
         isBtnClicked = false;
       });
     }
-    setState(() {
-      isBtnClicked = false;
-    });
   }
 
   @override
@@ -479,8 +502,8 @@ class _TicketformState extends State<Ticketform> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final user = userProvider.currentUser;
+    final user = userProvider!.currentUser;
+
     final String user_id = user?.get('objectId');
     userId = user_id;
 
@@ -517,6 +540,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
 
                     inputCountry(
+                      myselectedCountry,
                       'choose depature country',
                       selectedCountryErr,
                       selectedCountry_f,
@@ -526,6 +550,7 @@ class _TicketformState extends State<Ticketform> {
                         // Callback to update _departureMinutes
                         setState(() {
                           _selectedCountry = newValue;
+                          print('_selectedCountry is $_selectedCountry');
                         });
                       },
                     ),
@@ -542,6 +567,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
 
                     inputCountry(
+                      myselectedArrivalCountry,
                       'choose arrival country',
                       selectedArrivalCountryErr,
                       selectedArrivalCountry_f,
@@ -567,6 +593,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
                     Container(
                       child: inputTimeNum(
+                          mydurationHour,
                           'Hours Expected',
                           durationHourErr,
                           durationHour_f,
@@ -589,6 +616,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
                     Container(
                       child: inputTimeNum(
+                          mydurationMinutes,
                           'Minutes Expected',
                           durationMinutesErr,
                           durationMinutes_f,
@@ -612,6 +640,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
                     Container(
                       child: inputTimeStr(
+                          mydurationMonth,
                           'Select Flight Month',
                           durationMonthErr,
                           durationMonth_f,
@@ -635,6 +664,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
                     Container(
                       child: inputTimeStr(
+                          mydurationDay,
                           'Select Flight Day',
                           durationDayErr,
                           durationDay_f,
@@ -657,6 +687,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
                     Container(
                       child: inputTimeNum(
+                          mydepartureHour,
                           'Select Departure Hour',
                           departureHourErr,
                           departureHour_f,
@@ -680,6 +711,7 @@ class _TicketformState extends State<Ticketform> {
                     ),
                     Container(
                       child: inputTimeStr(
+                          mydepartureMinutes,
                           'Select Departure Minutes',
                           departureMinutesErr,
                           departureMinutes_f,
@@ -849,6 +881,7 @@ class _TicketformState extends State<Ticketform> {
   }
 
   Widget inputCountry(
+    String initialText,
     String labelText,
     String? errMsg,
     FocusNode focusNode,
@@ -859,7 +892,7 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
-        value: selectedVal,
+        value: initialText ?? 'null',
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
@@ -890,14 +923,16 @@ class _TicketformState extends State<Ticketform> {
           );
         }).toList(),
         onChanged: (String? newValue) {
-          print('new changed val map is $newValue');
           onValueChanged(newValue);
+          print(
+              'new changed val map is $newValue the country is $_selectedCountry $selectedVal ');
         },
       ),
     );
   }
 
   Widget inputTimeNum(
+    String initialText,
     String labelText,
     String? errMsg,
     FocusNode focusNode,
@@ -908,7 +943,8 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
-        value: selectedVal,
+        // value: selectedVal == '' ? initialText: selectedVal,
+        // value: selectedVal ?? initialText,
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
@@ -949,7 +985,7 @@ class _TicketformState extends State<Ticketform> {
           );
         }).toList(),
         onChanged: (String? newValue) {
-          print('new changed val int is $newValue');
+          print('new changed val int is $newValue, $selectedVal ');
           onValueChanged(newValue);
         },
       ),
@@ -957,6 +993,7 @@ class _TicketformState extends State<Ticketform> {
   }
 
   Widget inputTimeStr(
+    String initialText,
     String labelText,
     String? errMsg,
     FocusNode focusNode,
@@ -967,7 +1004,7 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
-        value: selectedVal,
+        // value: selectedVal ?? initialText,
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
@@ -1008,7 +1045,7 @@ class _TicketformState extends State<Ticketform> {
           );
         }).toList(),
         onChanged: (String? newValue) {
-          print('new changed val str is $newValue');
+          print('new changed val str is $newValue $selectedVal ');
           onValueChanged(newValue);
         },
       ),

@@ -18,8 +18,11 @@ class AppStyles {
   static Color primaryDarkColor = const Color(0xFFFFD75D);
   static Color cardBlueColor = const Color(0xFF526799);
   static Color cardRedColor = const Color(0xFFF37867);
-  static Color cardlightkakiColor = const Color(0xFFFEEBDD);
-  static Color carddeepOrangeColor = const Color(0xFFF0854A);
+
+  static Color cardlightkakiColor = const Color(0xFFE6EDFD);
+  static Color carddeepOrangeColor = const Color(0xFF526799);
+  // static Color cardlightkakiColor = const Color(0xFFFEEBDD);
+  // static Color carddeepOrangeColor = const Color(0xFFF0854A);
   static Color kaki = const Color(0xFFd2bdb6);
 
   static Color primaryColor(BuildContext context) {

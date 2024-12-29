@@ -1,4 +1,5 @@
 import 'package:airlineticket/providers/ticketProvider.dart';
+import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
 import 'package:airlineticket/screens/home/HomeScreen.dart';
 import 'package:airlineticket/screens/search/search.dart';
@@ -14,14 +15,22 @@ class BottomBar extends StatefulWidget {
 }
 
 class _BottomBarState extends State<BottomBar> {
+  Ticketprovider? ticketProvider;
+  UserProvider? userProvider;
   int _curindex = 0;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    final ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
-    ticketProvider.fetchTickets();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
+        userProvider = Provider.of<UserProvider>(context, listen: false);
+      });
+    });
+    //
   }
 
   void getIndex(int index) {

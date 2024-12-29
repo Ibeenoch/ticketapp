@@ -1,9 +1,8 @@
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/data/services/authetication.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/utils/timeFormatter.dart';
+import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
-import 'package:airlineticket/screens/account/authWidget/authBtn.dart';
 import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -22,6 +21,22 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  Ticketprovider? ticketprovider;
+  UserProvider? userProvider;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        ticketprovider = Provider.of<Ticketprovider>(context, listen: false);
+        userProvider = Provider.of<UserProvider>(context, listen: false);
+      });
+    });
+  }
+
   Future<bool> _registerBiometric() async {
     final LocalAuthentication auth = LocalAuthentication();
     final bool canCheckBiometrics = await auth.canCheckBiometrics;
@@ -166,9 +181,7 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> logout() async {
-    await UserProvider().logOut(context);
-    // Provider.of<UserProvider>(context, listen: false)
-    //     .setUser(null as ParseUser);
+    await userProvider!.logOut(context);
   }
 
   void navigateToTicket() async {
@@ -187,16 +200,15 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final userProvider = Provider.of<UserProvider>(context, listen: false);
-    final user = userProvider.currentUser;
+    final user = userProvider!.currentUser;
 
-    String fullname = user?.get('fullname');
+    String fullname = user!.get('fullname');
 
     List<String> namePart = fullname.split(' ');
     String firstName = namePart[0];
     String lastName = namePart[1];
 
-    final size = MediaQuery.of(context).size;
+    // final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

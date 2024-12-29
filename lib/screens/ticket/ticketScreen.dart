@@ -25,34 +25,39 @@ class Ticketscreen extends StatefulWidget {
 }
 
 class _TicketscreenState extends State<Ticketscreen> {
+  Ticketprovider? ticketProvider;
   // int currentIndex = 0;
   String currentIndex = '';
-  @override
-  void didChangeDependencies() {
-    if (ModalRoute.of(context)!.settings.arguments != null) {
-      var args = ModalRoute.of(context)!.settings.arguments as Map;
-      currentIndex = args["index"];
-    }
-    super.didChangeDependencies();
-  }
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    final ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
-    ticketProvider.fetchTicketById(currentIndex);
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
+      });
+    });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      var args = ModalRoute.of(context)!.settings.arguments as Map;
+      currentIndex = args["index"];
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
     //find a default id to load the bottom nav bar if no id was passed
-    final allTickets = ticketProvider.tickets;
+    final allTickets = ticketProvider!.tickets;
 
     final oneTicket = allTickets.take(1).first;
     final one_id_ticket = oneTicket.get("objectId");
-    currentIndex = one_id_ticket;
+    currentIndex = currentIndex == '' ? one_id_ticket : currentIndex;
+    print('the current index is $currentIndex');
 
     ParseObject? foundTicket = allTickets.firstWhere(
       (ticket) => ticket.get<String>('objectId') == currentIndex,

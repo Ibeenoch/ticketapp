@@ -21,19 +21,42 @@ class Homescreen extends StatefulWidget {
 }
 
 class _HomescreenState extends State<Homescreen> {
+  Ticketprovider? ticketProvider;
+  UserProvider? userProvider;
+
   final search = TextEditingController();
   FocusNode search_F = FocusNode();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      setState(() {
+        ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
+        userProvider = Provider.of<UserProvider>(context, listen: false);
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     String? username = 'Guest';
 
-    final ticketsProvider = Provider.of<Ticketprovider>(context, listen: false);
-    final TicketLists = ticketsProvider.tickets;
-    print('all tickets fetched from home screen are: $TicketLists');
-    final userProvider = Provider.of<UserProvider>(context);
-    if (userProvider.isLoggedIn) {
-      username = userProvider.currentUser!.get<String>('fullname');
+    // if(ticketProvider == null || userProvider == null){
+    //   return  const Scaffold( body:Center(child: CircularProgressIndicator(),),);
+    // }
+
+    // final TicketLists = context.watch<Ticketprovider>().tickets;
+    final TicketLists = ticketProvider!.tickets;
+    print('all tickets fetched from home screen are: ${TicketLists.length}');
+
+    // final user = context.watch<UserProvider>().currentUser;
+
+    if (userProvider!.isLoggedIn) {
+      username = userProvider!.currentUser!.get<String>('fullname');
     }
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
@@ -90,13 +113,14 @@ class _HomescreenState extends State<Homescreen> {
                   autofocus: true,
                   cursorColor: AppStyles.cardBlueColor,
                   style: TextStyle(
-                      fontSize: 12.sp, color: AppStyles.cardBlueColor),
+                      fontSize: 10.sp, color: AppStyles.cardBlueColor),
                   decoration: InputDecoration(
                       border: InputBorder.none,
                       hintText: 'Search for Hotel, Ticket',
                       prefixIcon: Icon(
                         Icons.search,
                         color: AppStyles.cardBlueColor,
+                        size: 14.sp,
                       )),
                 ),
               ),

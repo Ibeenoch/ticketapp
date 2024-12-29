@@ -195,6 +195,7 @@ final List<String> countries = [
 ];
 
 final List<Map<String, String>> abbreviatedCountries = [
+  {"name": "Select an option", "code": 'null'},
   {"name": "Afghanistan", "code": "AFG"},
   {"name": "Albania", "code": "ALB"},
   {"name": "Algeria", "code": "DZA"},
