@@ -538,22 +538,35 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-
-                    inputCountry(
-                      myselectedCountry,
-                      'choose depature country',
-                      selectedCountryErr,
-                      selectedCountry_f,
-                      _countries,
-                      _selectedCountry,
-                      (String? newValue) {
-                        // Callback to update _departureMinutes
-                        setState(() {
-                          _selectedCountry = newValue;
-                          print('_selectedCountry is $_selectedCountry');
-                        });
-                      },
-                    ),
+                    ticketId == null
+                        ? inputCountryWithoutId(
+                            'choose depature country',
+                            selectedCountryErr,
+                            selectedCountry_f,
+                            _countries,
+                            _selectedCountry,
+                            (String? newValue) {
+                              setState(() {
+                                _selectedCountry = newValue;
+                                print('_selectedCountry is $_selectedCountry');
+                              });
+                            },
+                          )
+                        : inputCountry(
+                            myselectedCountry,
+                            'choose depature country',
+                            selectedCountryErr,
+                            selectedCountry_f,
+                            _countries,
+                            _selectedCountry,
+                            (String? newValue) {
+                              // Callback to update _departureMinutes
+                              setState(() {
+                                _selectedCountry = newValue;
+                                print('_selectedCountry is $_selectedCountry');
+                              });
+                            },
+                          ),
                     if (selectedCountryErr != null &&
                         selectedCountryErr!.isNotEmpty)
                       errorMessage(selectedCountryErr!),
@@ -565,21 +578,34 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-
-                    inputCountry(
-                      myselectedArrivalCountry,
-                      'choose arrival country',
-                      selectedArrivalCountryErr,
-                      selectedArrivalCountry_f,
-                      _arrivalcountries,
-                      _selectedArrivalCountry,
-                      (String? newValue) {
-                        // Callback to update _departureMinutes
-                        setState(() {
-                          _selectedArrivalCountry = newValue;
-                        });
-                      },
-                    ),
+                    ticketId == null
+                        ? inputCountryWithoutId(
+                            'choose arrival country',
+                            selectedArrivalCountryErr,
+                            selectedArrivalCountry_f,
+                            _arrivalcountries,
+                            _selectedArrivalCountry,
+                            (String? newValue) {
+                              // Callback to update _departureMinutes
+                              setState(() {
+                                _selectedArrivalCountry = newValue;
+                              });
+                            },
+                          )
+                        : inputCountry(
+                            myselectedArrivalCountry,
+                            'choose arrival country',
+                            selectedArrivalCountryErr,
+                            selectedArrivalCountry_f,
+                            _arrivalcountries,
+                            _selectedArrivalCountry,
+                            (String? newValue) {
+                              // Callback to update _departureMinutes
+                              setState(() {
+                                _selectedArrivalCountry = newValue;
+                              });
+                            },
+                          ),
                     if (selectedArrivalCountryErr != null &&
                         selectedArrivalCountryErr!.isNotEmpty)
                       errorMessage(selectedArrivalCountryErr!),
@@ -591,19 +617,32 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    Container(
-                      child: inputTimeNum(
-                          mydurationHour,
-                          'Hours Expected',
-                          durationHourErr,
-                          durationHour_f,
-                          durationHourList,
-                          _durationHour, (String? newValue) {
-                        setState(() {
-                          _durationHour = newValue;
-                        });
-                      }),
-                    ),
+                    ticketId == null
+                        ? Container(
+                            child: inputTimeNumWithoutId(
+                                'Hours Expected',
+                                durationHourErr,
+                                durationHour_f,
+                                durationHourList,
+                                _durationHour, (String? newValue) {
+                              setState(() {
+                                _durationHour = newValue;
+                              });
+                            }),
+                          )
+                        : Container(
+                            child: inputTimeNum(
+                                mydurationHour,
+                                'Hours Expected',
+                                durationHourErr,
+                                durationHour_f,
+                                durationHourList,
+                                _durationHour, (String? newValue) {
+                              setState(() {
+                                _durationHour = newValue;
+                              });
+                            }),
+                          ),
                     if (durationHourErr != null && durationHourErr!.isNotEmpty)
                       errorMessage(durationHourErr!),
                     SizedBox(
@@ -614,19 +653,32 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    Container(
-                      child: inputTimeNum(
-                          mydurationMinutes,
-                          'Minutes Expected',
-                          durationMinutesErr,
-                          durationMinutes_f,
-                          durationMinutesList,
-                          _durationMinutes, (String? newValue) {
-                        setState(() {
-                          _durationMinutes = newValue;
-                        });
-                      }),
-                    ),
+                    ticketId == null
+                        ? Container(
+                            child: inputTimeNumWithoutId(
+                                'Minutes Expected',
+                                durationMinutesErr,
+                                durationMinutes_f,
+                                durationMinutesList,
+                                _durationMinutes, (String? newValue) {
+                              setState(() {
+                                _durationMinutes = newValue;
+                              });
+                            }),
+                          )
+                        : Container(
+                            child: inputTimeNum(
+                                mydurationMinutes,
+                                'Minutes Expected',
+                                durationMinutesErr,
+                                durationMinutes_f,
+                                durationMinutesList,
+                                _durationMinutes, (String? newValue) {
+                              setState(() {
+                                _durationMinutes = newValue;
+                              });
+                            }),
+                          ),
                     if (durationMinutesErr != null &&
                         durationMinutesErr!.isNotEmpty)
                       errorMessage(durationMinutesErr!),
@@ -638,19 +690,32 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    Container(
-                      child: inputTimeStr(
-                          mydurationMonth,
-                          'Select Flight Month',
-                          durationMonthErr,
-                          durationMonth_f,
-                          durationMonthList,
-                          _durationMonth, (String? newValue) {
-                        setState(() {
-                          _durationMonth = newValue;
-                        });
-                      }),
-                    ),
+                    ticketId == null
+                        ? Container(
+                            child: inputTimeStrWithoutId(
+                                'Select Flight Month',
+                                durationMonthErr,
+                                durationMonth_f,
+                                durationMonthList,
+                                _durationMonth, (String? newValue) {
+                              setState(() {
+                                _durationMonth = newValue;
+                              });
+                            }),
+                          )
+                        : Container(
+                            child: inputTimeStr(
+                                mydurationMonth,
+                                'Select Flight Month',
+                                durationMonthErr,
+                                durationMonth_f,
+                                durationMonthList,
+                                _durationMonth, (String? newValue) {
+                              setState(() {
+                                _durationMonth = newValue;
+                              });
+                            }),
+                          ),
                     if (durationMonthErr != null &&
                         durationMonthErr!.isNotEmpty)
                       errorMessage(durationMonthErr!),
@@ -662,19 +727,32 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    Container(
-                      child: inputTimeStr(
-                          mydurationDay,
-                          'Select Flight Day',
-                          durationDayErr,
-                          durationDay_f,
-                          durationDayList,
-                          _durationDay, (String? newValue) {
-                        setState(() {
-                          _durationDay = newValue;
-                        });
-                      }),
-                    ),
+                    ticketId == null
+                        ? Container(
+                            child: inputTimeStrWithoutId(
+                                'Select Flight Day',
+                                durationDayErr,
+                                durationDay_f,
+                                durationDayList,
+                                _durationDay, (String? newValue) {
+                              setState(() {
+                                _durationDay = newValue;
+                              });
+                            }),
+                          )
+                        : Container(
+                            child: inputTimeStr(
+                                mydurationDay,
+                                'Select Flight Day',
+                                durationDayErr,
+                                durationDay_f,
+                                durationDayList,
+                                _durationDay, (String? newValue) {
+                              setState(() {
+                                _durationDay = newValue;
+                              });
+                            }),
+                          ),
                     if (durationDayErr != null && durationDayErr!.isNotEmpty)
                       errorMessage(durationDayErr!),
                     SizedBox(
@@ -685,19 +763,32 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    Container(
-                      child: inputTimeNum(
-                          mydepartureHour,
-                          'Select Departure Hour',
-                          departureHourErr,
-                          departureHour_f,
-                          departureHourList,
-                          _departureHour, (String? newValue) {
-                        setState(() {
-                          _departureHour = newValue;
-                        });
-                      }),
-                    ),
+                    ticketId == null
+                        ? Container(
+                            child: inputTimeNumWithoutId(
+                                'Select Departure Hour',
+                                departureHourErr,
+                                departureHour_f,
+                                departureHourList,
+                                _departureHour, (String? newValue) {
+                              setState(() {
+                                _departureHour = newValue;
+                              });
+                            }),
+                          )
+                        : Container(
+                            child: inputTimeNum(
+                                mydepartureHour,
+                                'Select Departure Hour',
+                                departureHourErr,
+                                departureHour_f,
+                                departureHourList,
+                                _departureHour, (String? newValue) {
+                              setState(() {
+                                _departureHour = newValue;
+                              });
+                            }),
+                          ),
                     if (departureHourErr != null &&
                         departureHourErr!.isNotEmpty)
                       errorMessage(departureHourErr!),
@@ -709,19 +800,32 @@ class _TicketformState extends State<Ticketform> {
                     SizedBox(
                       height: 5.h,
                     ),
-                    Container(
-                      child: inputTimeStr(
-                          mydepartureMinutes,
-                          'Select Departure Minutes',
-                          departureMinutesErr,
-                          departureMinutes_f,
-                          departureMinutesList,
-                          _departureMinutes, (String? newValue) {
-                        setState(() {
-                          _departureMinutes = newValue;
-                        });
-                      }),
-                    ),
+                    ticketId == null
+                        ? Container(
+                            child: inputTimeStrWithoutId(
+                                'Select Departure Minutes',
+                                departureMinutesErr,
+                                departureMinutes_f,
+                                departureMinutesList,
+                                _departureMinutes, (String? newValue) {
+                              setState(() {
+                                _departureMinutes = newValue;
+                              });
+                            }),
+                          )
+                        : Container(
+                            child: inputTimeStr(
+                                mydepartureMinutes,
+                                'Select Departure Minutes',
+                                departureMinutesErr,
+                                departureMinutes_f,
+                                departureMinutesList,
+                                _departureMinutes, (String? newValue) {
+                              setState(() {
+                                _departureMinutes = newValue;
+                              });
+                            }),
+                          ),
                     if (departureMinutesErr != null &&
                         departureMinutesErr!.isNotEmpty)
                       errorMessage(departureMinutesErr!),
@@ -892,7 +996,56 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
-        value: initialText ?? 'null',
+        value: selectedVal ?? initialText,
+        style: TextStyle(
+            fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
+        decoration: InputDecoration(
+            labelText: labelText,
+            labelStyle: TextStyle(
+                fontSize: 10.sp,
+                color: errMsg != null && errMsg!.isNotEmpty
+                    ? Colors.red
+                    : AppStyles.cardBlueColor),
+            enabledBorder: OutlineInputBorder(
+                borderSide: BorderSide(
+                    color: errMsg != null && errMsg!.isNotEmpty
+                        ? Colors.red
+                        : AppStyles.cardBlueColor)),
+            focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: focusNode.hasFocus
+                      ? AppStyles.cardBlueColor
+                      : Colors.grey),
+            )),
+        focusNode: focusNode,
+        items: countries.map((country) {
+          return DropdownMenuItem(
+            value: country['code'] ?? '',
+            child: Container(
+                color: AppStyles.defaultBackGroundColor(context),
+                child: Text(country['name'] ?? '')),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          onValueChanged(newValue);
+          print(
+              'new changed val map is $newValue the country is $_selectedCountry $selectedVal ');
+        },
+      ),
+    );
+  }
+
+  Widget inputCountryWithoutId(
+    String labelText,
+    String? errMsg,
+    FocusNode focusNode,
+    List<Map<String, String>> countries,
+    String? selectedVal,
+    Function(String?) onValueChanged,
+  ) {
+    return Container(
+      height: 45.h,
+      child: DropdownButtonFormField(
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
@@ -944,7 +1097,65 @@ class _TicketformState extends State<Ticketform> {
       height: 45.h,
       child: DropdownButtonFormField(
         // value: selectedVal == '' ? initialText: selectedVal,
-        // value: selectedVal ?? initialText,
+        value: selectedVal ?? initialText,
+        style: TextStyle(
+            fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
+        decoration: InputDecoration(
+          labelText: labelText,
+          labelStyle: TextStyle(
+              fontSize: 10.sp,
+              color: errMsg != null && errMsg!.isNotEmpty
+                  ? Colors.red
+                  : AppStyles.cardBlueColor),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: errMsg != null && errMsg!.isNotEmpty
+                      ? Colors.red
+                      : AppStyles.cardBlueColor)),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color:
+                    focusNode.hasFocus ? AppStyles.cardBlueColor : Colors.grey),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
+        ),
+        focusNode: focusNode,
+        isDense: true, // Make the dropdown smaller
+        isExpanded: false, // Prevent auto-expanding
+        items: countries.map((country) {
+          return DropdownMenuItem(
+            value: country.toString(),
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              child: Container(
+                color: AppStyles.defaultBackGroundColor(context),
+                child: Text(
+                  country.toString(),
+                  overflow: TextOverflow.ellipsis, // Handle long text
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          print('new changed val int is $newValue, $selectedVal ');
+          onValueChanged(newValue);
+        },
+      ),
+    );
+  }
+
+  Widget inputTimeNumWithoutId(
+    String labelText,
+    String? errMsg,
+    FocusNode focusNode,
+    List<int> countries,
+    String? selectedVal,
+    Function(String?) onValueChanged,
+  ) {
+    return Container(
+      height: 45.h,
+      child: DropdownButtonFormField(
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
@@ -1004,7 +1215,65 @@ class _TicketformState extends State<Ticketform> {
     return Container(
       height: 45.h,
       child: DropdownButtonFormField(
-        // value: selectedVal ?? initialText,
+        value: selectedVal ?? initialText,
+        style: TextStyle(
+            fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
+        decoration: InputDecoration(
+          labelText: labelText,
+          labelStyle: TextStyle(
+              fontSize: 10.sp,
+              color: errMsg != null && errMsg!.isNotEmpty
+                  ? Colors.red
+                  : AppStyles.cardBlueColor),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide(
+                  color: errMsg != null && errMsg!.isNotEmpty
+                      ? Colors.red
+                      : AppStyles.cardBlueColor)),
+          focusedBorder: OutlineInputBorder(
+            borderSide: BorderSide(
+                color:
+                    focusNode.hasFocus ? AppStyles.cardBlueColor : Colors.grey),
+          ),
+          contentPadding: EdgeInsets.symmetric(horizontal: 8.w),
+        ),
+        focusNode: focusNode,
+        isDense: true, // Make the dropdown smaller
+        isExpanded: false, // Prevent auto-expanding
+        items: countries.map((country) {
+          return DropdownMenuItem(
+            value: country,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 8.w),
+              child: Container(
+                color: AppStyles.defaultBackGroundColor(context),
+                child: Text(
+                  country,
+                  overflow: TextOverflow.ellipsis, // Handle long text
+                ),
+              ),
+            ),
+          );
+        }).toList(),
+        onChanged: (String? newValue) {
+          print('new changed val str is $newValue $selectedVal ');
+          onValueChanged(newValue);
+        },
+      ),
+    );
+  }
+
+  Widget inputTimeStrWithoutId(
+    String labelText,
+    String? errMsg,
+    FocusNode focusNode,
+    List<String> countries,
+    String? selectedVal,
+    Function(String?) onValueChanged,
+  ) {
+    return Container(
+      height: 45.h,
+      child: DropdownButtonFormField(
         style: TextStyle(
             fontSize: 10.sp, color: AppStyles.textWhiteBlack(context)),
         decoration: InputDecoration(
