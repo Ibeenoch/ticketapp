@@ -1,5 +1,6 @@
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
 
@@ -109,10 +110,9 @@ class Ticketprovider extends ChangeNotifier {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Container(
-                    color: Colors.red,
                     child: const Text(
-                      'Flight details saved successfully!',
-                    ))),
+              'Flight details saved successfully!',
+            ))),
           );
           print('ticket result saved is ${response.result}');
 
@@ -124,10 +124,9 @@ class Ticketprovider extends ChangeNotifier {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
               content: Container(
-                  color: Colors.red,
                   child: const Text(
-                    'Please add all required fields',
-                  ))),
+            'Please add all required fields',
+          ))),
         );
       }
     } catch (e) {
@@ -217,6 +216,79 @@ class Ticketprovider extends ChangeNotifier {
       }
     } catch (e) {
       print('error is creating ticket $e');
+    }
+  }
+
+  Future<void> deleteTicket(
+      String ticketId, String userId, BuildContext context) async {
+    try {
+      final bool? confirmDelete = await showDialog<bool>(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text(
+                'Confirm action',
+                style: TextStyle(
+                  fontSize: 14.sp,
+                ),
+              ),
+              content: Text(
+                'Are you sure you want to delete this ticket?',
+                style: TextStyle(
+                  fontSize: 12.sp,
+                ),
+              ),
+              actions: [
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text(
+                      'Cancel',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                      ),
+                    )),
+                TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child: Text(
+                      'Delete',
+                      style: TextStyle(
+                        fontSize: 14.sp,
+                      ),
+                    )),
+              ],
+            );
+          });
+
+      if (confirmDelete != true) {
+        return;
+      }
+
+      final getTicket = await ParseObject('tickets').getObject(ticketId);
+      String ticketUserId = '';
+      if (getTicket.success) {
+        final ticketDetails = getTicket.result;
+        ticketUserId = ticketDetails.get<String>('userId');
+      }
+      print('got the user id to delete is: $ticketUserId');
+      final ParseObject ticket = ParseObject('tickets')..objectId = ticketId;
+
+      final ParseResponse response = await ticket.delete();
+
+      if (response.success) {
+        _tickets.removeWhere((t) => t.objectId == ticketId);
+        notifyListeners();
+
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Ticket successfully deleted')));
+        Navigator.pushNamed(context, AppRoutes.homePage);
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Ticket failed to deleted')));
+        print(
+            'error deleting ticket ${response.error?.message}  ${response.error?.exception}');
+      }
+    } catch (e) {
+      print('Error delete ticket: $e');
     }
   }
 }

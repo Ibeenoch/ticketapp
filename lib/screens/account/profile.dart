@@ -181,7 +181,8 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> logout() async {
-    await userProvider!.logOut(context);
+    await userProvider?.logOut(context);
+    Navigator.pushNamed(context, AppRoutes.accountScreen);
   }
 
   void navigateToTicket() async {
@@ -200,9 +201,13 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    final user = userProvider!.currentUser;
+    late String getfullname = '';
+    final user = userProvider?.currentUser;
 
-    String fullname = user!.get('fullname');
+    if (user != null) {
+      getfullname = user?.get('fullname');
+    }
+    String fullname = getfullname;
 
     List<String> namePart = fullname.split(' ');
     String firstName = namePart[0];

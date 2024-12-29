@@ -23,6 +23,7 @@ class Homescreen extends StatefulWidget {
 class _HomescreenState extends State<Homescreen> {
   Ticketprovider? ticketProvider;
   UserProvider? userProvider;
+  bool? isLoggedIn;
 
   final search = TextEditingController();
   FocusNode search_F = FocusNode();
@@ -36,6 +37,7 @@ class _HomescreenState extends State<Homescreen> {
       setState(() {
         ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
         userProvider = Provider.of<UserProvider>(context, listen: false);
+        isLoggedIn = userProvider?.isLoggedIn;
       });
     });
   }
@@ -49,14 +51,10 @@ class _HomescreenState extends State<Homescreen> {
     //   return  const Scaffold( body:Center(child: CircularProgressIndicator(),),);
     // }
 
-    // final TicketLists = context.watch<Ticketprovider>().tickets;
-    final TicketLists = ticketProvider!.tickets;
-    print('all tickets fetched from home screen are: ${TicketLists.length}');
-
     // final user = context.watch<UserProvider>().currentUser;
 
-    if (userProvider!.isLoggedIn) {
-      username = userProvider!.currentUser!.get<String>('fullname');
+    if (isLoggedIn == true) {
+      username = userProvider?.currentUser?.get<String>('fullname');
     }
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
@@ -110,7 +108,6 @@ class _HomescreenState extends State<Homescreen> {
                 child: TextField(
                   controller: search,
                   focusNode: search_F,
-                  autofocus: true,
                   cursorColor: AppStyles.cardBlueColor,
                   style: TextStyle(
                       fontSize: 10.sp, color: AppStyles.cardBlueColor),
@@ -197,8 +194,16 @@ class _HomescreenState extends State<Homescreen> {
                       child: Row(
                         children: getTickets
                             .take(3)
-                            .map((singleTicket) =>
-                                Ticketview(ticket: singleTicket.toJson()))
+                            .map((singleTicket) => GestureDetector(
+                                onTap: () {
+                                  final indexObj = singleTicket.toJson();
+                                  final index = indexObj['objectId'];
+                                  Navigator.pushNamed(
+                                      context, AppRoutes.ticketScreen,
+                                      arguments: {'index': index});
+                                },
+                                child:
+                                    Ticketview(ticket: singleTicket.toJson())))
                             .toList(),
                       ));
                 }

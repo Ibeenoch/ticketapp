@@ -53,7 +53,7 @@ class Ticketview extends StatelessWidget {
                         children: [
                           Cardtitle(
                             // text: ticket["from"]["code"],
-                            text: ticket['departure_country'] ?? '',
+                            text: ticket['departure_country'] ?? 'N/A',
                             sizeType: 'h3',
                             weightType: 'bold',
                             showColor: showColor,
@@ -89,7 +89,7 @@ class Ticketview extends StatelessWidget {
                           Expanded(child: Container()),
                           Cardtitle(
                             // text: ticket["to"]["code"],
-                            text: ticket['arrival_country'],
+                            text: ticket['arrival_country'] ?? 'N/A',
                             sizeType: 'h3',
                             weightType: 'bold',
                             align: TextAlign.end,
@@ -114,7 +114,7 @@ class Ticketview extends StatelessWidget {
                           Cardtitle(
                             // text: ticket['flying_time'],
                             text:
-                                '${ticket['flight_duration_hrs'] ?? ''}h ${ticket['flight_duration_minutes'] ?? ''}m',
+                                '${ticket['flight_duration_hrs'] ?? 'N/A'}h ${ticket['flight_duration_minutes'] ?? 'N/A'}m',
                             sizeType: 'h4',
                             align: TextAlign.center,
                             showColor: showColor,
@@ -181,7 +181,7 @@ class Ticketview extends StatelessWidget {
                           Columntext(
                             // bigtext: ticket['date'],
                             bigtext:
-                                "${ticket['flight_day'] ?? ''} ${ticket['flight_month'] ?? ''}",
+                                "${ticket['flight_day'] ?? 'N/A'} ${ticket['flight_month'] ?? 'N/A'}",
                             smalltext: 'Date',
                             showColor: showColor,
                             alignSide: 'start',
@@ -189,13 +189,13 @@ class Ticketview extends StatelessWidget {
                           Expanded(child: Container()),
                           Columntext(
                               bigtext:
-                                  "${ticket['departure_time_hrs'] ?? ''} : ${ticket['departure_time_minutes'] ?? ''}",
+                                  "${ticket['departure_time_hrs'] ?? 'N/A'} : ${ticket['departure_time_minutes'] ?? 'N/A'}",
                               smalltext: 'Departure Time',
                               alignBig: TextAlign.center,
                               showColor: showColor),
                           Expanded(child: Container()),
                           Columntext(
-                            bigtext: ticket['objectId'] ?? '',
+                            bigtext: ticket['objectId'] ?? 'N/A',
                             smalltext: 'Number',
                             alignsmall: TextAlign.end,
                             showColor: showColor,
@@ -214,3 +214,8 @@ class Ticketview extends StatelessWidget {
     );
   }
 }
+
+
+  // bigtext: (ticket['objectId']?.length > 6
+  //                               ? ticket['objectId']?.substring(0, 6) + '...'
+  //                               : ticket['objectId'] ?? 'N/A'),

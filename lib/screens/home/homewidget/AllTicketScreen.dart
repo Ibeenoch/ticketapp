@@ -1,8 +1,10 @@
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/ticketView.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class Allticketscreen extends StatefulWidget {
@@ -34,6 +36,9 @@ class _AllticketscreenState extends State<Allticketscreen> {
           'All Tickets',
           style: AppStyles.h4(context),
         ),
+        actions: const [
+          HomeNavBtn(),
+        ],
       ),
       body: ticketsProvider.tickets.isEmpty
           ? const Center(

@@ -532,8 +532,8 @@ class _AccountState extends State<Account> {
   @override
   Widget build(BuildContext context) {
     final user =
-        userProvider!.currentUser == null ? null : userProvider?.currentUser;
-    print('user is $user');
+        userProvider?.currentUser == null ? null : userProvider?.currentUser;
+
     void showLogin() {
       setState(() {
         isLoginTab = true;

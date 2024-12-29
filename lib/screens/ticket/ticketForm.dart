@@ -1,6 +1,7 @@
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/resources/time.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
@@ -512,6 +513,9 @@ class _TicketformState extends State<Ticketform> {
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       appBar: AppBar(
         backgroundColor: AppStyles.defaultBackGroundColor(context),
+        actions: const [
+          HomeNavBtn(),
+        ],
       ),
       body: SafeArea(
         child: Padding(

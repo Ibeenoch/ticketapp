@@ -11,12 +11,15 @@ class EditDeleteBtn extends StatefulWidget {
   final String leftText;
   final String rightText;
   final String ticketId;
+  final String userId;
 
-  const EditDeleteBtn(
-      {super.key,
-      required this.leftText,
-      required this.rightText,
-      required this.ticketId});
+  const EditDeleteBtn({
+    super.key,
+    required this.leftText,
+    required this.rightText,
+    required this.ticketId,
+    required this.userId,
+  });
 
   @override
   State<EditDeleteBtn> createState() => _EditDeleteBtnState();
@@ -62,8 +65,13 @@ class _EditDeleteBtnState extends State<EditDeleteBtn> {
           ),
         ),
         InkWell(
-          onTap: () {
-            setState(() {});
+          onTap: () async {
+            if (user == null) {
+              Navigator.pushNamed(context, AppRoutes.accountScreen);
+            } else {
+              ticketProvider.deleteTicket(
+                  widget.ticketId, widget.userId, context);
+            }
           },
           child: Container(
             width: size.width * 0.43,
