@@ -4,7 +4,6 @@ import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/data/services/authetication.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class UserProvider extends ChangeNotifier {
   ParseUser? _currentUser;
@@ -63,8 +62,6 @@ class UserProvider extends ChangeNotifier {
       final ParseResponse response = await user.signUp();
 
       if (response.success) {
-        print('User registered successfully: ${response.result}');
-
         // Step 2: Upload the user's profile image (if provided)
         String? profileImageUrl;
         if (userImg != null && await userImg.exists()) {
@@ -138,7 +135,6 @@ class UserProvider extends ChangeNotifier {
           await ParseUser(username, password, null).login();
       if (response.success) {
         _currentUser = response.result as ParseUser;
-        print('current logged in user: $_currentUser');
 
         notifyListeners();
         return true;
@@ -167,17 +163,8 @@ class UserProvider extends ChangeNotifier {
     try {
       final user = await ParseUser.currentUser() as ParseUser;
       var response = await user.logout();
-      print('the respone logout status is $response, ${response.success}');
       if (response.success) {
         _currentUser = null;
-        // await ParseUser.currentUser() = null;
-
-        // Optionally, clear any other persistent data (e.g., SharedPreferences)
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.remove('fingerPrintId'); // Example of clearing saved data
-        await prefs.remove('isBiometricEnabled');
-        await prefs.remove('faceId');
-        await prefs.remove('isFaceRecognitionEnabled');
 
         print('Logout successful!');
         notifyListeners();

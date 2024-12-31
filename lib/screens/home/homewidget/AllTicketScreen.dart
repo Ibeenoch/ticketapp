@@ -26,7 +26,7 @@ class _AllticketscreenState extends State<Allticketscreen> {
   @override
   Widget build(BuildContext context) {
     final ticketsProvider = Provider.of<Ticketprovider>(context, listen: false);
-    final TicketLists = ticketsProvider.tickets;
+    final ticketLists = ticketsProvider.tickets;
 
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
@@ -47,17 +47,19 @@ class _AllticketscreenState extends State<Allticketscreen> {
           : SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
-                children: TicketLists.map((singleTicket) => GestureDetector(
-                    onTap: () {
-                      // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
-                      final indexObj = singleTicket.toJson();
-                      final index = indexObj['objectId'];
-                      print('index pushed is $index');
-                      Navigator.pushNamed(context, AppRoutes.ticketScreen,
-                          arguments: {'index': index});
-                    },
-                    // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
-                    child: Ticketview(ticket: singleTicket.toJson()))).toList(),
+                children: ticketLists
+                    .map((singleTicket) => GestureDetector(
+                        onTap: () {
+                          // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
+                          final indexObj = singleTicket.toJson();
+                          final index = indexObj['objectId'];
+
+                          Navigator.pushNamed(context, AppRoutes.ticketScreen,
+                              arguments: {'index': index});
+                        },
+                        // Convert singleTicket (ParseObject) to Map<String, dynamic> using toJson
+                        child: Ticketview(ticket: singleTicket.toJson())))
+                    .toList(),
               ),
             ),
     );

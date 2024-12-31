@@ -201,6 +201,8 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
+    print('profile rendered');
+
     late String getfullname = '';
     final user = userProvider?.currentUser;
 
@@ -312,13 +314,6 @@ class _ProfileState extends State<Profile> {
                   height: 20.h,
                 ),
                 logOut(context),
-                SizedBox(
-                  height: 20.h,
-                ),
-                Text(
-                  'user profile details \n email: ${user?.get('email')} \n Full Name: ${user?.get('fullname')}  \n Address: ${user?.get('address')} \n Country: ${user?.get('country')} \n Bio: ${user?.get('bio')}\n fingerPrintId: ${user?.get('fingerPrintId')} ',
-                  style: TextStyle(fontSize: 9.sp),
-                ),
                 SizedBox(
                   height: 20.h,
                 ),

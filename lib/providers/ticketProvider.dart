@@ -27,7 +27,6 @@ class Ticketprovider extends ChangeNotifier {
       final ParseResponse response = await queryTickets.query();
       if (response.success && response.results != null) {
         _tickets = response.result as List<ParseObject>;
-        print('the tickets fetched: $_tickets');
         notifyListeners();
       }
     } catch (e) {
@@ -110,9 +109,10 @@ class Ticketprovider extends ChangeNotifier {
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Container(
+                    decoration: BoxDecoration(color: Colors.green),
                     child: const Text(
-              'Flight details saved successfully!',
-            ))),
+                      'Flight created successfully!',
+                    ))),
           );
           print('ticket result saved is ${response.result}');
 

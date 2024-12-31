@@ -1,5 +1,6 @@
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/BottomBar.dart';
+import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
@@ -9,6 +10,7 @@ import 'package:airlineticket/screens/account/profile.dart';
 import 'package:airlineticket/screens/home/homewidget/AllHotelViews.dart';
 import 'package:airlineticket/screens/home/homewidget/AllTicketScreen.dart';
 import 'package:airlineticket/screens/hostel/HostelForm.dart';
+import 'package:airlineticket/screens/hostel/hostelDetails.dart';
 import 'package:airlineticket/screens/ticket/TicketForm.dart';
 import 'package:airlineticket/screens/ticket/ticketScreen.dart';
 import 'package:flutter/material.dart';
@@ -59,6 +61,7 @@ class MyApp extends StatelessWidget {
           providers: [
             ChangeNotifierProvider(create: (_) => UserProvider()),
             ChangeNotifierProvider(create: (_) => Ticketprovider()),
+            ChangeNotifierProvider(create: (_) => HostelProvider()),
           ],
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
@@ -72,6 +75,7 @@ class MyApp extends StatelessWidget {
               AppRoutes.profileScreen: (context) => const Profile(),
               AppRoutes.hostelForm: (context) => const Hostelform(),
               AppRoutes.ticketForm: (context) => const Ticketform(),
+              AppRoutes.hostelDetails: (context) => const HostelDetails(),
             },
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),

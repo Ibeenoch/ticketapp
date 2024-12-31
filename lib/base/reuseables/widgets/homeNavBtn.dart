@@ -17,7 +17,7 @@ class HomeNavBtn extends StatelessWidget {
         child: Icon(
           Icons.home,
           size: 24.sp,
-          color: AppStyles.cardBlueColor,
+          color: AppStyles.navHomeColor(context),
         ),
       ),
     );

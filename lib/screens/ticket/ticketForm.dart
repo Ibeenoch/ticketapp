@@ -206,8 +206,6 @@ class _TicketformState extends State<Ticketform> {
         });
 
         final currentTicket = findTicket.toJson();
-        print(
-            'the ticket that needs update is: $currentTicket, the ticketId is $ticketId');
 
         if (currentTicket != null) {
           myselectedCountry = currentTicket['departure_country'];
@@ -224,7 +222,6 @@ class _TicketformState extends State<Ticketform> {
           _bookingNo.text = currentTicket['bookingNo'] ?? '';
           _paymentMethod.text = currentTicket['paymentMethod'] ?? '';
           _price.text = currentTicket['price'] ?? '';
-          print('updated departure country is $_durationMonth');
         }
       }
     }
@@ -453,8 +450,6 @@ class _TicketformState extends State<Ticketform> {
         _departureHour = _departureHour ?? mydepartureHour;
         _departureMinutes = _departureMinutes ?? mydepartureMinutes;
       });
-      print(
-          'my new selected country $_selectedCountry $_selectedArrivalCountry $_durationHour $_durationMinutes $_durationMonth $_durationDay $_departureHour $_departureMinutes');
       await ticketProvider!.updateTicket(
           departure_country: _selectedCountry!,
           arrival_country: _selectedArrivalCountry!,
@@ -552,7 +547,6 @@ class _TicketformState extends State<Ticketform> {
                             (String? newValue) {
                               setState(() {
                                 _selectedCountry = newValue;
-                                print('_selectedCountry is $_selectedCountry');
                               });
                             },
                           )
@@ -567,7 +561,6 @@ class _TicketformState extends State<Ticketform> {
                               // Callback to update _departureMinutes
                               setState(() {
                                 _selectedCountry = newValue;
-                                print('_selectedCountry is $_selectedCountry');
                               });
                             },
                           ),
@@ -1032,8 +1025,6 @@ class _TicketformState extends State<Ticketform> {
         }).toList(),
         onChanged: (String? newValue) {
           onValueChanged(newValue);
-          print(
-              'new changed val map is $newValue the country is $_selectedCountry $selectedVal ');
         },
       ),
     );
@@ -1142,7 +1133,6 @@ class _TicketformState extends State<Ticketform> {
           );
         }).toList(),
         onChanged: (String? newValue) {
-          print('new changed val int is $newValue, $selectedVal ');
           onValueChanged(newValue);
         },
       ),
@@ -1260,7 +1250,6 @@ class _TicketformState extends State<Ticketform> {
           );
         }).toList(),
         onChanged: (String? newValue) {
-          print('new changed val str is $newValue $selectedVal ');
           onValueChanged(newValue);
         },
       ),
@@ -1318,7 +1307,6 @@ class _TicketformState extends State<Ticketform> {
           );
         }).toList(),
         onChanged: (String? newValue) {
-          print('new changed val str is $newValue $selectedVal ');
           onValueChanged(newValue);
         },
       ),

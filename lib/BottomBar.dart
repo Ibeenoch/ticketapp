@@ -1,6 +1,7 @@
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
+import 'package:airlineticket/screens/account/profile.dart';
 import 'package:airlineticket/screens/home/HomeScreen.dart';
 import 'package:airlineticket/screens/search/search.dart';
 import 'package:airlineticket/screens/ticket/ticketScreen.dart';
@@ -16,7 +17,7 @@ class BottomBar extends StatefulWidget {
 
 class _BottomBarState extends State<BottomBar> {
   Ticketprovider? ticketProvider;
-  UserProvider? userProvider;
+
   int _curindex = 0;
 
   @override
@@ -27,7 +28,6 @@ class _BottomBarState extends State<BottomBar> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
-        userProvider = Provider.of<UserProvider>(context, listen: false);
       });
     });
     //
@@ -39,15 +39,37 @@ class _BottomBarState extends State<BottomBar> {
     });
   }
 
-  final appScreens = [
-    const Homescreen(),
-    const Search(),
-    const Ticketscreen(),
-    const Account(),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
+    final currentUser = userProvider.currentUser;
+
+    print('current user index is $currentUser');
+
+    final appScreens = currentUser == null
+        ? [
+            const Homescreen(),
+            const Search(),
+            const Ticketscreen(),
+            const Account(),
+            // currentUser == null ? const Account() : const Profile(),
+          ]
+        : [
+            const Homescreen(),
+            const Search(),
+            const Ticketscreen(),
+            const Profile(),
+            // currentUser == null ? const Account() : const Profile(),
+          ];
+
+    // Validate _curindex
+    if (_curindex >= appScreens.length) {
+      _curindex = 0;
+    }
+    print(
+        'AppScreens Length: ${appScreens.length} Current _curindex: $_curindex');
+
     return Scaffold(
       body: appScreens[_curindex],
       bottomNavigationBar: BottomNavigationBar(

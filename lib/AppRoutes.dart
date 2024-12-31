@@ -9,4 +9,5 @@ class AppRoutes {
   static const profileScreen = "/profile";
   static const ticketForm = "/ticket";
   static const hostelForm = "/hostel";
+  static const hostelDetails = "/hostel_details";
 }

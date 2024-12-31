@@ -1,15 +1,37 @@
 // ignore: file_names
+import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
+import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/hotelText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
-class Allhotelviews extends StatelessWidget {
+class Allhotelviews extends StatefulWidget {
   const Allhotelviews({super.key});
 
   @override
+  State<Allhotelviews> createState() => _AllhotelviewsState();
+}
+
+class _AllhotelviewsState extends State<Allhotelviews> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    // Defer the Provider call
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      Provider.of<HostelProvider>(context, listen: false).fetchHotels();
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final hostelProvider = Provider.of<HostelProvider>(context);
+    final hostelList = hostelProvider.hotels;
+
     return Scaffold(
         backgroundColor: AppStyles.defaultBackGroundColor(context),
         appBar: AppBar(
@@ -19,86 +41,85 @@ class Allhotelviews extends StatelessWidget {
             textAlign: TextAlign.center,
             style: AppStyles.h4(context),
           ),
+          actions: [
+            HomeNavBtn(),
+          ],
         ),
         body: GridView.builder(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12.0,
-                childAspectRatio: 0.7),
-            itemCount: HotelList.length,
+                crossAxisSpacing: 2.0,
+                mainAxisSpacing: 2.0,
+                childAspectRatio: 0.84),
+            // itemCount: HotelList.length,
+            itemCount: hostelList.length,
             itemBuilder: (context, index) {
-              var singleHotel = HotelList[index];
-              return HotelGridView(hotelItem: singleHotel);
-            })
-        // Center(
-
-        // child: SingleChildScrollView(
-        //   scrollDirection: Axis.vertical,
-        //   child: Column(
-        //     mainAxisAlignment: MainAxisAlignment.center,
-        //     children:
-        //         HotelList.map((item) => Hotelview(hotelItem: item)).toList(),
-        //   ),
-        // ),
-        // ),
-        );
+              var singleHotel = hostelList[index];
+              var _singleHotel = singleHotel.toJson();
+              return HotelGridView(hotelItem: _singleHotel, index: index);
+            }));
   }
 }
 
 class HotelGridView extends StatelessWidget {
+  final int index;
   final Map<String, dynamic> hotelItem;
-  const HotelGridView({super.key, required this.hotelItem});
+  const HotelGridView(
+      {super.key, required this.hotelItem, required this.index});
 
   @override
   Widget build(BuildContext context) {
-    // final size = MediaQuery.of(context).size;
-    return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
-      child: Container(
-        // width: size.width * 0.6,
-        // height: 300.h,
-        decoration: BoxDecoration(
-            color: AppStyles.cardBlueColor,
-            borderRadius: BorderRadius.circular(12.r)),
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.all(8.w),
-              child: Container(
-                height: 80,
-                // width: size.width * 0.6,
-                decoration: BoxDecoration(
-                  color: AppStyles.cardBlueColor,
-                  borderRadius: BorderRadius.circular(10.r),
-                  image: DecorationImage(
-                      image: AssetImage('assets/images/${hotelItem['image']}'),
-                      fit: BoxFit.cover),
+    return GestureDetector(
+      onTap: () {
+        Navigator.pushNamed(context, AppRoutes.hostelDetails,
+            arguments: {'index': index});
+      },
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 7.h),
+        child: Container(
+          decoration: BoxDecoration(
+              color: AppStyles.cardBlueColor,
+              borderRadius: BorderRadius.circular(12.r)),
+          child: Column(
+            children: [
+              Padding(
+                padding: EdgeInsets.all(5.w),
+                child: Container(
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: AppStyles.cardBlueColor,
+                    borderRadius: BorderRadius.circular(10.r),
+                    image: DecorationImage(
+                        // imageList
+                        image: NetworkImage('${hotelItem['imageList'][0]}'),
+                        // AssetImage('assets/images/${hotelItem['image']}'),
+                        fit: BoxFit.cover),
+                  ),
                 ),
               ),
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            Hoteltext(
-              text: hotelItem['name'],
-              color: AppStyles.kaki,
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            Hoteltext(
-              text: hotelItem['location'],
-              sizeType: 'h3',
-            ),
-            SizedBox(
-              height: 5.h,
-            ),
-            Hoteltext(
-              text: '\$${hotelItem['amount'].toString()}/Night',
-              color: AppStyles.kaki,
-            ),
-          ],
+              SizedBox(
+                height: 5.h,
+              ),
+              Hoteltext(
+                text: hotelItem['name'],
+                color: AppStyles.kaki,
+              ),
+              SizedBox(
+                height: 5.h,
+              ),
+              Hoteltext(
+                text: hotelItem['location'],
+                sizeType: 'h3',
+              ),
+              SizedBox(
+                height: 3.h,
+              ),
+              Hoteltext(
+                text: '\$${hotelItem['price'].toString()}/Night',
+                color: AppStyles.kaki,
+              ),
+            ],
+          ),
         ),
       ),
     );

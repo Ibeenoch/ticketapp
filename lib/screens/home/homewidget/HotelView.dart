@@ -11,7 +11,7 @@ class Hotelview extends StatelessWidget {
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Padding(
-      padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+      padding: EdgeInsets.symmetric(horizontal: 7.w, vertical: 7.h),
       child: Container(
         width: size.width * 0.6,
         height: 300.h,

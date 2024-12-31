@@ -229,10 +229,6 @@ class _AccountState extends State<Account> {
 
       final ParseResponse response = await findFingerId.query();
 
-      print('user response is : $response');
-      print(
-          'the user with the $nameId is now: ${response.results}  ${response.results} or is: $response');
-
       if (response.success &&
           response.result != null &&
           response.result!.isNotEmpty) {
@@ -531,6 +527,7 @@ class _AccountState extends State<Account> {
 
   @override
   Widget build(BuildContext context) {
+    print('account rendered');
     final user =
         userProvider?.currentUser == null ? null : userProvider?.currentUser;
 
@@ -546,293 +543,291 @@ class _AccountState extends State<Account> {
       });
     }
 
-    if (user == null) {
-      return Scaffold(
-        backgroundColor: AppStyles.reversedefaultBackGroundColor(context),
-        body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              SizedBox(height: 10.h),
-              Text(
-                'RapidTik',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                  color: AppStyles.textWhite(context),
-                ),
+    // if (user == null) {
+
+    // } else {
+    //   WidgetsBinding.instance.addPostFrameCallback((_) {
+    //     Navigator.pushNamed(context, AppRoutes.profileScreen);
+    //   });
+    //   return SizedBox.shrink(); // A placeholder widget
+    // }
+
+    return Scaffold(
+      backgroundColor: AppStyles.reversedefaultBackGroundColor(context),
+      body: SafeArea(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            SizedBox(height: 10.h),
+            Text(
+              'RapidTik',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+                color: AppStyles.textWhite(context),
               ),
-              GestureDetector(
-                onTap: () {
-                  Navigator.pushNamed(context, AppRoutes.homePage);
-                },
-                child: SizedBox(
-                  width: 80.w,
-                  height: 80.h,
-                  child: const Image(image: AssetImage(AppMedia.companyLogo)),
-                ),
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.pushNamed(context, AppRoutes.homePage);
+              },
+              child: SizedBox(
+                width: 80.w,
+                height: 80.h,
+                child: const Image(image: AssetImage(AppMedia.companyLogo)),
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                children: [
-                  authTabs(context, 'Login', showLogin, isLoginTab),
-                  authTabs(context, 'Sign Up', showSignUp, !isLoginTab),
-                ],
-              ),
-              isLoginTab
-                  ? Expanded(
-                      child: Container(
-                        color: AppStyles.defaultBackGroundColor(context),
-                        child: ListView(
-                          children: [
-                            SizedBox(
-                              height: 20.h,
-                            ),
-                            inputText(
-                                context,
-                                emailL,
-                                emailFL,
-                                'Enter your email address',
-                                Icons.email,
-                                false,
-                                'Email'),
-                            if (emailErrorL != null) errorMessage(emailErrorL!),
-                            SizedBox(
-                              height: 15.h,
-                            ),
-                            inputText(
-                                context,
-                                passwordL,
-                                passwordFL,
-                                'Enter your password',
-                                Icons.lock,
-                                true,
-                                'Password'),
-                            if (passwordErrorL != null)
-                              errorMessage(passwordErrorL!),
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                            forgotPassword(),
-                            SizedBox(
-                              height: 10.h,
-                            ),
-                            actonBtn(),
-                            SizedBox(
-                              height: 20.h,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Biometrics(
-                                    onTap: authWithFingerPrint,
-                                    icon: Icon(
-                                      Icons.fingerprint,
-                                      size: 30.w,
-                                      color: Colors.white,
-                                    ),
-                                    text: 'Use Fingerprint'),
-                                Biometrics(
-                                    onTap: authWithFacialId,
-                                    icon: SvgPicture.asset(
-                                      'assets/icons/faceid.svg',
-                                      width: 30.w,
-                                      height: 30.h,
-                                      color: Colors.white,
-                                    ),
-                                    text: 'Use Facial Recognition'),
-                              ],
-                            ),
-                            SizedBox(
-                              height: 30.h,
-                            ),
-                            GestureDetector(
-                              onTap: () {
-                                loginWithGoogle();
-                              },
-                              child: Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 40.w),
-                                child: Container(
-                                  alignment: Alignment.center,
-                                  padding: EdgeInsets.symmetric(
-                                      horizontal: 5.w, vertical: 10.h),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(7.r),
-                                    color: AppStyles.cardBlueColor,
-                                  ),
-                                  child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/icons/google.svg',
-                                          width: 30.w,
-                                          height: 30.h,
-                                          // color: Colors.white,
-                                        ),
-                                        SizedBox(
-                                          width: 30.w,
-                                        ),
-                                        Text('Login with Google',
-                                            style: TextStyle(
-                                                fontSize: 13.sp,
-                                                fontWeight: FontWeight.bold,
-                                                color: Colors.white))
-                                      ]),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
-                  : Expanded(
-                      child: Stack(
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                authTabs(context, 'Login', showLogin, isLoginTab),
+                authTabs(context, 'Sign Up', showSignUp, !isLoginTab),
+              ],
+            ),
+            isLoginTab
+                ? Expanded(
+                    child: Container(
+                      color: AppStyles.defaultBackGroundColor(context),
+                      child: ListView(
                         children: [
-                          ListView(
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          inputText(
+                              context,
+                              emailL,
+                              emailFL,
+                              'Enter your email address',
+                              Icons.email,
+                              false,
+                              'Email'),
+                          if (emailErrorL != null) errorMessage(emailErrorL!),
+                          SizedBox(
+                            height: 15.h,
+                          ),
+                          inputText(
+                              context,
+                              passwordL,
+                              passwordFL,
+                              'Enter your password',
+                              Icons.lock,
+                              true,
+                              'Password'),
+                          if (passwordErrorL != null)
+                            errorMessage(passwordErrorL!),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          forgotPassword(),
+                          SizedBox(
+                            height: 10.h,
+                          ),
+                          actonBtn(),
+                          SizedBox(
+                            height: 20.h,
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              Container(
-                                color:
-                                    AppStyles.defaultBackGroundColor(context),
-                                child: Padding(
-                                  padding:
-                                      EdgeInsets.symmetric(horizontal: 15.w),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      SizedBox(
-                                        height: 30.h,
-                                      ),
-                                      userProfile(),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      inputs(
-                                          fullname,
-                                          fullnameF,
-                                          Icons.person,
-                                          true,
-                                          false,
-                                          'Enter your first and last name ',
-                                          fullnameError != null ? true : false,
-                                          'FullName'),
-                                      if (fullnameError != null)
-                                        errorMessage(fullnameError!),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      inputs(
-                                          address,
-                                          addressF,
-                                          Icons.location_city,
-                                          true,
-                                          false,
-                                          'Enter your address',
-                                          addressError != null ? true : false,
-                                          'Address'),
-                                      if (addressError != null)
-                                        errorMessage(addressError!),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      inputs(
-                                          bio,
-                                          bioF,
-                                          Icons.abc,
-                                          true,
-                                          false,
-                                          'Tell us about yourself',
-                                          bioError != null ? true : false,
-                                          'Bio'),
-                                      if (bioError != null)
-                                        errorMessage(bioError!),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      userId.isNotEmpty
-                                          ? Container()
-                                          : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                inputs(
-                                                    email,
-                                                    emailF,
-                                                    Icons.email,
-                                                    true,
-                                                    false,
-                                                    'Enter your email address',
-                                                    emailError != null
-                                                        ? true
-                                                        : false,
-                                                    'Email'),
-                                                if (emailError != null)
-                                                  errorMessage(emailError!),
-                                                SizedBox(
-                                                  height: 15.h,
-                                                )
-                                              ],
-                                            ),
-                                      userId.isNotEmpty
-                                          ? Container()
-                                          : Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                inputs(
-                                                    password,
-                                                    passwordF,
-                                                    Icons.lock,
-                                                    true,
-                                                    true,
-                                                    'Enter your password',
-                                                    passwordError != null
-                                                        ? true
-                                                        : false,
-                                                    'Password'),
-                                                if (passwordError != null)
-                                                  errorMessage(passwordError!),
-                                                SizedBox(
-                                                  height: 15.h,
-                                                ),
-                                              ],
-                                            ),
-                                      selectCountry(context),
-                                      SizedBox(
-                                        height: 15.h,
-                                      ),
-                                      actionBtn(),
-                                      SizedBox(
-                                        height: 20.h,
-                                      ),
-                                    ],
+                              Biometrics(
+                                  onTap: authWithFingerPrint,
+                                  icon: Icon(
+                                    Icons.fingerprint,
+                                    size: 30.w,
+                                    color: Colors.white,
                                   ),
-                                ),
-                              )
+                                  text: 'Use Fingerprint'),
+                              Biometrics(
+                                  onTap: authWithFacialId,
+                                  icon: SvgPicture.asset(
+                                    'assets/icons/faceid.svg',
+                                    width: 30.w,
+                                    height: 30.h,
+                                    color: Colors.white,
+                                  ),
+                                  text: 'Use Facial Recognition'),
                             ],
                           ),
-                          if (_isBottomSheetOpen)
-                            Positioned.fill(
-                                child: BackdropFilter(
-                              filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                          SizedBox(
+                            height: 30.h,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              loginWithGoogle();
+                            },
+                            child: Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 40.w),
                               child: Container(
-                                color: Colors.black.withOpacity(0.3),
+                                alignment: Alignment.center,
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 5.w, vertical: 10.h),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(7.r),
+                                  color: AppStyles.cardBlueColor,
+                                ),
+                                child: Row(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/icons/google.svg',
+                                        width: 30.w,
+                                        height: 30.h,
+                                        // color: Colors.white,
+                                      ),
+                                      SizedBox(
+                                        width: 30.w,
+                                      ),
+                                      Text('Login with Google',
+                                          style: TextStyle(
+                                              fontSize: 13.sp,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white))
+                                    ]),
                               ),
-                            ))
+                            ),
+                          ),
                         ],
                       ),
                     ),
-            ],
-          ),
+                  )
+                : Expanded(
+                    child: Stack(
+                      children: [
+                        ListView(
+                          children: [
+                            Container(
+                              color: AppStyles.defaultBackGroundColor(context),
+                              child: Padding(
+                                padding: EdgeInsets.symmetric(horizontal: 15.w),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    SizedBox(
+                                      height: 30.h,
+                                    ),
+                                    userProfile(),
+                                    SizedBox(
+                                      height: 15.h,
+                                    ),
+                                    inputs(
+                                        fullname,
+                                        fullnameF,
+                                        Icons.person,
+                                        true,
+                                        false,
+                                        'Enter your first and last name ',
+                                        fullnameError != null ? true : false,
+                                        'FullName'),
+                                    if (fullnameError != null)
+                                      errorMessage(fullnameError!),
+                                    SizedBox(
+                                      height: 15.h,
+                                    ),
+                                    inputs(
+                                        address,
+                                        addressF,
+                                        Icons.location_city,
+                                        true,
+                                        false,
+                                        'Enter your address',
+                                        addressError != null ? true : false,
+                                        'Address'),
+                                    if (addressError != null)
+                                      errorMessage(addressError!),
+                                    SizedBox(
+                                      height: 15.h,
+                                    ),
+                                    inputs(
+                                        bio,
+                                        bioF,
+                                        Icons.abc,
+                                        true,
+                                        false,
+                                        'Tell us about yourself',
+                                        bioError != null ? true : false,
+                                        'Bio'),
+                                    if (bioError != null)
+                                      errorMessage(bioError!),
+                                    SizedBox(
+                                      height: 15.h,
+                                    ),
+                                    userId.isNotEmpty
+                                        ? Container()
+                                        : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              inputs(
+                                                  email,
+                                                  emailF,
+                                                  Icons.email,
+                                                  true,
+                                                  false,
+                                                  'Enter your email address',
+                                                  emailError != null
+                                                      ? true
+                                                      : false,
+                                                  'Email'),
+                                              if (emailError != null)
+                                                errorMessage(emailError!),
+                                              SizedBox(
+                                                height: 15.h,
+                                              )
+                                            ],
+                                          ),
+                                    userId.isNotEmpty
+                                        ? Container()
+                                        : Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              inputs(
+                                                  password,
+                                                  passwordF,
+                                                  Icons.lock,
+                                                  true,
+                                                  true,
+                                                  'Enter your password',
+                                                  passwordError != null
+                                                      ? true
+                                                      : false,
+                                                  'Password'),
+                                              if (passwordError != null)
+                                                errorMessage(passwordError!),
+                                              SizedBox(
+                                                height: 15.h,
+                                              ),
+                                            ],
+                                          ),
+                                    selectCountry(context),
+                                    SizedBox(
+                                      height: 15.h,
+                                    ),
+                                    actionBtn(),
+                                    SizedBox(
+                                      height: 20.h,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                        if (_isBottomSheetOpen)
+                          Positioned.fill(
+                              child: BackdropFilter(
+                            filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
+                            child: Container(
+                              color: Colors.black.withOpacity(0.3),
+                            ),
+                          ))
+                      ],
+                    ),
+                  ),
+          ],
         ),
-      );
-    } else {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        Navigator.pushNamed(context, AppRoutes.profileScreen);
-      });
-      return SizedBox.shrink(); // A placeholder widget
-    }
+      ),
+    );
   }
 
   Widget authTabs(

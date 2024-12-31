@@ -29,8 +29,18 @@ class AppStyles {
     return isDarkMode(context) ? primaryDarkColor : primaryLightColor;
   }
 
+  static Color navHomeColor(BuildContext context) {
+    return isDarkMode(context) ? Colors.white : cardBlueColor;
+  }
+
   static Color defaultBackGroundColor(BuildContext context) {
     return isDarkMode(context) ? backgroundColorBlue : Color(0xFFF7F7F7);
+  }
+
+  static Color imageUploadColor(BuildContext context) {
+    return isDarkMode(context)
+        ? Colors.grey.withOpacity(0.2)
+        : Colors.black.withOpacity(0.3);
   }
 
   static Color backGroundColorWhiteAndDeepBlue(BuildContext context) {

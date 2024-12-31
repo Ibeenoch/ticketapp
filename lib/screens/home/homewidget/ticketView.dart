@@ -1,4 +1,3 @@
-import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/ColumnText.dart';
 import 'package:airlineticket/base/reuseables/widgets/appLayoutBuilder.dart';
@@ -38,7 +37,7 @@ class Ticketview extends StatelessWidget {
             // container shrinked because of the column wrapping the children Container
             children: [
               Container(
-                height: 65,
+                height: 75,
                 decoration: BoxDecoration(
                     color: showColor ? AppStyles.cardBlueColor : Colors.white,
                     borderRadius: BorderRadius.only(

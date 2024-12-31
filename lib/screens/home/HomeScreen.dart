@@ -187,7 +187,6 @@ class _HomescreenState extends State<Homescreen> {
                 } else {
                   final tickets =
                       Provider.of<Ticketprovider>(context, listen: false);
-                  print('loaded this ticket ${tickets.tickets}');
                   final getTickets = tickets.tickets;
                   return SingleChildScrollView(
                       scrollDirection: Axis.horizontal,

@@ -1,9 +1,12 @@
-import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
+import 'dart:math';
+
+import 'package:airlineticket/base/reuseables/resources/countries.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/appLayoutBuilder.dart';
 import 'package:airlineticket/base/reuseables/widgets/editDeleteBtn.dart';
 import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/base/reuseables/widgets/ticketTab.dart';
+import 'package:airlineticket/base/utils/getCountryName.dart';
 import 'package:airlineticket/base/utils/stringFormatter.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
@@ -13,8 +16,10 @@ import 'package:airlineticket/screens/ticket/ticketwidget/RowText.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:latlong2/latlong.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_map/flutter_map.dart';
 
 class Ticketscreen extends StatefulWidget {
   // final List<Map<String, dynamic>> ticket;
@@ -31,8 +36,10 @@ class _TicketscreenState extends State<Ticketscreen> {
   UserProvider? userProvider;
   String? userId;
   List<ParseObject>? allTickets;
-  // int currentIndex = 0;
+  late LatLng getInitialCoordinate = LatLng(51.509364, -0.128928);
+
   String currentIndex = '';
+  final MapController _mapController = MapController();
 
   @override
   void initState() {
@@ -45,6 +52,8 @@ class _TicketscreenState extends State<Ticketscreen> {
         userProvider = Provider.of<UserProvider>(context, listen: false);
         userId = userProvider?.currentUser?.objectId;
       });
+
+      // fitBounds(curvedRoute);
     });
   }
 
@@ -71,11 +80,6 @@ class _TicketscreenState extends State<Ticketscreen> {
     }
     currentIndex = currentIndex == '' ? getcurrentIndex : currentIndex;
 
-    // currentIndex =
-    //     currentIndex == '' ? (one_id_ticket ?? 'default_id') : currentIndex;
-
-    print('the current index is $currentIndex');
-
     ParseObject? foundTicket = allTickets?.firstWhere(
       (ticket) => ticket.get<String>('objectId') == currentIndex,
       orElse: () {
@@ -86,7 +90,77 @@ class _TicketscreenState extends State<Ticketscreen> {
     if (foundTicket != null) {
       getTicket = foundTicket.toJson();
     }
+    print('ticket found is $foundTicket');
     final currentTicket = getTicket;
+
+    final departureCountry =
+        getCountryName(currentTicket['departure_country'] ?? '');
+    final arrivalCountry =
+        getCountryName(currentTicket['arrival_country'] ?? '');
+
+    final departureCountryCoordinate = countriesCoordinates.firstWhere(
+      (country) => country['country'] == departureCountry,
+      orElse: () => {
+        'latitude': 51.509364, // Default latitude
+        'longitude':
+            -0.128928, // Default longitude LatLng(51.509364, -0.128928);
+      },
+    );
+
+    final arrivalCountryCoordinate = countriesCoordinates.firstWhere(
+      (country) => country['country'] == arrivalCountry,
+      orElse: () => {
+        'latitude': 51.509364, // Default latitude
+        'longitude': -0.128928, // Default longitude
+      },
+    );
+
+    // var canada = countriesCoordinates.firstWhere(
+    //   (country) => country['country'] == 'Canada',
+    // );
+    // print(
+    //     'Canada Coordinates: Latitude: ${canada['latitude']}, Longitude: ${canada['longitude']} $currentTicket');
+
+    // defined departure and arrival and coordinate
+    // final LatLng departure = LatLng(51.5074, -0.1278); // London (UK)
+    final LatLng departure = LatLng(departureCountryCoordinate['latitude'],
+        departureCountryCoordinate['longitude']); // London (UK)
+    final LatLng arrival = LatLng(arrivalCountryCoordinate['latitude'],
+        arrivalCountryCoordinate['longitude']); // New York (USA)
+    setState(() {
+      getInitialCoordinate = departure;
+    });
+    print(' the new coord is $getInitialCoordinate');
+
+    // Function to generate a slightly curved route between the start and end points
+    List<LatLng> generateCurvedRoute(LatLng start, LatLng end) {
+      List<LatLng> route = [start];
+
+      // Number of intermediate points (more points = smoother curve)
+      int numPoints = 30;
+      double deltaLat = (end.latitude - start.latitude) / numPoints;
+      double deltaLon = (end.longitude - start.longitude) / numPoints;
+
+      // Generate intermediate points that form a curved path
+      for (int i = 1; i < numPoints; i++) {
+        double lat = start.latitude + deltaLat * i;
+        double lon = start.longitude + deltaLon * i;
+
+        // Introduce a small sine wave to create the curve effect
+        double curveFactor =
+            sin(i / numPoints * pi) * 0.5; // Adjust the curve strength
+        lat += curveFactor * 0.5; // Adjust latitude for the curve
+        lon += curveFactor * 0.5; // Adjust longitude for the curve
+
+        route.add(LatLng(lat, lon));
+      }
+
+      route.add(end); // End point
+      return route;
+    }
+
+    // Generate random intermediate points to create a haphazard path
+    List<LatLng> curvedRoute = generateCurvedRoute(departure, arrival);
 
     final size = MediaQuery.of(context).size;
     if (currentTicket == null) {
@@ -229,9 +303,59 @@ class _TicketscreenState extends State<Ticketscreen> {
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Container(
-                      height: 400.h,
+                      height: 650.h,
                       width: double.infinity,
                       decoration: BoxDecoration(color: AppStyles.cardBlueColor),
+                      child: Stack(children: [
+                        FlutterMap(
+                          options: MapOptions(
+                            initialCenter:
+                                getInitialCoordinate, // Center the map over London
+                            initialZoom: 5.2,
+                          ),
+                          children: [
+                            TileLayer(
+                              // Display map tiles from any source
+                              urlTemplate:
+                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
+                              userAgentPackageName: 'com.example.airticket',
+                              // And many more recommended properties!
+                            ),
+                            // Polyline Layer: Draw the haphazard route
+                            // PolylineLayer(
+                            //   polylines: [
+                            //     Polyline(
+                            //       points: haphazardRoute,
+                            //       strokeWidth: 4.0,
+                            //       color: Colors.blue,
+                            //     ),
+                            //   ],
+                            // ),
+
+                            PolylineLayer(
+                              polylines: [
+                                Polyline(
+                                  points: curvedRoute,
+                                  strokeWidth: 4.0,
+                                  color: AppStyles
+                                      .cardBlueColor, // Using your custom color
+                                ),
+                              ],
+                            ),
+
+                            RichAttributionWidget(
+                              // Include a stylish prebuilt attribution widget that meets all requirments
+                              attributions: [
+                                TextSourceAttribution(
+                                  'OpenStreetMap contributors',
+                                  // onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
+                                ),
+                                // Also add images...
+                              ],
+                            ),
+                          ],
+                        )
+                      ]),
                     ),
                   ),
                   SizedBox(
