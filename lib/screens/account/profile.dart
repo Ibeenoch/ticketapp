@@ -203,7 +203,7 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     print('profile rendered');
 
-    late String getfullname = '';
+    late String getfullname = 'guest';
     final user = userProvider?.currentUser;
 
     if (user != null) {

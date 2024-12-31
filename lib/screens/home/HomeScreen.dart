@@ -4,6 +4,7 @@ import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/shimmerPlaceholder.dart';
 import 'package:airlineticket/base/reuseables/widgets/symmetricText.dart';
+import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/AllTicketScreen.dart';
@@ -217,17 +218,71 @@ class _HomescreenState extends State<Homescreen> {
               Navigator.pushNamed(context, AppRoutes.allHotels);
             },
           ),
-          Align(
-            alignment: Alignment.centerLeft,
-            child: SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children: HotelList.take(3)
-                    .map((hotelItem) => Hotelview(hotelItem: hotelItem))
-                    .toList(),
-              ),
-            ),
-          ),
+          FutureBuilder(
+              future: Provider.of<HostelProvider>(context, listen: false)
+                  .fetchHotels(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: Row(
+                      children: [
+                        SizedBox(
+                          width: 15.w,
+                        ),
+                        ShimmerPlaceholder(
+                          width: size.width * 0.6,
+                          height: 300.toDouble(),
+                          borderRadius: 8.toDouble(),
+                        ),
+                        SizedBox(
+                          width: 15.w,
+                        ),
+                        ShimmerPlaceholder(
+                          width: size.width * 0.6,
+                          height: 300.toDouble(),
+                          borderRadius: 8.toDouble(),
+                        ),
+                        SizedBox(
+                          width: 15.w,
+                        ),
+                        ShimmerPlaceholder(
+                          width: size.width * 0.6,
+                          height: 300.toDouble(),
+                          borderRadius: 8.toDouble(),
+                        ),
+                      ],
+                    ),
+                  );
+                } else if (snapshot.hasError) {
+                  return Container(
+                    height: 200,
+                    color: Colors.red[100],
+                    child: Center(
+                      child: Text('Error: ${snapshot.error}'),
+                    ),
+                  );
+                } else {
+                  final hostels =
+                      Provider.of<HostelProvider>(context, listen: false)
+                          .hotels;
+                  return Align(
+                    alignment: Alignment.centerLeft,
+                    child: SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: hostels
+                            .take(3)
+                            .map((hotelItem) => Hotelview(
+                                  hotelItem: hotelItem.toJson(),
+                                ))
+                            .toList(),
+                      ),
+                    ),
+                  );
+                }
+              }),
+          SizedBox(height: 30.h),
         ],
       ),
     );

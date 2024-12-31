@@ -37,7 +37,7 @@ class _AllhotelviewsState extends State<Allhotelviews> {
         appBar: AppBar(
           backgroundColor: AppStyles.defaultBackGroundColor(context),
           title: Text(
-            'All Hotels',
+            'Hotels',
             textAlign: TextAlign.center,
             style: AppStyles.h4(context),
           ),
@@ -56,7 +56,11 @@ class _AllhotelviewsState extends State<Allhotelviews> {
             itemBuilder: (context, index) {
               var singleHotel = hostelList[index];
               var _singleHotel = singleHotel.toJson();
-              return HotelGridView(hotelItem: _singleHotel, index: index);
+              if (_singleHotel.isNotEmpty) {
+                return HotelGridView(hotelItem: _singleHotel, index: index);
+              } else {
+                print('_singleHotel is empty $_singleHotel');
+              }
             }));
   }
 }
@@ -69,6 +73,7 @@ class HotelGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    print('hotel grid view $index ');
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, AppRoutes.hostelDetails,
@@ -91,7 +96,9 @@ class HotelGridView extends StatelessWidget {
                     borderRadius: BorderRadius.circular(10.r),
                     image: DecorationImage(
                         // imageList
-                        image: NetworkImage('${hotelItem['imageList'][0]}'),
+                        image: hotelItem.isEmpty
+                            ? AssetImage('assets/images/${hotelItem['image']}')
+                            : NetworkImage('${hotelItem['imageList'][0]}'),
                         // AssetImage('assets/images/${hotelItem['image']}'),
                         fit: BoxFit.cover),
                   ),
@@ -101,21 +108,21 @@ class HotelGridView extends StatelessWidget {
                 height: 5.h,
               ),
               Hoteltext(
-                text: hotelItem['name'],
+                text: hotelItem['name'] ?? 'N/A',
                 color: AppStyles.kaki,
               ),
               SizedBox(
                 height: 5.h,
               ),
               Hoteltext(
-                text: hotelItem['location'],
+                text: hotelItem['location'] ?? 'N/A',
                 sizeType: 'h3',
               ),
               SizedBox(
                 height: 3.h,
               ),
               Hoteltext(
-                text: '\$${hotelItem['price'].toString()}/Night',
+                text: '\$${hotelItem['price'].toString() ?? 'N/A'}/Night',
                 color: AppStyles.kaki,
               ),
             ],

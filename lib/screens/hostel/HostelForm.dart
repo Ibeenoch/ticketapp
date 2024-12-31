@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/base/reuseables/widgets/loadingtextAnimation.dart';
 import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
@@ -9,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
 
 class Hostelform extends StatefulWidget {
@@ -20,9 +22,13 @@ class Hostelform extends StatefulWidget {
 
 class _HostelformState extends State<Hostelform> {
   bool isBtnClickedCreate = false;
+  String? hostelId;
+
   TextEditingController name = TextEditingController();
   FocusNode nameF = FocusNode();
   String? nameErr;
+
+  String? generalErr;
 
   TextEditingController location = TextEditingController();
   FocusNode locationF = FocusNode();
@@ -64,6 +70,30 @@ class _HostelformState extends State<Hostelform> {
         validateDetails();
       }
     });
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    int index;
+    if (ModalRoute.of(context)!.settings.arguments != null) {
+      final args = ModalRoute.of(context)!.settings.arguments as Map;
+      index = args['index'];
+
+      final hostels =
+          Provider.of<HostelProvider>(context, listen: false).hotels;
+      final hostel = hostels[index];
+      setState(() {
+        hostelId = hostel.get<String>('objectId');
+      });
+      print('the hostel is $hostelId');
+      if (hostelId != null) {
+        name.text = hostel['name'];
+        location.text = hostel['location'];
+        price.text = hostel['price'];
+        details.text = hostel['details'];
+      }
+    }
   }
 
   void validateDetails() {
@@ -132,6 +162,17 @@ class _HostelformState extends State<Hostelform> {
     final userId = user?.get<String>('objectId');
 
     try {
+      print(
+          'all data ${name.text} ${location.text} ${price.text} ${location.text}');
+      if (name.text.isEmpty ||
+          location.text.isEmpty ||
+          price.text.isEmpty ||
+          details.text.isEmpty) {
+        setState(() {
+          generalErr = 'Please add all fields required';
+        });
+        return;
+      }
       print(' imagesPicked ${imagesPicked} $userId');
       await hostelProvider.createHostel(
           name: name.text,
@@ -149,14 +190,52 @@ class _HostelformState extends State<Hostelform> {
     }
   }
 
+  void handleHostelUpdate() async {
+    setState(() {
+      isBtnClickedCreate = true;
+    });
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    final hostelProvider = Provider.of<HostelProvider>(context, listen: false);
+    final user = userProvider.currentUser;
+    final userId = user?.get<String>('objectId');
+
+    try {
+      print(
+          'all data ${name.text} ${location.text} ${price.text} ${location.text} $hostelId $userId');
+      if (name.text.isEmpty ||
+          location.text.isEmpty ||
+          price.text.isEmpty ||
+          details.text.isEmpty) {
+        setState(() {
+          generalErr = 'Please add all fields required';
+        });
+        return;
+      }
+      await hostelProvider.updateHostel(
+          name: name.text,
+          location: location.text,
+          price: price.text,
+          details: details.text,
+          userId: userId!,
+          hostelId: hostelId!,
+          context: context,
+          imagesPicked: imagesPicked);
+    } catch (e, stackTrace) {
+      print('error creating profile $e and $stackTrace');
+      setState(() {
+        isBtnClickedCreate = false;
+      });
+    }
+  }
+
   @override
   void dispose() {
-    // TODO: implement dispose
-    super.dispose();
     name.dispose();
     location.dispose();
     price.dispose();
     details.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -166,9 +245,13 @@ class _HostelformState extends State<Hostelform> {
       appBar: AppBar(
         backgroundColor: AppStyles.defaultBackGroundColor(context),
         title: Text(
-          'Add Hotel',
+          hostelId == null ? 'Add Hotel' : 'Edit Hostel',
           style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
         ),
+        centerTitle: true,
+        actions: [
+          HomeNavBtn(),
+        ],
       ),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w),
@@ -181,7 +264,7 @@ class _HostelformState extends State<Hostelform> {
             SizedBox(
               height: 7.h,
             ),
-            inputs(name, nameF, Icons.hotel, 'Hostel Name',
+            inputs(name, nameF, Icons.location_city, 'Hostel Name',
                 nameErr == null ? false : true, 'Hostel Name', false, false),
             if (nameErr != null) errorMessage(nameErr!),
             SizedBox(
@@ -290,23 +373,29 @@ class _HostelformState extends State<Hostelform> {
             SizedBox(
               height: 20.h,
             ),
-            GestureDetector(
-              onTap: handleHostelCreation,
-              child: Container(
-                  width: double.infinity,
-                  height: 45.h,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8.r),
-                      color: AppStyles.cardBlueColor),
-                  child: LoadingTextAnimation(
-                      text: 'Create', isClicked: isBtnClickedCreate)),
-            ),
+            if (generalErr != null) errorMessage(generalErr!),
+            hostelBtn(hostelId),
             SizedBox(
               height: 20.h,
             )
           ],
         ),
       ),
+    );
+  }
+
+  GestureDetector hostelBtn(String? hostelId) {
+    return GestureDetector(
+      onTap: hostelId != null ? handleHostelUpdate : handleHostelCreation,
+      child: Container(
+          width: double.infinity,
+          height: 45.h,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8.r),
+              color: AppStyles.cardBlueColor),
+          child: LoadingTextAnimation(
+              text: hostelId == null ? 'Create' : 'Edit',
+              isClicked: isBtnClickedCreate)),
     );
   }
 
@@ -340,7 +429,7 @@ class _HostelformState extends State<Hostelform> {
       String focusname,
       bool useNum,
       bool increaseHeight,
-      {int maxLength = 9}) {
+      {int maxLength = 20}) {
     return Container(
       decoration: BoxDecoration(
           color: AppStyles.borderBackGroundColor(context),

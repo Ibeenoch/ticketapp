@@ -1,6 +1,8 @@
+import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/hostelProvider.dart';
+import 'package:airlineticket/providers/userProvider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
@@ -34,10 +36,33 @@ class _HostelDetailsState extends State<HostelDetails> {
     }
   }
 
+  void handleEditHotel() async {
+    // don't worry about the userId, we can get it from the hostel form screen
+    Navigator.pushNamed(context, AppRoutes.hostelForm, arguments: {
+      'index': currentIndex,
+    });
+  }
+
+  void handleDeleteHotel() async {
+    final user = Provider.of<UserProvider>(context, listen: false).currentUser;
+    final userId = user?.get<String>('objectId');
+    final hostelProvider = Provider.of<HostelProvider>(context, listen: false);
+    final hostels = hostelProvider.hotels;
+    final hostel = hostels[currentIndex];
+    final String? hotelId = hostel.get<String>('objectId');
+    print('the ids are $userId $hotelId');
+    try {
+      await hostelProvider.deleteHostel(hotelId!, userId!, context);
+    } catch (e) {
+      print('unknown error deleting hostel, $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     Map<String, dynamic> getHostel = {};
     final hostelProvider = Provider.of<HostelProvider>(context, listen: false);
+    final user = Provider.of<UserProvider>(context, listen: false).currentUser;
     final allHostels = hostelProvider.hotels;
 
     ParseObject? foundHostel = allHostels[currentIndex];
@@ -127,6 +152,10 @@ class _HostelDetailsState extends State<HostelDetails> {
                 ),
               ),
             ),
+            user == null ? Container() : actionSection(context),
+            SizedBox(
+              height: 7.h,
+            ),
             Padding(
               padding: EdgeInsets.symmetric(
                 horizontal: 15.w,
@@ -139,27 +168,70 @@ class _HostelDetailsState extends State<HostelDetails> {
                     fontWeight: FontWeight.bold),
               ),
             ),
-            Container(
-              height: 150.h,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: getHostel['imageList'].length,
-                  itemBuilder: (context, index) {
-                    String imageUrl = getHostel['imageList'][index];
-                    return Container(
-                      child: Image(
-                        image: NetworkImage(imageUrl),
-                        width: 205,
-                        height: 150,
-                      ),
-                    );
-                  }),
+            Padding(
+              padding: EdgeInsets.only(left: 15.w),
+              child: Container(
+                height: 160.h,
+                child: ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    itemCount: getHostel['imageList'].length,
+                    itemBuilder: (context, index) {
+                      String imageUrl = getHostel['imageList'][index];
+                      return Container(
+                        child: Image(
+                          image: NetworkImage(imageUrl),
+                          width: 205,
+                          height: 150,
+                        ),
+                      );
+                    }),
+              ),
             ),
             SizedBox(
               height: 20.h,
             )
           ])),
         ],
+      ),
+    );
+  }
+
+  Padding actionSection(BuildContext context) {
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 20.h),
+      child: Container(
+        // padding: EdgeInsets.symmetric(vertical: 10.w),
+        decoration: BoxDecoration(
+          color: AppStyles.borderBackGroundColor(context),
+          borderRadius: BorderRadius.circular(8.r),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: [
+            InkWell(
+              onTap: handleEditHotel,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.w),
+                child: Icon(
+                  Icons.edit,
+                  size: 20.sp,
+                  color: AppStyles.cardBlueColor,
+                ),
+              ),
+            ),
+            InkWell(
+              onTap: handleDeleteHotel,
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 10.w),
+                child: Icon(
+                  Icons.delete,
+                  size: 20.sp,
+                  color: AppStyles.cardRedColor,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

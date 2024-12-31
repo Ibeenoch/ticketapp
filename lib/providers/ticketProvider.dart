@@ -197,9 +197,7 @@ class Ticketprovider extends ChangeNotifier {
               _tickets.indexWhere((ticket) => ticket.objectId == ticketId);
           print('the nested ticket: ${indexTicket}');
           if (indexTicket > -1) {
-            // _ticket[indexTicket] = ticket;
-            // _ticket![ticketId] = ticket;
-            // print('nested ticket: ${_ticket![ticketId]}');
+            _tickets[indexTicket] = ticket;
             notifyListeners();
             Navigator.pushNamed(context, AppRoutes.homePage);
           }
