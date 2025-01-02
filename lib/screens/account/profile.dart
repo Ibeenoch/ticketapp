@@ -21,20 +21,19 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  Ticketprovider? ticketprovider;
-  UserProvider? userProvider;
+  // Ticketprovider ticketprovider =  Provider.of<Ticketprovider>(context, listen: false);
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
 
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      setState(() {
-        ticketprovider = Provider.of<Ticketprovider>(context, listen: false);
-        userProvider = Provider.of<UserProvider>(context, listen: false);
-      });
-    });
+    // WidgetsBinding.instance.addPostFrameCallback((_) {
+    //   setState(() {
+    //     ticketprovider = Provider.of<Ticketprovider>(context, listen: false);
+    //     userProvider = Provider.of<UserProvider>(context, listen: false);
+    //   });
+    // });
   }
 
   Future<bool> _registerBiometric() async {
@@ -181,7 +180,8 @@ class _ProfileState extends State<Profile> {
   }
 
   Future<void> logout() async {
-    await userProvider?.logOut(context);
+    final userProvider = Provider.of<UserProvider>(context, listen: false);
+    await userProvider.logOut(context);
     Navigator.pushNamed(context, AppRoutes.accountScreen);
   }
 
@@ -201,10 +201,13 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    print('profile rendered');
+    // Ticketprovider ticketprovider =
+    //   Provider.of<Ticketprovider>(context, listen: false);
+    UserProvider userProvider =
+        Provider.of<UserProvider>(context, listen: false);
 
-    late String getfullname = 'guest';
-    final user = userProvider?.currentUser;
+    String getfullname = 'guest';
+    final user = userProvider.currentUser;
 
     if (user != null) {
       getfullname = user?.get('fullname');
@@ -215,7 +218,6 @@ class _ProfileState extends State<Profile> {
     String firstName = namePart[0];
     String lastName = namePart[1];
 
-    // final size = MediaQuery.of(context).size;
     return Scaffold(
       appBar: AppBar(
         elevation: 0,

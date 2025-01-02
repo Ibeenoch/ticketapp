@@ -73,7 +73,6 @@ class HotelGridView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('hotel grid view $index ');
     return GestureDetector(
       onTap: () {
         Navigator.pushNamed(context, AppRoutes.hostelDetails,

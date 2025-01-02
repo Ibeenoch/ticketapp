@@ -289,4 +289,54 @@ class Ticketprovider extends ChangeNotifier {
       print('Error delete ticket: $e');
     }
   }
+
+  Future<void> searchTicket(String word) async {
+    try {
+      final partialSearchQuery =
+          QueryBuilder<ParseObject>(ParseObject('tickets'))
+            ..whereContains('departure_country', word)
+            ..whereContains('arrival_country', word)
+            ..whereContains('flight_duration_hrs', word)
+            ..whereContains('flight_duration_minutes', word)
+            ..whereContains('flight_month', word)
+            ..whereContains('flight_day', word)
+            ..whereContains('departure_time_hrs', word)
+            ..whereContains('departure_time_minutes', word)
+            ..whereContains('pilot', word)
+            ..whereContains('passport', word)
+            ..whereContains('ticketNo', word)
+            ..whereContains('bookingNo', word)
+            ..whereContains('paymentMethod', word)
+            ..whereContains('price', word);
+
+      final fullSearchQuery = QueryBuilder<ParseObject>(ParseObject('tickets'))
+        ..whereEqualTo('departure_country', word)
+        ..whereEqualTo('arrival_country', word)
+        ..whereEqualTo('flight_duration_hrs', word)
+        ..whereEqualTo('flight_duration_minutes', word)
+        ..whereEqualTo('flight_month', word)
+        ..whereEqualTo('flight_day', word)
+        ..whereEqualTo('departure_time_hrs', word)
+        ..whereEqualTo('departure_time_minutes', word)
+        ..whereEqualTo('pilot', word)
+        ..whereEqualTo('passport', word)
+        ..whereEqualTo('ticketNo', word)
+        ..whereEqualTo('bookingNo', word)
+        ..whereEqualTo('paymentMethod', word)
+        ..whereEqualTo('price', word);
+
+      // combine both Queries
+      final combinedQueries = QueryBuilder.or(
+          ParseObject('tickets'), [partialSearchQuery, fullSearchQuery]);
+
+      final ParseResponse response = await combinedQueries.query();
+      if (response.success) {
+        print('found this ticket results ${response.results}');
+        _tickets = response.results as List<ParseObject>;
+        notifyListeners();
+      }
+    } catch (e, stack) {
+      print('error finding ticket $e $stack');
+    }
+  }
 }

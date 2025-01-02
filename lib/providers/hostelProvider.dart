@@ -264,4 +264,36 @@ class HostelProvider extends ChangeNotifier {
       print('Error delete hostel: $e');
     }
   }
+
+  Future<void> searchHostel(String word) async {
+    try {
+      final partialSearchQuery =
+          QueryBuilder<ParseObject>(ParseObject('hotels'))
+            ..whereContains('name', word)
+            ..whereContains('location', word)
+            ..whereContains('price', word)
+            ..whereContains('details', word)
+            ..whereContains('userId', word);
+
+      final fullSearchQuery = QueryBuilder<ParseObject>(ParseObject('hotels'))
+        ..whereEqualTo('name', word)
+        ..whereEqualTo('location', word)
+        ..whereEqualTo('price', word)
+        ..whereEqualTo('details', word)
+        ..whereEqualTo('userId', word);
+
+      // combine both Queries
+      final combinedQueries = QueryBuilder.or(
+          ParseObject('hotels'), [partialSearchQuery, fullSearchQuery]);
+
+      final ParseResponse response = await combinedQueries.query();
+      if (response.success) {
+        print('found this hotels results ${response.results}');
+        _hotels = response.results as List<ParseObject>;
+        notifyListeners();
+      }
+    } catch (e, stack) {
+      print('error finding ticket $e $stack');
+    }
+  }
 }

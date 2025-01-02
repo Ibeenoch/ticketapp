@@ -10,4 +10,5 @@ class AppRoutes {
   static const ticketForm = "/ticket";
   static const hostelForm = "/hostel";
   static const hostelDetails = "/hostel_details";
+  static const searchInput = "/search_input";
 }

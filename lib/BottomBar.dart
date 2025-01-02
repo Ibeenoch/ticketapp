@@ -53,14 +53,12 @@ class _BottomBarState extends State<BottomBar> {
             const Search(),
             const Ticketscreen(),
             const Account(),
-            // currentUser == null ? const Account() : const Profile(),
           ]
         : [
             const Homescreen(),
             const Search(),
             const Ticketscreen(),
             const Profile(),
-            // currentUser == null ? const Account() : const Profile(),
           ];
 
     // Validate _curindex

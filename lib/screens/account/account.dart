@@ -527,7 +527,6 @@ class _AccountState extends State<Account> {
 
   @override
   Widget build(BuildContext context) {
-    print('account rendered');
     final user =
         userProvider?.currentUser == null ? null : userProvider?.currentUser;
 
@@ -542,15 +541,6 @@ class _AccountState extends State<Account> {
         isLoginTab = false;
       });
     }
-
-    // if (user == null) {
-
-    // } else {
-    //   WidgetsBinding.instance.addPostFrameCallback((_) {
-    //     Navigator.pushNamed(context, AppRoutes.profileScreen);
-    //   });
-    //   return SizedBox.shrink(); // A placeholder widget
-    // }
 
     return Scaffold(
       backgroundColor: AppStyles.reversedefaultBackGroundColor(context),

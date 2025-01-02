@@ -188,7 +188,7 @@ class Ticketview extends StatelessWidget {
                           Expanded(child: Container()),
                           Columntext(
                               bigtext:
-                                  "${ticket['departure_time_hrs'] ?? 'N/A'} : ${ticket['departure_time_minutes'] ?? 'N/A'}",
+                                  "${ticket['departure_time_hrs'] ?? 'N/A'} : ${ticket['departure_time_minutes'] ?? 'N/A'} ${int.parse(ticket['departure_time_hrs'] ?? '12') >= 12 ? 'PM' : 'AM'}",
                               smalltext: 'Departure Time',
                               alignBig: TextAlign.center,
                               showColor: showColor),

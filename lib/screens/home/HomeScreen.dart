@@ -25,6 +25,7 @@ class _HomescreenState extends State<Homescreen> {
   Ticketprovider? ticketProvider;
   UserProvider? userProvider;
   bool? isLoggedIn;
+  bool isFocus = false;
 
   final search = TextEditingController();
   FocusNode search_F = FocusNode();
@@ -41,22 +42,49 @@ class _HomescreenState extends State<Homescreen> {
         isLoggedIn = userProvider?.isLoggedIn;
       });
     });
+
+    search_F.addListener(() {
+      if (search_F.hasFocus) {
+        // Unfocus the TextField
+
+        setState(() {
+          isFocus = true;
+          handleFocus();
+        });
+      }
+    });
+  }
+
+  void handleFocus() {
+    if (isFocus) {
+      Navigator.pushNamed(context, AppRoutes.searchInput);
+      setState(() {
+        isFocus = false;
+      });
+      // FocusScope.of(context).unfocus();
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    search.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     String? username = 'Guest';
-
-    // if(ticketProvider == null || userProvider == null){
-    //   return  const Scaffold( body:Center(child: CircularProgressIndicator(),),);
-    // }
+    String? profileImg = 'Guest';
 
     // final user = context.watch<UserProvider>().currentUser;
 
     if (isLoggedIn == true) {
       username = userProvider?.currentUser?.get<String>('fullname');
+      profileImg = userProvider?.currentUser?.get<String>('profile_img');
     }
+    print('profileImg $profileImg');
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       body: ListView(
@@ -88,14 +116,34 @@ class _HomescreenState extends State<Homescreen> {
                       Text('Wanna Buy Ticket?', style: AppStyles.h3(context))
                     ],
                   ),
-                  Container(
-                    width: 50.w,
-                    height: 50.h,
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(13),
-                        image: const DecorationImage(
-                            image: AssetImage(AppMedia.logo))),
-                  )
+                  profileImg == 'Guest'
+                      ? Container(
+                          width: 50.w,
+                          height: 50.h,
+                          decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(13),
+                              image: const DecorationImage(
+                                  image: AssetImage(AppMedia.logo))),
+                        )
+                      : GestureDetector(
+                          onTap: () {
+                            Navigator.pushNamed(
+                                context, AppRoutes.profileScreen);
+                          },
+                          child: Container(
+                            width: 50.w,
+                            height: 50.h,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(13),
+                            ),
+                            child: Image(
+                              image: NetworkImage(profileImg!),
+                              width: 50.w,
+                              height: 50.h,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                        )
                 ],
               ),
               SizedBox(
