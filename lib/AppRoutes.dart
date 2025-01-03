@@ -11,4 +11,5 @@ class AppRoutes {
   static const hostelForm = "/hostel";
   static const hostelDetails = "/hostel_details";
   static const searchInput = "/search_input";
+  static const searchResult = "/serach_result";
 }

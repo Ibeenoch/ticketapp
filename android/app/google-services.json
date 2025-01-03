@@ -9,10 +9,23 @@
       "client_info": {
         "mobilesdk_app_id": "1:162587604834:android:bc69dfb5ed0477ee195e3b",
         "android_client_info": {
-          "package_name": "com.enterprise.powerapp"
+          "package_name": "com.example.airlineticket"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "242677198814-rcs4g65in4np21qdvu7bgo90i07fsvf6.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.airlineticket",
+            "certificate_hash": "20:6F:93:3D:CE:CF:FB:46:20:32:A2:48:83:F1:B9:5B:04:2E:5A:26"
+          }
+        },
+        {
+          "client_id": "242677198814-rcs4g65in4np21qdvu7bgo90i07fsvf6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyBT0Uq-e4MrcoQXTjAAg_Ak_zCxsPa7Fn4"

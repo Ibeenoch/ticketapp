@@ -4,6 +4,7 @@ import 'package:airlineticket/base/utils/timeFormatter.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
+import 'package:face_recognition/face_recognition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -154,23 +155,7 @@ class _ProfileState extends State<Profile> {
 
   Future<void> enableFacialRecognition() async {
     try {
-      final bool isAutheticated = await registerFacialRecognition();
-      if (isAutheticated) {
-        var uuid = Uuid();
-        String faceId = uuid.v4();
-
-        final prefs = await SharedPreferences.getInstance();
-        await prefs.setString('faceId', faceId);
-        await prefs.setBool('isFaceRecognitionEnabled', true);
-
-        // save to the user in back4app
-        registerFacialRecognitionAndSaveToUser(faceId);
-
-        // Notify user
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Facial Recognition is now enabled')),
-        );
-      }
+      FaceRecognition();
     } catch (e) {
       print('Error registering Facial Recognition: $e');
       ScaffoldMessenger.of(context).showSnackBar(

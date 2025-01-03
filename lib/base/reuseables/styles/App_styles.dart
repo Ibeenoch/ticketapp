@@ -18,6 +18,7 @@ class AppStyles {
   static Color primaryDarkColor = const Color(0xFFFFD75D);
   static Color cardBlueColor = const Color(0xFF526799);
   static Color cardRedColor = const Color(0xFFF37867);
+  static Color cardBrownColor = const Color(0xFF7C4D53);
 
   static Color cardlightkakiColor = const Color(0xFFE6EDFD);
   static Color carddeepOrangeColor = const Color(0xFF526799);
@@ -56,7 +57,7 @@ class AppStyles {
   }
 
   static Color reversedefaultBackGroundColor(BuildContext context) {
-    return isDarkMode(context) ? cardRedColor : cardBlueColor;
+    return isDarkMode(context) ? cardBrownColor : cardBlueColor;
   }
 
   static Color borderBackGroundColor(BuildContext context) {

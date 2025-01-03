@@ -202,7 +202,12 @@ class _TicketscreenState extends State<Ticketscreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const Tickettab(leftText: 'Upcoming', rightText: 'Previous'),
+                  Tickettab(
+                    leftText: 'Upcoming',
+                    rightText: 'Previous',
+                    leftFunc: () {},
+                    rightFunc: () {},
+                  ),
                   const SizedBox(
                     height: 25,
                   ),

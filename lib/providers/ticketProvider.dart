@@ -291,52 +291,69 @@ class Ticketprovider extends ChangeNotifier {
   }
 
   Future<void> searchTicket(String word) async {
+    if (word.isEmpty) {
+      print('Search term is empty. Aborting search.');
+      return;
+    }
+
     try {
-      final partialSearchQuery =
-          QueryBuilder<ParseObject>(ParseObject('tickets'))
-            ..whereContains('departure_country', word)
-            ..whereContains('arrival_country', word)
-            ..whereContains('flight_duration_hrs', word)
-            ..whereContains('flight_duration_minutes', word)
-            ..whereContains('flight_month', word)
-            ..whereContains('flight_day', word)
-            ..whereContains('departure_time_hrs', word)
-            ..whereContains('departure_time_minutes', word)
-            ..whereContains('pilot', word)
-            ..whereContains('passport', word)
-            ..whereContains('ticketNo', word)
-            ..whereContains('bookingNo', word)
-            ..whereContains('paymentMethod', word)
-            ..whereContains('price', word);
+      // Partial match (case-sensitive) for string fields
+      final partialSearchQueries = [
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('departure_country', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('arrival_country', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('flight_month', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('flight_day', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('pilot', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('passport', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('ticketNo', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('bookingNo', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereContains('paymentMethod', word),
+      ];
 
-      final fullSearchQuery = QueryBuilder<ParseObject>(ParseObject('tickets'))
-        ..whereEqualTo('departure_country', word)
-        ..whereEqualTo('arrival_country', word)
-        ..whereEqualTo('flight_duration_hrs', word)
-        ..whereEqualTo('flight_duration_minutes', word)
-        ..whereEqualTo('flight_month', word)
-        ..whereEqualTo('flight_day', word)
-        ..whereEqualTo('departure_time_hrs', word)
-        ..whereEqualTo('departure_time_minutes', word)
-        ..whereEqualTo('pilot', word)
-        ..whereEqualTo('passport', word)
-        ..whereEqualTo('ticketNo', word)
-        ..whereEqualTo('bookingNo', word)
-        ..whereEqualTo('paymentMethod', word)
-        ..whereEqualTo('price', word);
+      // Full match for exact search (including non-string fields like price)
+      final fullSearchQueries = [
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereEqualTo('departure_country', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereEqualTo('arrival_country', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereEqualTo(
+              'price', double.tryParse(word)), // Parse price as double
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereEqualTo('flight_duration_hrs', word),
+        QueryBuilder<ParseObject>(ParseObject('tickets'))
+          ..whereEqualTo('flight_duration_minutes', word),
+      ];
 
-      // combine both Queries
+      // Combine all queries (partial and full matches)
       final combinedQueries = QueryBuilder.or(
-          ParseObject('tickets'), [partialSearchQuery, fullSearchQuery]);
+        ParseObject('tickets'),
+        [...partialSearchQueries, ...fullSearchQueries],
+      );
 
+      // Execute the query
       final ParseResponse response = await combinedQueries.query();
-      if (response.success) {
-        print('found this ticket results ${response.results}');
+      if (response.success && response.results != null) {
+        print('Found ticket results: ${response.results}');
         _tickets = response.results as List<ParseObject>;
+        notifyListeners();
+      } else {
+        print('No tickets found. Response: ${response.error?.message}');
+        _tickets = [];
         notifyListeners();
       }
     } catch (e, stack) {
-      print('error finding ticket $e $stack');
+      print('Error finding ticket: $e');
+      print(stack);
     }
   }
 }

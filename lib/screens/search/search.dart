@@ -42,8 +42,12 @@ class _SearchState extends State<Search> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(15.r),
               ),
-              child:
-                  const Tickettab(leftText: 'All Tickets', rightText: 'Hotels'),
+              child: Tickettab(
+                leftText: 'Tickets',
+                rightText: 'Hotels',
+                leftFunc: () {},
+                rightFunc: () {},
+              ),
             ),
             SizedBox(
               height: 25.h,

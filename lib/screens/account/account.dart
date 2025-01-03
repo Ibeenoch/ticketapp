@@ -12,6 +12,7 @@ import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/loadingtextAnimation.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
+import 'package:face_recognition/face_recognition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
@@ -29,6 +30,8 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
+  FaceRecognition? faceRecognition;
+  String? faceEncoding;
   bool isLoginTab = true;
   bool isBtnClickedLogin = false;
   bool isBtnClickedSignUp = false;
@@ -233,13 +236,10 @@ class _AccountState extends State<Account> {
           response.result != null &&
           response.result!.isNotEmpty) {
         // ParseObject userObject = response.results!.first as ParseObject;
-
-        // Update the User state globally
-        // Example: provider to update the user details globally
+        final ParseUser userObject = response.results!.first as ParseUser;
 
         // Step 3: Set the user in the provider
-        Provider.of<UserProvider>(context, listen: false)
-            .setUser(response.result as ParseUser);
+        Provider.of<UserProvider>(context, listen: false).setUser(userObject);
 
         // Navigate to user profile screen
         Navigator.pushNamed(context, AppRoutes.profileScreen);
@@ -252,6 +252,17 @@ class _AccountState extends State<Account> {
     }
   }
 
+  Future<void> registerFacialId() async {
+    try {
+      FaceRecognition();
+    } catch (e) {
+      print('Error registering facial recognition: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error registering facial recognition: $e'),
+      ));
+    }
+  }
+
   void loginWithGoogle() async {
     const List<String> scopes = <String>[
       'email',
@@ -260,7 +271,7 @@ class _AccountState extends State<Account> {
 
     GoogleSignIn _googleSignIn = GoogleSignIn(
       // Optional clientId
-      // clientId: 'your-client_id.apps.googleusercontent.com',
+      // clientId: 'your-client_id.apps.googleusercontent.com', clientId: dotenv.env["GOOGLE_CLIENT_ID"],
       clientId:
           '242677198814-rcs4g65in4np21qdvu7bgo90i07fsvf6.apps.googleusercontent.com',
       scopes: scopes,
@@ -293,71 +304,6 @@ class _AccountState extends State<Account> {
         const SnackBar(
             content: Text('Biometric authentication is not enabled!')),
       );
-    }
-  }
-
-  Future<bool> _checkFacialRecognition() async {
-    final LocalAuthentication auth = LocalAuthentication();
-    try {
-      final List<BiometricType> availableBiometrics =
-          await auth.getAvailableBiometrics();
-      return availableBiometrics.contains(BiometricType.face);
-    } catch (e) {
-      print('Error checking facial biometics $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error checking facial biometics $e')),
-      );
-      return false;
-    }
-  }
-
-  Future<bool> _authenticateWithFacialRecognition() async {
-    final LocalAuthentication auth = LocalAuthentication();
-    try {
-      final bool isAutheticated = await auth.authenticate(
-          localizedReason:
-              'Please autheticate with facial recognition to continue',
-          options: const AuthenticationOptions(
-            stickyAuth: true,
-            biometricOnly: true,
-          ));
-      return isAutheticated;
-    } catch (e) {
-      print('Error during facial recognition authentication: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-            content: Text('Error during facial recognition authentication: ')),
-      );
-      return false;
-    }
-  }
-
-  Future<void> authWithFacialId() async {
-    final prefs = await SharedPreferences.getInstance();
-    final bool isBiometricEnabled =
-        prefs.getBool('isFaceRecognitionEnabled') ?? false;
-    if (isBiometricEnabled) {
-      final bool isFacialRecognitionSupported = await _checkFacialRecognition();
-      if (!isFacialRecognitionSupported) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text(
-                'Login and enable facial recognition auth from your profile screen')));
-        return;
-      }
-
-      final bool isAutheticated = await _authenticateWithFacialRecognition();
-      if (isAutheticated) {
-        // retrive the user profile;
-        await _fetchUserProfile('faceId');
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Facial Recognition Authentication failed!'),
-        ));
-      }
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        content: Text('Biometric authentication is not enabled!'),
-      ));
     }
   }
 
@@ -527,9 +473,6 @@ class _AccountState extends State<Account> {
 
   @override
   Widget build(BuildContext context) {
-    final user =
-        userProvider?.currentUser == null ? null : userProvider?.currentUser;
-
     void showLogin() {
       setState(() {
         isLoginTab = true;
@@ -621,20 +564,21 @@ class _AccountState extends State<Account> {
                             children: [
                               Biometrics(
                                   onTap: authWithFingerPrint,
-                                  icon: Icon(
-                                    Icons.fingerprint,
-                                    size: 30.w,
-                                    color: Colors.white,
-                                  ),
+                                  icon: Icon(Icons.fingerprint,
+                                      size: 30.w,
+                                      color: AppStyles
+                                          .backGroundOfkakiIconContainer(
+                                              context)),
                                   text: 'Use Fingerprint'),
                               Biometrics(
-                                  onTap: authWithFacialId,
+                                  onTap: registerFacialId,
                                   icon: SvgPicture.asset(
-                                    'assets/icons/faceid.svg',
-                                    width: 30.w,
-                                    height: 30.h,
-                                    color: Colors.white,
-                                  ),
+                                      'assets/icons/faceid.svg',
+                                      width: 30.w,
+                                      height: 30.h,
+                                      color: AppStyles
+                                          .backGroundOfkakiIconContainer(
+                                              context)),
                                   text: 'Use Facial Recognition'),
                             ],
                           ),

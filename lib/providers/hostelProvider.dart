@@ -265,35 +265,57 @@ class HostelProvider extends ChangeNotifier {
     }
   }
 
-  Future<void> searchHostel(String word) async {
+  Future<void> searchHotel(String word) async {
+    if (word.isEmpty) {
+      print('Search term is empty. Aborting search.');
+      return;
+    }
+
     try {
-      final partialSearchQuery =
-          QueryBuilder<ParseObject>(ParseObject('hotels'))
-            ..whereContains('name', word)
-            ..whereContains('location', word)
-            ..whereContains('price', word)
-            ..whereContains('details', word)
-            ..whereContains('userId', word);
+      // Partial match (case-sensitive) for string fields
+      final partialSearchQueries = [
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereContains('name', word),
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereContains('location', word),
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereContains('price', word),
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereContains('details', word),
+      ];
 
-      final fullSearchQuery = QueryBuilder<ParseObject>(ParseObject('hotels'))
-        ..whereEqualTo('name', word)
-        ..whereEqualTo('location', word)
-        ..whereEqualTo('price', word)
-        ..whereEqualTo('details', word)
-        ..whereEqualTo('userId', word);
+      // Full match for exact search (including non-string fields like price)
+      final fullSearchQueries = [
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereEqualTo('name', word),
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereEqualTo('location', word),
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereEqualTo('price', word), // Parse price as double
+        QueryBuilder<ParseObject>(ParseObject('hotels'))
+          ..whereEqualTo('details', word),
+      ];
 
-      // combine both Queries
+      // Combine all queries (partial and full matches)
       final combinedQueries = QueryBuilder.or(
-          ParseObject('hotels'), [partialSearchQuery, fullSearchQuery]);
+        ParseObject('hotels'),
+        [...partialSearchQueries, ...fullSearchQueries],
+      );
 
+      // Execute the query
       final ParseResponse response = await combinedQueries.query();
-      if (response.success) {
-        print('found this hotels results ${response.results}');
+      if (response.success && response.results != null) {
+        print('Found hotel results: ${response.results}');
         _hotels = response.results as List<ParseObject>;
+        notifyListeners();
+      } else {
+        print('No hotels found. Response: ${response.error?.message}');
+        _hotels = [];
         notifyListeners();
       }
     } catch (e, stack) {
-      print('error finding ticket $e $stack');
+      print('Error finding hotels: $e');
+      print(stack);
     }
   }
 }

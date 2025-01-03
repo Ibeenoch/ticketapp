@@ -5,8 +5,15 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 class Tickettab extends StatefulWidget {
   final String leftText;
   final String rightText;
+  final VoidCallback leftFunc;
+  final VoidCallback rightFunc;
 
-  const Tickettab({super.key, required this.leftText, required this.rightText});
+  const Tickettab(
+      {super.key,
+      required this.leftText,
+      required this.rightText,
+      required this.leftFunc,
+      required this.rightFunc});
 
   @override
   State<Tickettab> createState() => _TickettabState();
@@ -26,6 +33,7 @@ class _TickettabState extends State<Tickettab> {
             setState(() {
               isLeft = true;
             });
+            widget.leftFunc();
           },
           child: Container(
             width: size.width * 0.43,
@@ -49,6 +57,7 @@ class _TickettabState extends State<Tickettab> {
             setState(() {
               isLeft = false;
             });
+            widget.rightFunc();
           },
           child: Container(
             width: size.width * 0.43,
