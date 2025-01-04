@@ -37,6 +37,23 @@ android {
             signingConfig = signingConfigs.debug
         }
     }
+
+     // Add this block to copy the .env file
+    applicationVariants.all { variant ->
+        variant.outputs.each { output ->
+            def envFile = project.rootProject.file(".env") // Adjust path for root .env
+            if (envFile.exists()) {
+                // Copy .env to the assets directory
+                def outputDir = output.processResources.outputs.files.files[0]
+                def assetsDir = new File(outputDir, "assets")
+                assetsDir.mkdirs()
+                def envFileDestination = new File(assetsDir, ".env")
+                envFileDestination.text = envFile.text
+            } else {
+                throw new GradleException(".env file not found at 'project_root/.env'.")
+            }
+        }
+    }
 }
 
 flutter {

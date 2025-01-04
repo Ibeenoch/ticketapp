@@ -1,8 +1,9 @@
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
+import 'package:airlineticket/screens/hostel/hostelWidget/arrowBack.dart';
+import 'package:airlineticket/screens/hostel/hostelWidget/hotelImage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
@@ -83,50 +84,9 @@ class _HostelDetailsState extends State<HostelDetails> {
             expandedHeight: 300,
             pinned: true,
             floating: false,
-            leading: GestureDetector(
-              onTap: () {
-                Navigator.pop(context);
-              },
-              child: Padding(
-                padding: EdgeInsets.only(left: 10.sp),
-                child: Container(
-                  decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.4)),
-                  child: Icon(
-                    Icons.arrow_back,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
-            ),
-            flexibleSpace: FlexibleSpaceBar(
-                background: Stack(
-              children: [
-                Positioned.fill(
-                  child: Image(
-                    image: NetworkImage(getHostel['imageList'][0]),
-                    fit: BoxFit.cover,
-                  ),
-                ),
-                Positioned(
-                  bottom: 20.h,
-                  right: size.width * 0.4,
-                  child: Container(
-                      padding: EdgeInsets.symmetric(
-                          horizontal: 7.sp, vertical: 7.sp),
-                      decoration: BoxDecoration(
-                          color: Colors.black.withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(6.r)),
-                      child: Text(
-                        getHostel['name'],
-                        style: TextStyle(
-                            fontSize: 14.sp,
-                            color: Colors.white.withOpacity(0.8)),
-                      )),
-                )
-              ],
-            )),
+            leading: ArrowBack(),
+            flexibleSpace:
+                FlexibleSpaceBar(background: HotelImage(getHostel: getHostel)),
           ),
           SliverList(
               delegate: SliverChildListDelegate([

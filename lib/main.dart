@@ -14,6 +14,7 @@ import 'package:airlineticket/screens/search/searchInput.dart';
 import 'package:airlineticket/screens/search/searchResult.dart';
 import 'package:airlineticket/screens/ticket/TicketForm.dart';
 import 'package:airlineticket/screens/ticket/ticketScreen.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -25,10 +26,11 @@ Future<void> main() async {
 
   try {
     // Load the .env file
-    await dotenv.load(fileName: ".env");
-    print("Env file loaded successfully!");
+    await dotenv.load(fileName: "assets/.env");
   } catch (e) {
-    print("Error loading .env file: $e");
+    if (kDebugMode) {
+      print("Error loading .env file: $e");
+    }
   }
 
   String applicationId = dotenv.env["BACK4APP_APP_ID"]!;
