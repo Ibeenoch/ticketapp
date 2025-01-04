@@ -1,7 +1,9 @@
+// ignore: file_names
 import 'dart:io';
 
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/data/services/authetication.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 
@@ -66,7 +68,6 @@ class UserProvider extends ChangeNotifier {
         String? profileImageUrl;
         if (userImg != null && await userImg.exists()) {
           profileImageUrl = await Authentication().uploadProfileImage(userImg);
-          print('Profile image uploaded: $profileImageUrl');
         } else {
           profileImageUrl =
               'https://via.placeholder.com/150/cccccc/ffffff?text=User';
@@ -81,16 +82,23 @@ class UserProvider extends ChangeNotifier {
 
         // Step 4: Navigate to the account screen
         Navigator.pushNamed(
+          // ignore: use_build_context_synchronously
           context,
           AppRoutes.profileScreen,
           arguments: {'userId': user.objectId!},
         );
       } else {
-        print('Error while registering user: ${response.error?.message}');
+        if (kDebugMode) {
+          print('Error while registering user: ${response.error?.message}');
+        }
       }
     } catch (e, stackTrace) {
-      print('Error during sign-up: $e');
-      print('Stack trace: $stackTrace');
+      if (kDebugMode) {
+        print('Error during sign-up: $e');
+      }
+      if (kDebugMode) {
+        print('Stack trace: $stackTrace');
+      }
     }
   }
 
@@ -121,7 +129,6 @@ class UserProvider extends ChangeNotifier {
           if (userz != null) {
             final ParseResponse response = await userz.getUpdatedUser();
             if (response.success) {
-              print('the one gote is ${response.result}');
               _currentUser = response.result;
               notifyListeners();
               Navigator.pushNamed(
@@ -132,7 +139,9 @@ class UserProvider extends ChangeNotifier {
             }
           }
         } else {
-          print('Error updating profile: ${response.error?.message}');
+          if (kDebugMode) {
+            print('Error updating profile: ${response.error?.message}');
+          }
         }
       } else {
         var user = ParseObject('_User')
@@ -148,7 +157,6 @@ class UserProvider extends ChangeNotifier {
           if (userz != null) {
             final ParseResponse response = await userz.getUpdatedUser();
             if (response.success) {
-              print('the one gote is ${response.result}');
               _currentUser = response.result;
               notifyListeners();
               Navigator.pushNamed(
@@ -159,12 +167,18 @@ class UserProvider extends ChangeNotifier {
             }
           }
         } else {
-          print('Error updating profile: ${response.error?.message}');
+          if (kDebugMode) {
+            print('Error updating profile: ${response.error?.message}');
+          }
         }
       }
     } catch (e, stackTrace) {
-      print('Error during edit: $e');
-      print('Error occurred at: $stackTrace');
+      if (kDebugMode) {
+        print('Error during edit: $e');
+      }
+      if (kDebugMode) {
+        print('Error occurred at: $stackTrace');
+      }
     }
   }
 
@@ -186,17 +200,21 @@ class UserProvider extends ChangeNotifier {
 
         // Navigate to the profile page on successful login
         Navigator.pushNamed(
+          // ignore: use_build_context_synchronously
           context,
           AppRoutes.profileScreen,
         );
       } else {
         // Show an error message
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('Login failed. Please try again.')),
         );
       }
     } catch (e) {
-      print('Error logging user: $e');
+      if (kDebugMode) {
+        print('Error logging user: $e');
+      }
     }
   }
 
@@ -218,11 +236,12 @@ class UserProvider extends ChangeNotifier {
       if (response.success) {
         _currentUser = null;
 
-        print('Logout successful!');
         notifyListeners();
       }
     } catch (e) {
-      print('Error during logout: $e');
+      if (kDebugMode) {
+        print('Error during logout: $e');
+      }
     }
   }
 }

@@ -20,12 +20,11 @@ class Ticketview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //  String departureCode = ticket['departure_country'];
-
     final size = MediaQuery.of(context).size;
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 10,
+        vertical: 5,
       ),
       child: Center(
         child: SizedBox(

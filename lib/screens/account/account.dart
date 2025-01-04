@@ -4,7 +4,6 @@ import 'dart:io';
 import 'dart:ui';
 
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/data/services/authetication.dart';
 import 'package:airlineticket/base/data/services/imageUploads.dart';
 import 'package:airlineticket/base/reuseables/media/App_Media.dart';
 import 'package:airlineticket/base/reuseables/resources/countries.dart';
@@ -13,9 +12,9 @@ import 'package:airlineticket/base/reuseables/widgets/loadingtextAnimation.dart'
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
 import 'package:face_recognition/face_recognition.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
@@ -151,7 +150,7 @@ class _AccountState extends State<Account> {
       final args =
           ModalRoute.of(context)?.settings.arguments as Map<String, ParseUser?>;
       initialData = args['user']?.toJson();
-      print('initialData ${initialData?['fullname']}');
+
       if (initialData != null) {
         //populate the text field
         setState(() {
@@ -213,7 +212,9 @@ class _AccountState extends State<Account> {
           ));
       return isAutheticated;
     } catch (e) {
-      print('Error during biometric authetication $e');
+      if (kDebugMode) {
+        print('Error during biometric authetication $e');
+      }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Error during biometric authetication : $e'),
       ));
@@ -253,7 +254,9 @@ class _AccountState extends State<Account> {
         Navigator.pushNamed(context, AppRoutes.profileScreen);
       }
     } catch (e) {
-      print('Error fetching user profile: $e');
+      if (kDebugMode) {
+        print('Error fetching user profile: $e');
+      }
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Error fetching user profile: $e'),
       ));
@@ -279,7 +282,7 @@ class _AccountState extends State<Account> {
         // Get the Google Sign-In token
         final GoogleSignInAuthentication authentication =
             await account.authentication;
-        print('logging in');
+
         // Send the token to Parse Server
         final response = await ParseUser.loginWith('google', {
           'id': account.id,
@@ -631,41 +634,41 @@ class _AccountState extends State<Account> {
                           SizedBox(
                             height: 30.h,
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              loginWithGoogle();
-                            },
-                            child: Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 40.w),
-                              child: Container(
-                                alignment: Alignment.center,
-                                padding: EdgeInsets.symmetric(
-                                    horizontal: 5.w, vertical: 10.h),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(7.r),
-                                  color: AppStyles.cardBlueColor,
-                                ),
-                                child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      SvgPicture.asset(
-                                        'assets/icons/google.svg',
-                                        width: 30.w,
-                                        height: 30.h,
-                                        // color: Colors.white,
-                                      ),
-                                      SizedBox(
-                                        width: 30.w,
-                                      ),
-                                      Text('Login with Google',
-                                          style: TextStyle(
-                                              fontSize: 13.sp,
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white))
-                                    ]),
-                              ),
-                            ),
-                          ),
+                          // GestureDetector(
+                          //   onTap: () {
+                          //     loginWithGoogle();
+                          //   },
+                          //   child: Padding(
+                          //     padding: EdgeInsets.symmetric(horizontal: 40.w),
+                          //     child: Container(
+                          //       alignment: Alignment.center,
+                          //       padding: EdgeInsets.symmetric(
+                          //           horizontal: 5.w, vertical: 10.h),
+                          //       decoration: BoxDecoration(
+                          //         borderRadius: BorderRadius.circular(7.r),
+                          //         color: AppStyles.cardBlueColor,
+                          //       ),
+                          //       child: Row(
+                          //           mainAxisAlignment: MainAxisAlignment.center,
+                          //           children: [
+                          //             SvgPicture.asset(
+                          //               'assets/icons/google.svg',
+                          //               width: 30.w,
+                          //               height: 30.h,
+                          //               // color: Colors.white,
+                          //             ),
+                          //             SizedBox(
+                          //               width: 30.w,
+                          //             ),
+                          //             Text('Login with Google',
+                          //                 style: TextStyle(
+                          //                     fontSize: 13.sp,
+                          //                     fontWeight: FontWeight.bold,
+                          //                     color: Colors.white))
+                          //           ]),
+                          //     ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),

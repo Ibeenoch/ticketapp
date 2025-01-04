@@ -131,8 +131,6 @@ class _ProfileState extends State<Profile> {
 
   @override
   Widget build(BuildContext context) {
-    // Ticketprovider ticketprovider =
-    //   Provider.of<Ticketprovider>(context, listen: false);
     final userProvider =
         Provider.of<UserProvider>(context, listen: false).currentUser;
 
@@ -227,25 +225,7 @@ class _ProfileState extends State<Profile> {
                 SizedBox(
                   height: 10.h,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Biometrics(
-                      onTap: enableFingerPrint,
-                      icon: Icon(
-                        Icons.fingerprint,
-                        size: 30.w,
-                        color: fingerPrintId == null
-                            ? AppStyles.backGroundOfkakiIconContainer(context)
-                            : Colors.green,
-                      ),
-                      text: fingerPrintId == null
-                          ? 'Enable Fingerprint'
-                          : 'Fingerprint Enabled',
-                      isEnabled: fingerPrintId != null,
-                    ),
-                  ],
-                ),
+                fingerPrint(context),
                 SizedBox(
                   height: 20.h,
                 ),
@@ -258,6 +238,28 @@ class _ProfileState extends State<Profile> {
           ),
         ],
       )),
+    );
+  }
+
+  Widget fingerPrint(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Biometrics(
+          onTap: enableFingerPrint,
+          icon: Icon(
+            Icons.fingerprint,
+            size: 30.w,
+            color: fingerPrintId == null
+                ? AppStyles.backGroundOfkakiIconContainer(context)
+                : Colors.green,
+          ),
+          text: fingerPrintId == null
+              ? 'Enable Fingerprint'
+              : 'Fingerprint Enabled',
+          isEnabled: fingerPrintId != null,
+        ),
+      ],
     );
   }
 

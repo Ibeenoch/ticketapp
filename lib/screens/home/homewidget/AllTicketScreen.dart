@@ -4,7 +4,6 @@ import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/ticketView.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:provider/provider.dart';
 
 class Allticketscreen extends StatefulWidget {

@@ -1,8 +1,10 @@
+// ignore: file_names
 import 'dart:io';
 
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/data/services/multipleImageUpload.dart';
 import 'package:airlineticket/base/reuseables/widgets/dialog.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
@@ -37,7 +39,9 @@ class HostelProvider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e, stackTrace) {
-      print('error fetching the hostel lists $e and $stackTrace');
+      if (kDebugMode) {
+        print('error fetching the hostel lists $e and $stackTrace');
+      }
     }
   }
 
@@ -53,7 +57,9 @@ class HostelProvider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e, stacktrace) {
-      print('error fetching the hotel $e and $stacktrace');
+      if (kDebugMode) {
+        print('error fetching the hotel $e and $stacktrace');
+      }
     }
   }
 
@@ -72,11 +78,11 @@ class HostelProvider extends ChangeNotifier {
           price.isNotEmpty &&
           details.isNotEmpty &&
           userId.isNotEmpty &&
-          imagesPicked != null) {
+          imagesPicked.isNotEmpty) {
         // upload image and get the url
         final List<String> imageList = await multipleImageUploads(imagesPicked);
         // final the hotel details
-        final hotelData = await ParseObject('hotels')
+        final hotelData = ParseObject('hotels')
           ..set('name', name)
           ..set('location', location)
           ..set('price', price)
@@ -101,13 +107,17 @@ class HostelProvider extends ChangeNotifier {
           Navigator.pushNamed(context, AppRoutes.allHotels);
         }
       } else {
-        print('Please add all fields');
+        if (kDebugMode) {
+          print('Please add all fields');
+        }
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text('Please add all fields')),
         );
       }
     } catch (e, stacktrace) {
-      print('error creatung hotel $e and $stacktrace');
+      if (kDebugMode) {
+        print('error creatung hotel $e and $stacktrace');
+      }
     }
   }
 
@@ -120,8 +130,10 @@ class HostelProvider extends ChangeNotifier {
       required String userId,
       List<File>? imagesPicked,
       required BuildContext context}) async {
-    print(
-        'we expect name $name location $location price $price $hostelId $userId $imagesPicked');
+    if (kDebugMode) {
+      print(
+          'we expect name $name location $location price $price $hostelId $userId $imagesPicked');
+    }
     try {
       if (name.isNotEmpty &&
           location.isNotEmpty &&
@@ -159,16 +171,15 @@ class HostelProvider extends ChangeNotifier {
 
           final ParseResponse response = await hotelData.save();
           if (response.success) {
-            print('popkljhb');
-            print('the img updated hostel is ${response.result}');
             _hotels[hostelIndex] = response.result;
-            print('hotel is ${_hotels[hostelIndex]}');
+
             notifyListeners();
-            print('now navi');
+
+            // ignore: use_build_context_synchronously
             Navigator.pushNamed(context, AppRoutes.allHotels);
           }
         } else {
-          final hotelData = await ParseObject('hotels')
+          final hotelData = ParseObject('hotels')
             ..objectId = hostelId
             ..set('name', name)
             ..set('location', location)
@@ -178,8 +189,8 @@ class HostelProvider extends ChangeNotifier {
           final ParseResponse response = await hotelData.save();
           if (response.success) {
             _hotels[hostelIndex] = response.result;
-            print('the no img updated hostel is ${response.result}');
             notifyListeners();
+            // ignore: use_build_context_synchronously
             Navigator.pushNamed(context, AppRoutes.allHotels);
           }
         }
@@ -188,7 +199,9 @@ class HostelProvider extends ChangeNotifier {
             .showSnackBar(SnackBar(content: Text('Please add all fields')));
       }
     } catch (e, stackTrace) {
-      print('error editing hotel $e and $stackTrace ');
+      if (kDebugMode) {
+        print('error editing hotel $e and $stackTrace ');
+      }
     }
   }
 
@@ -245,29 +258,38 @@ class HostelProvider extends ChangeNotifier {
       final ParseObject hostel = ParseObject('hotels')..objectId = hostelId;
 
       final ParseResponse response = await hostel.delete();
-      print('got the hostel id to delete is: $hostel $response $hostelUserId');
+      if (kDebugMode) {
+        print(
+            'got the hostel id to delete is: $hostel $response $hostelUserId');
+      }
 
       if (response.success) {
         _hotels.removeWhere((t) => t.objectId == hostelId);
         notifyListeners();
 
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('hostel successfully deleted')));
+        // ignore: use_build_context_synchronously
         Navigator.pushNamed(context, AppRoutes.homePage);
       } else {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('hostel failed to deleted')));
-        print(
-            'error deleting hostel ${response.error?.message}  ${response.error?.exception}');
+        if (kDebugMode) {
+          print(
+              'error deleting hostel ${response.error?.message}  ${response.error?.exception}');
+        }
       }
     } catch (e) {
-      print('Error delete hostel: $e');
+      if (kDebugMode) {
+        print('Error delete hostel: $e');
+      }
     }
   }
 
   Future<void> searchHotel(String word) async {
     if (word.isEmpty) {
-      print('Search term is empty. Aborting search.');
       return;
     }
 
@@ -305,17 +327,19 @@ class HostelProvider extends ChangeNotifier {
       // Execute the query
       final ParseResponse response = await combinedQueries.query();
       if (response.success && response.results != null) {
-        print('Found hotel results: ${response.results}');
         _hotels = response.results as List<ParseObject>;
         notifyListeners();
       } else {
-        print('No hotels found. Response: ${response.error?.message}');
         _hotels = [];
         notifyListeners();
       }
     } catch (e, stack) {
-      print('Error finding hotels: $e');
-      print(stack);
+      if (kDebugMode) {
+        print('Error finding hotels: $e');
+      }
+      if (kDebugMode) {
+        print(stack);
+      }
     }
   }
 }

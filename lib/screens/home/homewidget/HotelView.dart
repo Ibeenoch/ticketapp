@@ -1,10 +1,10 @@
+// ignore: file_names
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/hotelText.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
 
 class Hotelview extends StatefulWidget {

@@ -1,6 +1,5 @@
 // ignore: file_names
 import 'package:airlineticket/AppRoutes.dart';
-import 'package:airlineticket/base/reuseables/resources/dummyJson.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/providers/hostelProvider.dart';
@@ -51,7 +50,6 @@ class _AllhotelviewsState extends State<Allhotelviews> {
                 crossAxisSpacing: 2.0,
                 mainAxisSpacing: 2.0,
                 childAspectRatio: 0.84),
-            // itemCount: HotelList.length,
             itemCount: hostelList.length,
             itemBuilder: (context, index) {
               var singleHotel = hostelList[index];
@@ -123,7 +121,7 @@ class HotelGridView extends StatelessWidget {
                 height: 3.h,
               ),
               Hoteltext(
-                text: '\$${hotelItem['price'].toString() ?? 'N/A'}/Night',
+                text: '\$${hotelItem['price'].toString()}/Night',
                 color: AppStyles.kaki,
               ),
             ],

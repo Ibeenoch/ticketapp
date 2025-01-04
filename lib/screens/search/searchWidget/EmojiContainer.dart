@@ -8,14 +8,14 @@ class Emojicontainer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        width: 30.w,
-        height: 40.h,
+        width: 25.w,
+        height: 30.h,
         decoration: BoxDecoration(
             color: Colors.transparent,
             borderRadius: BorderRadius.circular(10.r)),
         child: Text(
           text,
-          style: TextStyle(fontSize: 23.sp, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
         ));
   }
 }

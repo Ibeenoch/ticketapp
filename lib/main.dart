@@ -4,8 +4,6 @@ import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
-import 'package:airlineticket/screens/account/authWidget/login.dart';
-import 'package:airlineticket/screens/account/authWidget/signup.dart';
 import 'package:airlineticket/screens/account/profile.dart';
 import 'package:airlineticket/screens/home/homewidget/AllHotelViews.dart';
 import 'package:airlineticket/screens/home/homewidget/AllTicketScreen.dart';

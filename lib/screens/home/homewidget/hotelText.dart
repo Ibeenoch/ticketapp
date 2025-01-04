@@ -1,3 +1,4 @@
+// ignore: file_names
 import 'package:airlineticket/base/reuseables/widgets/cardTitle.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

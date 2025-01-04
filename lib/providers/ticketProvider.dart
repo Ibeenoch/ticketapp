@@ -1,4 +1,6 @@
+// ignore: file_names
 import 'package:airlineticket/AppRoutes.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
@@ -30,7 +32,9 @@ class Ticketprovider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print('Error fetching ticket $e');
+      if (kDebugMode) {
+        print('Error fetching ticket $e');
+      }
     }
   }
 
@@ -45,20 +49,32 @@ class Ticketprovider extends ChangeNotifier {
         notifyListeners();
       }
     } catch (e) {
-      print('Error fetching ticket $e');
+      if (kDebugMode) {
+        print('Error fetching ticket $e');
+      }
     }
   }
 
   Future<void> createTicket(
+      // ignore: non_constant_identifier_names
       {required String departure_country,
+      // ignore: non_constant_identifier_names
       required String arrival_country,
+      // ignore: non_constant_identifier_names
       required String flight_duration_hrs,
+      // ignore: non_constant_identifier_names
       required String flight_duration_minutes,
+      // ignore: non_constant_identifier_names
       required String flight_month,
+      // ignore: non_constant_identifier_names
       required String flight_day,
+      // ignore: non_constant_identifier_names
       required String userId,
+      // ignore: non_constant_identifier_names
       required String departure_time_hrs,
+      // ignore: non_constant_identifier_names
       required String departure_time_minutes,
+      // ignore: non_constant_identifier_names
       required String pilot,
       required String passport,
       required String ticketNo,
@@ -67,8 +83,6 @@ class Ticketprovider extends ChangeNotifier {
       required String price,
       required BuildContext context}) async {
     try {
-      print(
-          'ticket details are: $pilot $passport $ticketNo $bookingNo $paymentMethod $price ');
       if (departure_country.isNotEmpty &&
           arrival_country.isNotEmpty &&
           flight_duration_hrs.isNotEmpty &&
@@ -104,8 +118,10 @@ class Ticketprovider extends ChangeNotifier {
         final ParseResponse response = await ticketDetails.save();
 
         if (response.success) {
+          // ignore: use_build_context_synchronously
           Provider.of<Ticketprovider>(context, listen: false)
               .addTicket(response.result as ParseObject);
+          // ignore: use_build_context_synchronously
           ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(
                 content: Container(
@@ -114,37 +130,50 @@ class Ticketprovider extends ChangeNotifier {
                       'Flight created successfully!',
                     ))),
           );
-          print('ticket result saved is ${response.result}');
 
+          // ignore: use_build_context_synchronously
           Navigator.pushNamed(context, AppRoutes.allTickets);
         } else {
-          print('Error saving flight details: ${response.error?.message}');
+          if (kDebugMode) {
+            print('Error saving flight details: ${response.error?.message}');
+          }
         }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-              content: Container(
-                  child: const Text(
+              content: const Text(
             'Please add all required fields',
-          ))),
+          )),
         );
       }
     } catch (e) {
-      print('error is creating ticket $e');
+      if (kDebugMode) {
+        print('error is creating ticket $e');
+      }
     }
   }
 
   Future<void> updateTicket(
+      // ignore: non_constant_identifier_names
       {required String departure_country,
+      // ignore: non_constant_identifier_names
       required String arrival_country,
+      // ignore: non_constant_identifier_names
       required String flight_duration_hrs,
+      // ignore: non_constant_identifier_names
       required String flight_duration_minutes,
+      // ignore: non_constant_identifier_names
       required String flight_month,
+      // ignore: non_constant_identifier_names
       required String flight_day,
+      // ignore: non_constant_identifier_names
       required String ticketId,
       required String userId,
+      // ignore: non_constant_identifier_names
       required String departure_time_hrs,
+      // ignore: non_constant_identifier_names
       required String departure_time_minutes,
+      // ignore: non_constant_identifier_names
       required String pilot,
       required String passport,
       required String ticketNo,
@@ -153,9 +182,6 @@ class Ticketprovider extends ChangeNotifier {
       required String price,
       required BuildContext context}) async {
     try {
-      print(
-          'ticket details are: $pilot $passport $ticketNo $bookingNo $paymentMethod $price $departure_country $arrival_country $flight_duration_hrs $flight_duration_minutes $flight_month $flight_day $userId $ticketId $departure_time_hrs $departure_time_minutes that is all');
-
       if (departure_country.isNotEmpty &&
           arrival_country.isNotEmpty &&
           flight_duration_hrs.isNotEmpty &&
@@ -190,12 +216,11 @@ class Ticketprovider extends ChangeNotifier {
           ..set('price', price);
 
         var response = await ticket.save();
-        print('show the result');
+
         if (response.success) {
-          print('show result');
           int indexTicket =
               _tickets.indexWhere((ticket) => ticket.objectId == ticketId);
-          print('the nested ticket: ${indexTicket}');
+
           if (indexTicket > -1) {
             _tickets[indexTicket] = ticket;
             notifyListeners();
@@ -213,7 +238,9 @@ class Ticketprovider extends ChangeNotifier {
         );
       }
     } catch (e) {
-      print('error is creating ticket $e');
+      if (kDebugMode) {
+        print('error is creating ticket $e');
+      }
     }
   }
 
@@ -267,7 +294,6 @@ class Ticketprovider extends ChangeNotifier {
         final ticketDetails = getTicket.result;
         ticketUserId = ticketDetails.get<String>('userId');
       }
-      print('got the user id to delete is: $ticketUserId');
       final ParseObject ticket = ParseObject('tickets')..objectId = ticketId;
 
       final ParseResponse response = await ticket.delete();
@@ -276,23 +302,28 @@ class Ticketprovider extends ChangeNotifier {
         _tickets.removeWhere((t) => t.objectId == ticketId);
         notifyListeners();
 
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Ticket successfully deleted')));
+        // ignore: use_build_context_synchronously
         Navigator.pushNamed(context, AppRoutes.homePage);
       } else {
+        // ignore: use_build_context_synchronously
         ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(content: Text('Ticket failed to deleted')));
-        print(
-            'error deleting ticket ${response.error?.message}  ${response.error?.exception}');
       }
     } catch (e) {
-      print('Error delete ticket: $e');
+      if (kDebugMode) {
+        print('Error delete ticket: $e');
+      }
     }
   }
 
   Future<void> searchTicket(String word) async {
     if (word.isEmpty) {
-      print('Search term is empty. Aborting search.');
+      if (kDebugMode) {
+        print('Search term is empty. Aborting search.');
+      }
       return;
     }
 
@@ -343,17 +374,19 @@ class Ticketprovider extends ChangeNotifier {
       // Execute the query
       final ParseResponse response = await combinedQueries.query();
       if (response.success && response.results != null) {
-        print('Found ticket results: ${response.results}');
         _tickets = response.results as List<ParseObject>;
         notifyListeners();
       } else {
-        print('No tickets found. Response: ${response.error?.message}');
         _tickets = [];
         notifyListeners();
       }
     } catch (e, stack) {
-      print('Error finding ticket: $e');
-      print(stack);
+      if (kDebugMode) {
+        print('Error finding ticket: $e');
+      }
+      if (kDebugMode) {
+        print(stack);
+      }
     }
   }
 }

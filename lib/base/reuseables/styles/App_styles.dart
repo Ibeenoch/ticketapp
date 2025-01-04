@@ -120,7 +120,7 @@ class AppStyles {
 
   static TextStyle h3White(BuildContext context) {
     return TextStyle(
-      fontSize: 18.sp,
+      fontSize: 15.sp,
       fontWeight: FontWeight.w600,
       color: textWhite(context),
     );

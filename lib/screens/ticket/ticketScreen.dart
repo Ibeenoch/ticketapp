@@ -13,6 +13,7 @@ import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/ticketView.dart';
 import 'package:airlineticket/screens/ticket/ticketwidget/CurrencyText.dart';
 import 'package:airlineticket/screens/ticket/ticketwidget/RowText.dart';
+import 'package:airlineticket/screens/ticket/ticketwidget/markData.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -35,8 +36,19 @@ class _TicketscreenState extends State<Ticketscreen> {
   Ticketprovider? ticketProvider;
   UserProvider? userProvider;
   String? userId;
+
+  List<MarkData> _markData = [];
+  List<Marker> _markers = [];
+  LatLng? _selectedPosition;
+  LatLng? _myLocation;
+  LatLng? _draggedPosition;
+  bool _isDraggable = false;
+  TextEditingController searchController = TextEditingController();
+  List<dynamic> _searchResults = [];
+  bool _isSearching = false;
+
   List<ParseObject>? allTickets;
-  late LatLng getInitialCoordinate = LatLng(51.509364, -0.128928);
+  // LatLng getInitialCoordinate = LatLng(51.509364, -0.128928);
 
   String currentIndex = '';
   final MapController _mapController = MapController();
@@ -115,22 +127,11 @@ class _TicketscreenState extends State<Ticketscreen> {
       },
     );
 
-    // var canada = countriesCoordinates.firstWhere(
-    //   (country) => country['country'] == 'Canada',
-    // );
-    // print(
-    //     'Canada Coordinates: Latitude: ${canada['latitude']}, Longitude: ${canada['longitude']} $currentTicket');
-
-    // defined departure and arrival and coordinate
-    // final LatLng departure = LatLng(51.5074, -0.1278); // London (UK)
     final LatLng departure = LatLng(departureCountryCoordinate['latitude'],
         departureCountryCoordinate['longitude']); // London (UK)
     final LatLng arrival = LatLng(arrivalCountryCoordinate['latitude'],
         arrivalCountryCoordinate['longitude']); // New York (USA)
-    setState(() {
-      getInitialCoordinate = departure;
-    });
-    print(' the new coord is $getInitialCoordinate');
+    final LatLng getInitialCoordinate = departure;
 
     // Function to generate a slightly curved route between the start and end points
     List<LatLng> generateCurvedRoute(LatLng start, LatLng end) {
@@ -313,10 +314,12 @@ class _TicketscreenState extends State<Ticketscreen> {
                       decoration: BoxDecoration(color: AppStyles.cardBlueColor),
                       child: Stack(children: [
                         FlutterMap(
+                          mapController: _mapController,
                           options: MapOptions(
                             initialCenter:
                                 getInitialCoordinate, // Center the map over London
                             initialZoom: 5.2,
+                            onTap: (tapPosition, latLng) {},
                           ),
                           children: [
                             TileLayer(
