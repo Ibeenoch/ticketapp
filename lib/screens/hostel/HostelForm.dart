@@ -201,13 +201,14 @@ class _HostelformState extends State<Hostelform> {
 
     try {
       print(
-          'all data ${name.text} ${location.text} ${price.text} ${location.text} $hostelId $userId');
+          'all data $imagesPicked ${name.text} ${location.text} ${price.text} ${location.text} $hostelId $userId');
       if (name.text.isEmpty ||
           location.text.isEmpty ||
           price.text.isEmpty ||
           details.text.isEmpty) {
         setState(() {
           generalErr = 'Please add all fields required';
+          isBtnClickedCreate = false;
         });
         return;
       }
@@ -220,11 +221,14 @@ class _HostelformState extends State<Hostelform> {
           hostelId: hostelId!,
           context: context,
           imagesPicked: imagesPicked);
-    } catch (e, stackTrace) {
-      print('error creating profile $e and $stackTrace');
       setState(() {
         isBtnClickedCreate = false;
       });
+    } catch (e, stackTrace) {
+      setState(() {
+        isBtnClickedCreate = false;
+      });
+      print('error creating profile $e and $stackTrace');
     }
   }
 
@@ -449,7 +453,7 @@ class _HostelformState extends State<Hostelform> {
               Padding(
                 padding: EdgeInsets.only(top: 10.h),
                 child: Container(
-                  height: increaseHeight == true ? 140 : 45.h,
+                  // height: increaseHeight == true ? 140 : 45.h,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(8.r),
                     color: AppStyles.defaultBackGroundColor(context),

@@ -7,8 +7,13 @@ class Biometrics extends StatelessWidget {
   final VoidCallback onTap;
   final Widget icon;
   final String text;
+  final bool isEnabled;
   const Biometrics(
-      {super.key, required this.onTap, required this.icon, required this.text});
+      {super.key,
+      required this.onTap,
+      required this.icon,
+      required this.text,
+      this.isEnabled = false});
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,9 @@ class Biometrics extends StatelessWidget {
               style: TextStyle(
                   fontSize: 8.sp,
                   fontWeight: FontWeight.bold,
-                  color: AppStyles.backGroundOfkakiIconContainer(context)),
+                  color: isEnabled
+                      ? Colors.green
+                      : AppStyles.backGroundOfkakiIconContainer(context)),
             ),
           ],
         ),

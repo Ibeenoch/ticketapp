@@ -100,28 +100,67 @@ class UserProvider extends ChangeNotifier {
     required String bio,
     required String address,
     required String selectedCountry,
+    File? userImg,
     required context,
   }) async {
     try {
-      var user = ParseObject('_User')
-        ..objectId = userId
-        ..set('fullname', fullname)
-        ..set('bio', bio)
-        ..set('address', address)
-        ..set('country', selectedCountry);
+      String? profileImageUrl;
+      if (userImg != null && await userImg.exists()) {
+        profileImageUrl = await Authentication().uploadProfileImage(userImg);
+        var user = ParseObject('_User')
+          ..objectId = userId
+          ..set('fullname', fullname)
+          ..set('bio', bio)
+          ..set('address', address)
+          ..set('country', selectedCountry)
+          ..set('profile_img', profileImageUrl);
+        final response = await user.save();
 
-      var response = await user.save();
-
-      if (response.success) {
-        print('editing user: ${response.result}');
-        setUser(response.result);
-        Navigator.pushNamed(
-          context,
-          AppRoutes.accountScreen,
-          arguments: {'userId': user.objectId!},
-        );
+        if (response.success) {
+          final userz = await ParseUser.currentUser() as ParseUser?;
+          if (userz != null) {
+            final ParseResponse response = await userz.getUpdatedUser();
+            if (response.success) {
+              print('the one gote is ${response.result}');
+              _currentUser = response.result;
+              notifyListeners();
+              Navigator.pushNamed(
+                context,
+                AppRoutes.profileScreen,
+                arguments: {'userId': userId},
+              );
+            }
+          }
+        } else {
+          print('Error updating profile: ${response.error?.message}');
+        }
       } else {
-        print('Error updating profile: ${response.error?.message}');
+        var user = ParseObject('_User')
+          ..objectId = userId
+          ..set('fullname', fullname)
+          ..set('bio', bio)
+          ..set('address', address)
+          ..set('country', selectedCountry);
+        final response = await user.save();
+
+        if (response.success) {
+          final userz = await ParseUser.currentUser() as ParseUser?;
+          if (userz != null) {
+            final ParseResponse response = await userz.getUpdatedUser();
+            if (response.success) {
+              print('the one gote is ${response.result}');
+              _currentUser = response.result;
+              notifyListeners();
+              Navigator.pushNamed(
+                context,
+                AppRoutes.profileScreen,
+                arguments: {'userId': userId},
+              );
+            }
+          }
+        } else {
+          print('Error updating profile: ${response.error?.message}');
+        }
       }
     } catch (e, stackTrace) {
       print('Error during edit: $e');
@@ -129,22 +168,35 @@ class UserProvider extends ChangeNotifier {
     }
   }
 
-  Future<bool> loggedInUser(String username, String password) async {
+  Future<void> login(
+      {required String email,
+      required String password,
+      required BuildContext context}) async {
     try {
-      final ParseResponse response =
-          await ParseUser(username, password, null).login();
-      if (response.success) {
-        _currentUser = response.result as ParseUser;
+      final String username = email;
 
-        notifyListeners();
-        return true;
+      final user = ParseUser(username, password, null);
+
+      var response = await user.login();
+      if (response.success) {
+        // final userProvider = Provider.of<UserProvider>(context, listen: false);
+        final userdetails = response.result;
+
+        setUser(userdetails as ParseUser);
+
+        // Navigate to the profile page on successful login
+        Navigator.pushNamed(
+          context,
+          AppRoutes.profileScreen,
+        );
       } else {
-        print('Error logging in: ${response.error?.message}');
-        return false;
+        // Show an error message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Login failed. Please try again.')),
+        );
       }
     } catch (e) {
-      print('Exception during login: $e');
-      return false;
+      print('Error logging user: $e');
     }
   }
 

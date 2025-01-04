@@ -43,7 +43,7 @@ class _SearchResultState extends State<SearchResult> {
       await ticketProvider.searchTicket(search);
 
       final ticketsFound = ticketProvider.tickets;
-      print('search ticket');
+
       setState(() {
         isTicket = true;
         matchingTicketWordsArr =

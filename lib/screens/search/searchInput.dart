@@ -1,5 +1,6 @@
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/providers/hostelProvider.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:flutter/material.dart';
@@ -17,12 +18,22 @@ class _SearchInputState extends State<SearchInput> {
   TextEditingController mainsearch = TextEditingController();
   FocusNode mainsearch_F = FocusNode();
   List<String> matchingWords = [];
+  String? source;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     mainsearch_F.addListener(() {});
+  }
+
+  @override
+  void didChangeDependencies() {
+    final args = ModalRoute.of(context)!.settings.arguments as Map;
+    setState(() {
+      source = args['source'];
+    });
+    super.didChangeDependencies();
   }
 
   @override
@@ -103,10 +114,20 @@ class _SearchInputState extends State<SearchInput> {
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       appBar: AppBar(
+        title: Text(
+          'Search',
+          style: TextStyle(fontSize: 15.sp, fontWeight: FontWeight.bold),
+        ),
+        actions: [
+          HomeNavBtn(),
+        ],
+        centerTitle: true,
         backgroundColor: AppStyles.defaultBackGroundColor(context),
         leading: GestureDetector(
             onTap: () {
-              Navigator.pushNamed(context, AppRoutes.homePage);
+              source == 'Home'
+                  ? Navigator.pushNamed(context, AppRoutes.homePage)
+                  : Navigator.pushNamed(context, AppRoutes.searchHome);
             },
             child: Icon(Icons.arrow_back)),
       ),
@@ -149,7 +170,6 @@ class _SearchInputState extends State<SearchInput> {
                             .toSet()
                             .toList(); // to remove duplicate words
                       });
-                      print('i got this words: $matchingWords');
                     } else {
                       foundedWords = []; // clear suggestion if input is empty;
                       setState(() {
@@ -167,7 +187,7 @@ class _SearchInputState extends State<SearchInput> {
                     return Container(
                       color: AppStyles.borderBackGroundColor(context),
                       child: ListTile(
-                        title: GestureDetector(
+                        title: InkWell(
                           onTap: () {
                             getSearchResult(matchingWords[index]);
                           },
@@ -183,6 +203,7 @@ class _SearchInputState extends State<SearchInput> {
                               Text(
                                 matchingWords[index],
                                 style: TextStyle(
+                                    fontSize: 10.sp,
                                     color: AppStyles.textWhiteBlack(context)),
                               ),
                             ],

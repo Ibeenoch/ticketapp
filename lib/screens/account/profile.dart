@@ -1,13 +1,10 @@
 import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/utils/timeFormatter.dart';
-import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
-import 'package:face_recognition/face_recognition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
@@ -22,19 +19,12 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
-  // Ticketprovider ticketprovider =  Provider.of<Ticketprovider>(context, listen: false);
+  String? fingerPrintId;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
-    // WidgetsBinding.instance.addPostFrameCallback((_) {
-    //   setState(() {
-    //     ticketprovider = Provider.of<Ticketprovider>(context, listen: false);
-    //     userProvider = Provider.of<UserProvider>(context, listen: false);
-    //   });
-    // });
   }
 
   Future<bool> _registerBiometric() async {
@@ -97,6 +87,9 @@ class _ProfileState extends State<Profile> {
 
         // optionally, save the fingerprint Id to the server in back4app
         registerBiometricAndSaveUser(fingerPrintId);
+        // final user = Provider.of<UserProvider>(context, listen: false);
+        // final userUpate = user.currentUser;
+        // print('userUpate $userUpate');
 
         // notify user
         ScaffoldMessenger.of(context).showSnackBar(
@@ -112,54 +105,6 @@ class _ProfileState extends State<Profile> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
             content: Text('Error registering Fingerprint Bio metrics:  $e')),
-      );
-    }
-  }
-
-  Future<bool> registerFacialRecognition() async {
-    final LocalAuthentication auth = LocalAuthentication();
-    final bool canCheckBiometrics = await auth.canCheckBiometrics;
-    final bool isDeviceSupported = await auth.isDeviceSupported();
-    if (!canCheckBiometrics || !isDeviceSupported) {
-      // device is not supported
-      return false;
-    }
-    try {
-      final bool isAutheticated = await auth.authenticate(
-          localizedReason: 'Enable Authetication with facial recognition',
-          options: const AuthenticationOptions(
-              stickyAuth: true, biometricOnly: true));
-      return isAutheticated;
-    } catch (e) {
-      print('error during facial recongnition registration $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text('error during facial recongnition registration $e'),
-        ),
-      );
-      return false;
-    }
-  }
-
-  void registerFacialRecognitionAndSaveToUser(String faceId) async {
-    ParseUser currentUser = await ParseUser.currentUser() as ParseUser;
-
-    currentUser.set('faceId', faceId);
-    final response = await currentUser.save();
-    if (response.success) {
-      print("Face ID saved successfully!");
-    } else {
-      print("Error saving Face ID: ${response.error?.message}");
-    }
-  }
-
-  Future<void> enableFacialRecognition() async {
-    try {
-      FaceRecognition();
-    } catch (e) {
-      print('Error registering Facial Recognition: $e');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error registering Facial Recognition: $e')),
       );
     }
   }
@@ -188,14 +133,18 @@ class _ProfileState extends State<Profile> {
   Widget build(BuildContext context) {
     // Ticketprovider ticketprovider =
     //   Provider.of<Ticketprovider>(context, listen: false);
-    UserProvider userProvider =
-        Provider.of<UserProvider>(context, listen: false);
+    final userProvider =
+        Provider.of<UserProvider>(context, listen: false).currentUser;
 
     String getfullname = 'guest';
-    final user = userProvider.currentUser;
+
+    final user = userProvider;
 
     if (user != null) {
-      getfullname = user?.get('fullname');
+      setState(() {
+        getfullname = user.get('fullname');
+        fingerPrintId = userProvider?.get<String>('fullname');
+      });
     }
     String fullname = getfullname;
 
@@ -205,6 +154,11 @@ class _ProfileState extends State<Profile> {
 
     return Scaffold(
       appBar: AppBar(
+        title: Text(
+          'Profile',
+          style: TextStyle(fontSize: 14.sp, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
         elevation: 0,
         backgroundColor: AppStyles.defaultBackGroundColor(context),
       ),
@@ -277,24 +231,19 @@ class _ProfileState extends State<Profile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Biometrics(
-                        onTap: enableFingerPrint,
-                        icon: Icon(
-                          Icons.fingerprint,
-                          size: 30.w,
-                          color:
-                              AppStyles.backGroundOfkakiIconContainer(context),
-                        ),
-                        text: 'Enable Fingerprint'),
-                    Biometrics(
-                        onTap: enableFacialRecognition,
-                        icon: SvgPicture.asset(
-                          'assets/icons/faceid.svg',
-                          width: 30.w,
-                          height: 30.h,
-                          color:
-                              AppStyles.backGroundOfkakiIconContainer(context),
-                        ),
-                        text: 'Enable Facial'),
+                      onTap: enableFingerPrint,
+                      icon: Icon(
+                        Icons.fingerprint,
+                        size: 30.w,
+                        color: fingerPrintId == null
+                            ? AppStyles.backGroundOfkakiIconContainer(context)
+                            : Colors.green,
+                      ),
+                      text: fingerPrintId == null
+                          ? 'Enable Fingerprint'
+                          : 'Fingerprint Enabled',
+                      isEnabled: fingerPrintId != null,
+                    ),
                   ],
                 ),
                 SizedBox(
@@ -331,22 +280,50 @@ class _ProfileState extends State<Profile> {
     );
   }
 
-  GestureDetector homeIcon(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.pushNamed(context, AppRoutes.homePage);
-      },
-      child: Container(
-        padding: EdgeInsets.all(10.sp),
-        decoration: BoxDecoration(
-            shape: BoxShape.circle,
-            color: AppStyles.backGroundColorWhiteAndDeepBlue(context)),
-        child: Icon(
-          Icons.home,
-          size: 30.sp,
-          color: AppStyles.backGroundOfkakiIconContainer(context),
+  Widget homeIcon(BuildContext context) {
+    return Row(
+      children: [
+        GestureDetector(
+          onTap: () {
+            final user =
+                Provider.of<UserProvider>(context, listen: false).currentUser;
+
+            Navigator.pushNamed(context, AppRoutes.accountScreen, arguments: {
+              'user': user,
+            });
+          },
+          child: Container(
+            padding: EdgeInsets.all(10.sp),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppStyles.backGroundColorWhiteAndDeepBlue(context)),
+            child: Icon(
+              Icons.edit,
+              size: 30.sp,
+              color: AppStyles.backGroundOfkakiIconContainer(context),
+            ),
+          ),
         ),
-      ),
+        SizedBox(
+          width: 20.w,
+        ),
+        GestureDetector(
+          onTap: () {
+            Navigator.pushNamed(context, AppRoutes.homePage);
+          },
+          child: Container(
+            padding: EdgeInsets.all(10.sp),
+            decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: AppStyles.backGroundColorWhiteAndDeepBlue(context)),
+            child: Icon(
+              Icons.home,
+              size: 30.sp,
+              color: AppStyles.backGroundOfkakiIconContainer(context),
+            ),
+          ),
+        ),
+      ],
     );
   }
 

@@ -107,7 +107,9 @@ class HotelGridView extends StatelessWidget {
                 height: 5.h,
               ),
               Hoteltext(
-                text: hotelItem['name'] ?? 'N/A',
+                text: hotelItem['name']?.length > 14
+                    ? hotelItem['name']?.substring(0, 14) + '...'
+                    : hotelItem['name'] ?? 'N/A',
                 color: AppStyles.kaki,
               ),
               SizedBox(

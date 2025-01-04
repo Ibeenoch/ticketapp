@@ -11,6 +11,7 @@ import 'package:airlineticket/screens/home/homewidget/AllHotelViews.dart';
 import 'package:airlineticket/screens/home/homewidget/AllTicketScreen.dart';
 import 'package:airlineticket/screens/hostel/HostelForm.dart';
 import 'package:airlineticket/screens/hostel/hostelDetails.dart';
+import 'package:airlineticket/screens/search/search.dart';
 import 'package:airlineticket/screens/search/searchInput.dart';
 import 'package:airlineticket/screens/search/searchResult.dart';
 import 'package:airlineticket/screens/ticket/TicketForm.dart';
@@ -80,6 +81,7 @@ class MyApp extends StatelessWidget {
               AppRoutes.hostelDetails: (context) => const HostelDetails(),
               AppRoutes.searchInput: (context) => const SearchInput(),
               AppRoutes.searchResult: (context) => const SearchResult(),
+              AppRoutes.searchHome: (context) => const Search(),
             },
             theme: ThemeData.light(),
             darkTheme: ThemeData.dark(),

@@ -216,8 +216,8 @@ class _TicketscreenState extends State<Ticketscreen> {
                     showColor: false,
                     showHeight: false,
                   ),
-                  const SizedBox(
-                    height: 0.2,
+                  SizedBox(
+                    height: 1.h,
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(

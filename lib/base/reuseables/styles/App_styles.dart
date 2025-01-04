@@ -79,7 +79,7 @@ class AppStyles {
   }
 
   static Color textredBlue(BuildContext context) {
-    return isDarkMode(context) ? cardBlueColor : cardRedColor;
+    return isDarkMode(context) ? backgroundColorBlue : cardRedColor;
   }
 
   static Color reversetextWhiteBlack(BuildContext context) {

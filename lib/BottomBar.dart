@@ -1,3 +1,4 @@
+import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/providers/ticketProvider.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/account.dart';
@@ -45,8 +46,6 @@ class _BottomBarState extends State<BottomBar> {
         Provider.of<UserProvider>(context, listen: false);
     final currentUser = userProvider.currentUser;
 
-    print('current user index is $currentUser');
-
     final appScreens = currentUser == null
         ? [
             const Homescreen(),
@@ -65,24 +64,28 @@ class _BottomBarState extends State<BottomBar> {
     if (_curindex >= appScreens.length) {
       _curindex = 0;
     }
-    print(
-        'AppScreens Length: ${appScreens.length} Current _curindex: $_curindex');
 
     return Scaffold(
-      body: appScreens[_curindex],
-      bottomNavigationBar: BottomNavigationBar(
-          onTap: getIndex,
-          currentIndex: _curindex,
-          selectedItemColor: Colors.cyan,
-          unselectedItemColor: Colors.blueGrey,
-          items: const [
-            BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
-            BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.airplane_ticket), label: 'Ticket'),
-            BottomNavigationBarItem(
-                icon: Icon(Icons.person_add_outlined), label: 'Account'),
-          ]),
-    );
+        body: appScreens[_curindex],
+        bottomNavigationBar: new Theme(
+          data: Theme.of(context).copyWith(
+            canvasColor: AppStyles.borderBackGroundColor(context),
+          ),
+          child: BottomNavigationBar(
+              // backgroundColor: AppStyles.defaultBackGroundColor(context),
+              onTap: getIndex,
+              currentIndex: _curindex,
+              selectedItemColor: Colors.cyan,
+              unselectedItemColor: Colors.blueGrey,
+              items: const [
+                BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.search), label: 'Search'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.airplane_ticket), label: 'Ticket'),
+                BottomNavigationBarItem(
+                    icon: Icon(Icons.person), label: 'Account'),
+              ]),
+        ));
   }
 }

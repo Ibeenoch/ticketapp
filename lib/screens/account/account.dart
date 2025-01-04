@@ -32,7 +32,8 @@ class Account extends StatefulWidget {
 class _AccountState extends State<Account> {
   FaceRecognition? faceRecognition;
   String? faceEncoding;
-  bool isLoginTab = true;
+  String userId = '';
+  bool isLoginTab = false;
   bool isBtnClickedLogin = false;
   bool isBtnClickedSignUp = false;
   // receive the user provider after it is called in the init state
@@ -67,10 +68,12 @@ class _AccountState extends State<Account> {
   String? passwordErrorL;
   String? countryError;
   String _selectedCountry = '';
-  String userId = '';
+
   bool _isBottomSheetOpen = false;
   File? profileImg;
   String? networkImg;
+  String generalError = '';
+  String generalErrorS = '';
 
   @override
   void dispose() {
@@ -143,18 +146,23 @@ class _AccountState extends State<Account> {
   void didChangeDependencies() {
     super.didChangeDependencies();
 
-    // retrieve arguments passed to this route
-    initialData =
-        ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>?;
-
-    if (initialData != null) {
-      //populate the text field
-      fullname.text = initialData?['fullname'] ?? '';
-      bio.text = initialData?['bio'] ?? '';
-      address.text = initialData?['address'] ?? '';
-      _selectedCountry = initialData?['country'] ?? '';
-      networkImg = initialData?['profile_img'] ?? '';
-      userId = initialData?['userId'] ?? '';
+    if (ModalRoute.of(context)?.settings.arguments != null) {
+      // retrieve arguments passed to this route
+      final args =
+          ModalRoute.of(context)?.settings.arguments as Map<String, ParseUser?>;
+      initialData = args['user']?.toJson();
+      print('initialData ${initialData?['fullname']}');
+      if (initialData != null) {
+        //populate the text field
+        setState(() {
+          userId = initialData?['objectId'] ?? '';
+          fullname.text = initialData?['fullname'] ?? '';
+          bio.text = initialData?['bio'] ?? '';
+          address.text = initialData?['address'] ?? '';
+          _selectedCountry = initialData?['country'] ?? '';
+          networkImg = initialData?['profile_img'] ?? '';
+        });
+      }
     }
   }
 
@@ -252,18 +260,7 @@ class _AccountState extends State<Account> {
     }
   }
 
-  Future<void> registerFacialId() async {
-    try {
-      FaceRecognition();
-    } catch (e) {
-      print('Error registering facial recognition: $e');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text('Error registering facial recognition: $e'),
-      ));
-    }
-  }
-
-  void loginWithGoogle() async {
+  Future<void> loginWithGoogle() async {
     const List<String> scopes = <String>[
       'email',
       'https://www.googleapis.com/auth/contacts.readonly',
@@ -271,16 +268,33 @@ class _AccountState extends State<Account> {
 
     GoogleSignIn _googleSignIn = GoogleSignIn(
       // Optional clientId
-      // clientId: 'your-client_id.apps.googleusercontent.com', clientId: dotenv.env["GOOGLE_CLIENT_ID"],
       clientId:
           '242677198814-rcs4g65in4np21qdvu7bgo90i07fsvf6.apps.googleusercontent.com',
       scopes: scopes,
     );
     try {
-      final res = await _googleSignIn.signIn();
-      print('got the user details:  $res');
-    } catch (e) {
-      print('Error while signing in to google $e');
+      GoogleSignInAccount? account = await _googleSignIn.signIn();
+
+      if (account != null) {
+        // Get the Google Sign-In token
+        final GoogleSignInAuthentication authentication =
+            await account.authentication;
+        print('logging in');
+        // Send the token to Parse Server
+        final response = await ParseUser.loginWith('google', {
+          'id': account.id,
+          'id_token': authentication.idToken,
+          'access_token': authentication.accessToken,
+        });
+
+        if (response.success) {
+          print('Logged in successfully!');
+        } else {
+          print('Failed to log in: ${response.error?.message}');
+        }
+      }
+    } catch (error) {
+      print('error signing to goggle $error');
     }
   }
 
@@ -395,6 +409,7 @@ class _AccountState extends State<Account> {
               expand: false,
               builder: (_, scrollController) {
                 return Container(
+                  color: AppStyles.defaultBackGroundColor(context),
                   padding: EdgeInsets.all(16.w),
                   child: Column(
                     children: [
@@ -440,7 +455,22 @@ class _AccountState extends State<Account> {
   }
 
   Future<void> handleSignUp() async {
+    if (email.text.isEmpty &&
+        password.text.isEmpty &&
+        bio.text.isEmpty &&
+        fullname.text.isEmpty &&
+        address.text.isEmpty &&
+        _selectedCountry.isEmpty) {
+      setState(() {
+        generalErrorS = 'please add all fields';
+      });
+      return;
+    }
     try {
+      setState(() {
+        isBtnClickedSignUp = true;
+        generalErrorS = '';
+      });
       userProvider!.signUp(
           email: email.text,
           password: password.text,
@@ -451,21 +481,43 @@ class _AccountState extends State<Account> {
           userImg: profileImg,
           context: context);
     } catch (e, stackTrace) {
+      setState(() {
+        isBtnClickedSignUp = false;
+      });
       print('Error during sign-up: $e');
       print('Error occurred at: $stackTrace');
     }
   }
 
   Future<void> handleEditProfile() async {
+    if (bio.text.isEmpty &&
+        fullname.text.isEmpty &&
+        address.text.isEmpty &&
+        _selectedCountry.isEmpty) {
+      setState(() {
+        generalErrorS = 'please add all fields';
+      });
+      return;
+    }
+    print(
+        'update user details ${bio.text} ${fullname.text} ${address.text} ${_selectedCountry}');
     try {
+      setState(() {
+        isBtnClickedSignUp = true;
+        generalErrorS = '';
+      });
       userProvider!.editProfile(
           userId: userId,
           fullname: fullname.text,
           bio: bio.text,
           address: address.text,
           selectedCountry: _selectedCountry,
+          userImg: profileImg,
           context: context);
     } catch (e, stackTrace) {
+      setState(() {
+        isBtnClickedSignUp = false;
+      });
       print('Error during edit: $e');
       print('Error occurred at: $stackTrace');
     }
@@ -473,6 +525,7 @@ class _AccountState extends State<Account> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
     void showLogin() {
       setState(() {
         isLoginTab = true;
@@ -514,7 +567,8 @@ class _AccountState extends State<Account> {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
                 authTabs(context, 'Login', showLogin, isLoginTab),
-                authTabs(context, 'Sign Up', showSignUp, !isLoginTab),
+                authTabs(context, userId.isEmpty ? 'Sign Up' : 'Edit Profile',
+                    showSignUp, !isLoginTab),
               ],
             ),
             isLoginTab
@@ -552,6 +606,8 @@ class _AccountState extends State<Account> {
                             height: 10.h,
                           ),
                           forgotPassword(),
+                          if (generalError.isNotEmpty)
+                            errorMessage(generalError),
                           SizedBox(
                             height: 10.h,
                           ),
@@ -570,16 +626,6 @@ class _AccountState extends State<Account> {
                                           .backGroundOfkakiIconContainer(
                                               context)),
                                   text: 'Use Fingerprint'),
-                              Biometrics(
-                                  onTap: registerFacialId,
-                                  icon: SvgPicture.asset(
-                                      'assets/icons/faceid.svg',
-                                      width: 30.w,
-                                      height: 30.h,
-                                      color: AppStyles
-                                          .backGroundOfkakiIconContainer(
-                                              context)),
-                                  text: 'Use Facial Recognition'),
                             ],
                           ),
                           SizedBox(
@@ -630,6 +676,7 @@ class _AccountState extends State<Account> {
                         ListView(
                           children: [
                             Container(
+                              height: size.height,
                               color: AppStyles.defaultBackGroundColor(context),
                               child: Padding(
                                 padding: EdgeInsets.symmetric(horizontal: 15.w),
@@ -734,6 +781,8 @@ class _AccountState extends State<Account> {
                                             ],
                                           ),
                                     selectCountry(context),
+                                    if (generalErrorS.isNotEmpty)
+                                      errorMessage(generalErrorS!),
                                     SizedBox(
                                       height: 15.h,
                                     ),
@@ -957,9 +1006,6 @@ class _AccountState extends State<Account> {
       padding: EdgeInsets.symmetric(horizontal: 5.w),
       child: InkWell(
         onTap: () async {
-          setState(() {
-            isBtnClickedSignUp = true;
-          });
           try {
             userId.isNotEmpty ? handleEditProfile() : handleSignUp();
           } catch (e) {
@@ -1041,18 +1087,20 @@ class _AccountState extends State<Account> {
             backgroundColor: Colors.grey.shade200,
             child: profileImg == null
                 ? Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: EdgeInsets.all(1.sp),
                     child: CircleAvatar(
                       radius: 20.sp,
                       backgroundColor: Colors.grey.shade200,
-                      child: Image(
-                        image: networkImg != null && networkImg!.isNotEmpty
-                            ? NetworkImage(networkImg!)
-                            : AssetImage(AppMedia.user),
-                        width: 20.sp,
-                        height: 20.sp,
-                        color: Colors.grey,
-                      ),
+                      backgroundImage: networkImg != null
+                          ? NetworkImage(networkImg ?? 'na')
+                          : null,
+                      child: networkImg == null || networkImg!.isEmpty
+                          ? Icon(
+                              Icons.person, // Default icon
+                              size: 20.sp,
+                              color: Colors.grey,
+                            )
+                          : null,
                     ),
                   )
                 : CircleAvatar(
@@ -1174,11 +1222,24 @@ class _AccountState extends State<Account> {
       padding: EdgeInsets.symmetric(horizontal: 15.w),
       child: GestureDetector(
         onTap: () async {
+          final user = Provider.of<UserProvider>(context, listen: false);
           setState(() {
             isBtnClickedLogin = true;
           });
+
           try {
-            Authentication().login(
+            if (email.text.isEmpty && password.text.isEmpty) {
+              setState(() {
+                generalError = 'please add all fields';
+                isBtnClickedLogin = false;
+                return;
+              });
+            }
+            setState(() {
+              isBtnClickedLogin = true;
+              generalError = '';
+            });
+            user.login(
                 email: emailL.text, password: passwordL.text, context: context);
           } catch (e) {
             ScaffoldMessenger.of(context).showSnackBar(

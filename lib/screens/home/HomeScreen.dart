@@ -57,11 +57,11 @@ class _HomescreenState extends State<Homescreen> {
 
   void handleFocus() {
     if (isFocus) {
-      Navigator.pushNamed(context, AppRoutes.searchInput);
+      Navigator.pushNamed(context, AppRoutes.searchInput,
+          arguments: {'source': 'home'});
       setState(() {
         isFocus = false;
       });
-      // FocusScope.of(context).unfocus();
     }
   }
 
@@ -84,7 +84,7 @@ class _HomescreenState extends State<Homescreen> {
       username = userProvider?.currentUser?.get<String>('fullname');
       profileImg = userProvider?.currentUser?.get<String>('profile_img');
     }
-    print('profileImg $profileImg');
+
     return Scaffold(
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       body: ListView(
@@ -134,14 +134,10 @@ class _HomescreenState extends State<Homescreen> {
                             width: 50.w,
                             height: 50.h,
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(13),
-                            ),
-                            child: Image(
-                              image: NetworkImage(profileImg!),
-                              width: 50.w,
-                              height: 50.h,
-                              fit: BoxFit.cover,
-                            ),
+                                borderRadius: BorderRadius.circular(13.r),
+                                image: DecorationImage(
+                                    image: NetworkImage(profileImg!),
+                                    fit: BoxFit.cover)),
                           ),
                         )
                 ],

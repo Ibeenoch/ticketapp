@@ -1,4 +1,6 @@
+import 'package:airlineticket/AppRoutes.dart';
 import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
+import 'package:airlineticket/base/reuseables/widgets/homeNavBtn.dart';
 import 'package:airlineticket/base/reuseables/widgets/symmetricText.dart';
 import 'package:airlineticket/base/reuseables/widgets/ticketTab.dart';
 import 'package:airlineticket/screens/search/searchWidget/EmojiContainer.dart';
@@ -15,14 +17,65 @@ class Search extends StatefulWidget {
 class _SearchState extends State<Search> {
   final departure = TextEditingController();
   FocusNode departure_F = FocusNode();
+  bool isSearchFocus = false;
 
   final arrival = TextEditingController();
   FocusNode arrival_F = FocusNode();
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    departure_F.addListener(() {
+      if (departure_F.hasFocus) {
+        setState(() {
+          isSearchFocus = true;
+          handleSearchInputFocus();
+        });
+      }
+    });
+
+    arrival_F.addListener(() {
+      if (arrival_F.hasFocus) {
+        setState(() {
+          isSearchFocus = true;
+          handleSearchInputFocus();
+        });
+      }
+    });
+  }
+
+  void handleSearchInputFocus() {
+    if (isSearchFocus == true) {
+      Navigator.pushNamed(context, AppRoutes.searchInput,
+          arguments: {'source': 'search'});
+      setState(() {
+        isSearchFocus = false;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+
+    departure.dispose();
+    arrival.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
     return Scaffold(
+      appBar: AppBar(
+        elevation: 0,
+        backgroundColor: AppStyles.defaultBackGroundColor(context),
+        actions: [
+          HomeNavBtn(),
+        ],
+      ),
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       body: Padding(
         padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
