@@ -367,7 +367,7 @@ class _TicketscreenState extends State<Ticketscreen> {
                                           children: [
                                             Icon(
                                               Icons.location_on,
-                                              size: 35.sp,
+                                              size: 25.sp,
                                               color: Colors.redAccent,
                                             ),
                                             Text(
@@ -387,7 +387,7 @@ class _TicketscreenState extends State<Ticketscreen> {
                                           children: [
                                             Icon(
                                               Icons.location_on,
-                                              size: 35.sp,
+                                              size: 25.sp,
                                               color: Colors.redAccent,
                                             ),
                                             Text(
