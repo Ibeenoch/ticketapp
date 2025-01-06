@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class Verticaltext extends StatelessWidget {
   final String smallText;
@@ -23,8 +24,10 @@ class Verticaltext extends StatelessWidget {
       children: [
         Text(
           bigText,
-          style: const TextStyle(
-              fontSize: 13, fontWeight: FontWeight.bold, color: Colors.black),
+          style: TextStyle(
+              fontSize: 13.sp,
+              fontWeight: FontWeight.bold,
+              color: Colors.black),
           textAlign: bigAlign,
         ),
         SizedBox(
@@ -32,8 +35,10 @@ class Verticaltext extends StatelessWidget {
         ),
         Text(
           smallText,
-          style: const TextStyle(
-              fontSize: 8, fontWeight: FontWeight.normal, color: Colors.grey),
+          style: TextStyle(
+              fontSize: 8.sp,
+              fontWeight: FontWeight.normal,
+              color: Colors.grey),
           textAlign: smallAlign,
         ),
       ],
