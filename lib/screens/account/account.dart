@@ -1185,9 +1185,6 @@ class _AccountState extends State<Account> {
       child: GestureDetector(
         onTap: () async {
           final user = Provider.of<UserProvider>(context, listen: false);
-          setState(() {
-            isBtnClickedLogin = true;
-          });
 
           try {
             if (email.text.isEmpty && password.text.isEmpty) {

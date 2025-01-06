@@ -194,7 +194,7 @@ class Ticketview extends StatelessWidget {
                           Expanded(child: Container()),
                           Columntext(
                             bigtext: ticket['objectId'] ?? 'N/A',
-                            smalltext: 'Number',
+                            smalltext: 'Ticket Id',
                             alignsmall: TextAlign.end,
                             showColor: showColor,
                             alignSide: 'end',

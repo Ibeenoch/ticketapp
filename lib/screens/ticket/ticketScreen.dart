@@ -13,7 +13,6 @@ import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/home/homewidget/ticketView.dart';
 import 'package:airlineticket/screens/ticket/ticketwidget/CurrencyText.dart';
 import 'package:airlineticket/screens/ticket/ticketwidget/RowText.dart';
-import 'package:airlineticket/screens/ticket/ticketwidget/markData.dart';
 import 'package:barcode_widget/barcode_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -234,8 +233,8 @@ class _TicketscreenState extends State<Ticketscreen> {
                     showColor: false,
                     showHeight: false,
                   ),
-                  SizedBox(
-                    height: 1.h,
+                  const SizedBox(
+                    height: 0.1,
                   ),
                   Container(
                       padding: const EdgeInsets.symmetric(
@@ -345,7 +344,7 @@ class _TicketscreenState extends State<Ticketscreen> {
                                 options: MapOptions(
                                   initialCenter:
                                       initCoordinate!, // Center the map over London
-                                  initialZoom: 8.2,
+                                  initialZoom: 4.5,
 
                                   onTap: (tapPosition, latLng) {},
                                 ),
@@ -374,8 +373,9 @@ class _TicketscreenState extends State<Ticketscreen> {
                                             Text(
                                               'Departure',
                                               style: TextStyle(
-                                                  fontSize: 10.sp,
-                                                  color: Colors.black),
+                                                  fontSize: 8.sp,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ],
                                         )),
@@ -393,8 +393,9 @@ class _TicketscreenState extends State<Ticketscreen> {
                                             Text(
                                               'Arrival',
                                               style: TextStyle(
-                                                  fontSize: 10.sp,
-                                                  color: Colors.black),
+                                                  fontSize: 8.sp,
+                                                  color: Colors.black,
+                                                  fontWeight: FontWeight.bold),
                                             ),
                                           ],
                                         )),
@@ -403,7 +404,7 @@ class _TicketscreenState extends State<Ticketscreen> {
                                     polylines: [
                                       Polyline(
                                         points: curvedRoute,
-                                        strokeWidth: 4.0,
+                                        strokeWidth: 1.5,
                                         color: AppStyles
                                             .cardBlueColor, // Using your custom color
                                       ),
