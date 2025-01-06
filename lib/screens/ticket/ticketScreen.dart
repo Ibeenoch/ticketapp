@@ -37,26 +37,26 @@ class _TicketscreenState extends State<Ticketscreen> {
   UserProvider? userProvider;
   String? userId;
 
-  List<MarkData> _markData = [];
-  List<Marker> _markers = [];
-  LatLng? _selectedPosition;
-  LatLng? _myLocation;
-  LatLng? _draggedPosition;
-  bool _isDraggable = false;
   TextEditingController searchController = TextEditingController();
-  List<dynamic> _searchResults = [];
-  bool _isSearching = false;
 
   List<ParseObject>? allTickets;
   // LatLng getInitialCoordinate = LatLng(51.509364, -0.128928);
 
   String currentIndex = '';
   final MapController _mapController = MapController();
+  LatLng? initCoordinate;
+  LatLng? arrivalCoordinate;
+  double initLat = 0;
+  double initLong = 0;
+  double arrivalLat = 0;
+  double arrivalLong = 0;
+  // LatLng getInitialCoordinate = LatLng(51.509364, -0.128928);
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
+    loadInitialCoordinate();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       setState(() {
         ticketProvider = Provider.of<Ticketprovider>(context, listen: false);
@@ -66,6 +66,16 @@ class _TicketscreenState extends State<Ticketscreen> {
       });
 
       // fitBounds(curvedRoute);
+    });
+  }
+
+  Future<void> loadInitialCoordinate() async {
+    await Future.delayed(Duration(seconds: 2));
+    setState(() {
+      initCoordinate = LatLng(initLat, initLong);
+    });
+    setState(() {
+      arrivalCoordinate = LatLng(arrivalLat, arrivalLong);
     });
   }
 
@@ -127,11 +137,18 @@ class _TicketscreenState extends State<Ticketscreen> {
       },
     );
 
+    setState(() {
+      initLat = departureCountryCoordinate['latitude'];
+      initLong = departureCountryCoordinate['longitude'];
+
+      arrivalLat = arrivalCountryCoordinate['latitude'];
+      arrivalLong = arrivalCountryCoordinate['longitude'];
+    });
     final LatLng departure = LatLng(departureCountryCoordinate['latitude'],
-        departureCountryCoordinate['longitude']); // London (UK)
+        departureCountryCoordinate['longitude']); // London (UK)+
     final LatLng arrival = LatLng(arrivalCountryCoordinate['latitude'],
         arrivalCountryCoordinate['longitude']); // New York (USA)
-    final LatLng getInitialCoordinate = departure;
+    LatLng getInitialCoordinate = departure;
 
     // Function to generate a slightly curved route between the start and end points
     List<LatLng> generateCurvedRoute(LatLng start, LatLng end) {
@@ -306,6 +323,14 @@ class _TicketscreenState extends State<Ticketscreen> {
                   SizedBox(
                     height: 10.h,
                   ),
+                  Text(
+                    'Flight Route',
+                    style:
+                        TextStyle(fontSize: 13.sp, fontWeight: FontWeight.bold),
+                  ),
+                  SizedBox(
+                    height: 5.h,
+                  ),
                   Padding(
                     padding: EdgeInsets.symmetric(horizontal: 10.w),
                     child: Container(
@@ -313,56 +338,89 @@ class _TicketscreenState extends State<Ticketscreen> {
                       width: double.infinity,
                       decoration: BoxDecoration(color: AppStyles.cardBlueColor),
                       child: Stack(children: [
-                        FlutterMap(
-                          mapController: _mapController,
-                          options: MapOptions(
-                            initialCenter:
-                                getInitialCoordinate, // Center the map over London
-                            initialZoom: 5.2,
-                            onTap: (tapPosition, latLng) {},
-                          ),
-                          children: [
-                            TileLayer(
-                              // Display map tiles from any source
-                              urlTemplate:
-                                  'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
-                              userAgentPackageName: 'com.example.airticket',
-                              // And many more recommended properties!
-                            ),
-                            // Polyline Layer: Draw the haphazard route
-                            // PolylineLayer(
-                            //   polylines: [
-                            //     Polyline(
-                            //       points: haphazardRoute,
-                            //       strokeWidth: 4.0,
-                            //       color: Colors.blue,
-                            //     ),
-                            //   ],
-                            // ),
+                        initCoordinate == null && arrivalCoordinate == null
+                            ? Center(child: CircularProgressIndicator())
+                            : FlutterMap(
+                                mapController: _mapController,
+                                options: MapOptions(
+                                  initialCenter:
+                                      initCoordinate!, // Center the map over London
+                                  initialZoom: 8.2,
 
-                            PolylineLayer(
-                              polylines: [
-                                Polyline(
-                                  points: curvedRoute,
-                                  strokeWidth: 4.0,
-                                  color: AppStyles
-                                      .cardBlueColor, // Using your custom color
+                                  onTap: (tapPosition, latLng) {},
                                 ),
-                              ],
-                            ),
+                                children: [
+                                  TileLayer(
+                                    // Display map tiles from any source
+                                    urlTemplate:
+                                        'https://tile.openstreetmap.org/{z}/{x}/{y}.png', // OSMF's Tile Server
+                                    userAgentPackageName:
+                                        'com.example.airticket',
 
-                            RichAttributionWidget(
-                              // Include a stylish prebuilt attribution widget that meets all requirments
-                              attributions: [
-                                TextSourceAttribution(
-                                  'OpenStreetMap contributors',
-                                  // onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
-                                ),
-                                // Also add images...
-                              ],
-                            ),
-                          ],
-                        )
+                                    // And many more recommended properties!
+                                  ),
+                                  MarkerLayer(markers: [
+                                    Marker(
+                                        point: initCoordinate!,
+                                        width: 50.w,
+                                        height: 160.h,
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.location_on,
+                                              size: 35.sp,
+                                              color: Colors.redAccent,
+                                            ),
+                                            Text(
+                                              'Departure',
+                                              style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: Colors.black),
+                                            ),
+                                          ],
+                                        )),
+                                    Marker(
+                                        point: arrivalCoordinate!,
+                                        width: 50.w,
+                                        height: 160.h,
+                                        child: Column(
+                                          children: [
+                                            Icon(
+                                              Icons.location_on,
+                                              size: 35.sp,
+                                              color: Colors.redAccent,
+                                            ),
+                                            Text(
+                                              'Arrival',
+                                              style: TextStyle(
+                                                  fontSize: 10.sp,
+                                                  color: Colors.black),
+                                            ),
+                                          ],
+                                        )),
+                                  ]),
+                                  PolylineLayer(
+                                    polylines: [
+                                      Polyline(
+                                        points: curvedRoute,
+                                        strokeWidth: 4.0,
+                                        color: AppStyles
+                                            .cardBlueColor, // Using your custom color
+                                      ),
+                                    ],
+                                  ),
+                                  RichAttributionWidget(
+                                    // Include a stylish prebuilt attribution widget that meets all requirments
+                                    attributions: [
+                                      TextSourceAttribution(
+                                        'OpenStreetMap contributors',
+                                        // onTap: () => launchUrl(Uri.parse('https://openstreetmap.org/copyright')), // (external)
+                                      ),
+                                      // Also add images...
+                                    ],
+                                  ),
+                                ],
+                              )
                       ]),
                     ),
                   ),

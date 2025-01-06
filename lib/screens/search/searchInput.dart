@@ -155,7 +155,7 @@ class _SearchInputState extends State<SearchInput> {
                       fontSize: 10.sp, color: AppStyles.cardBlueColor),
                   decoration: InputDecoration(
                       border: InputBorder.none,
-                      hintText: 'mainsearch for Hotel, Ticket',
+                      hintText: 'search for Hotel, Ticket',
                       prefixIcon: Icon(
                         Icons.search,
                         color: AppStyles.cardBlueColor,

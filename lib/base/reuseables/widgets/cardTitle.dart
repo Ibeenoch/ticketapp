@@ -33,7 +33,7 @@ class Cardtitle extends StatelessWidget {
                 : sizeType == 'h3'
                     ? 12.sp
                     : sizeType == 'h4'
-                        ? 10.sp
+                        ? 8.sp
                         : 8.sp,
             fontWeight:
                 weightType == 'bold' ? FontWeight.bold : FontWeight.w300),

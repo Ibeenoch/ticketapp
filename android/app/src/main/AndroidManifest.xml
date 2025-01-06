@@ -33,11 +33,6 @@
             </intent-filter>
         </activity>
 
-              <!-- Google Sign-In Configuration -->
-        <meta-data
-            android:name="com.google.android.gms.clientId"
-            android:value="242677198814-rcs4g65in4np21qdvu7bgo90i07fsvf6.apps.googleusercontent.com" />
-      
         <!-- Don't delete the meta-data below.
              This is used by the Flutter tool to generate GeneratedPluginRegistrant.java -->
         <meta-data

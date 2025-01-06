@@ -75,7 +75,7 @@ class _BottomBarState extends State<BottomBar> {
               // backgroundColor: AppStyles.defaultBackGroundColor(context),
               onTap: getIndex,
               currentIndex: _curindex,
-              selectedItemColor: Colors.cyan,
+              selectedItemColor: AppStyles.bottomNavIconColor(context),
               unselectedItemColor: Colors.blueGrey,
               items: const [
                 BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),

@@ -19,7 +19,7 @@ class Applayoutbuilder extends StatelessWidget {
         children: List.generate(
             (constraints.constrainWidth() / randomWidthNum).floor(),
             (index) => SizedBox(
-                  width: 3.w,
+                  width: 2.w,
                   height: 1.h,
                   child: DecoratedBox(
                       decoration: BoxDecoration(

@@ -11,11 +11,9 @@ import 'package:airlineticket/base/reuseables/styles/App_styles.dart';
 import 'package:airlineticket/base/reuseables/widgets/loadingtextAnimation.dart';
 import 'package:airlineticket/providers/userProvider.dart';
 import 'package:airlineticket/screens/account/authWidget/biometrics.dart';
-import 'package:face_recognition/face_recognition.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:local_auth/local_auth.dart';
 import 'package:parse_server_sdk/parse_server_sdk.dart';
 import 'package:provider/provider.dart';
@@ -29,13 +27,12 @@ class Account extends StatefulWidget {
 }
 
 class _AccountState extends State<Account> {
-  FaceRecognition? faceRecognition;
   String? faceEncoding;
   String userId = '';
   bool isLoginTab = false;
   bool isBtnClickedLogin = false;
   bool isBtnClickedSignUp = false;
-  // receive the user provider after it is called in the init state
+  // receive the user provider after it is called in the init state IG+TPc7P+0YgMqJIg/G5WwQuWiY=
   UserProvider? userProvider;
   final TextEditingController email = TextEditingController();
   final TextEditingController emailL = TextEditingController();
@@ -260,44 +257,6 @@ class _AccountState extends State<Account> {
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('Error fetching user profile: $e'),
       ));
-    }
-  }
-
-  Future<void> loginWithGoogle() async {
-    const List<String> scopes = <String>[
-      'email',
-      'https://www.googleapis.com/auth/contacts.readonly',
-    ];
-
-    GoogleSignIn _googleSignIn = GoogleSignIn(
-      // Optional clientId
-      clientId:
-          '242677198814-rcs4g65in4np21qdvu7bgo90i07fsvf6.apps.googleusercontent.com',
-      scopes: scopes,
-    );
-    try {
-      GoogleSignInAccount? account = await _googleSignIn.signIn();
-
-      if (account != null) {
-        // Get the Google Sign-In token
-        final GoogleSignInAuthentication authentication =
-            await account.authentication;
-
-        // Send the token to Parse Server
-        final response = await ParseUser.loginWith('google', {
-          'id': account.id,
-          'id_token': authentication.idToken,
-          'access_token': authentication.accessToken,
-        });
-
-        if (response.success) {
-          print('Logged in successfully!');
-        } else {
-          print('Failed to log in: ${response.error?.message}');
-        }
-      }
-    } catch (error) {
-      print('error signing to goggle $error');
     }
   }
 

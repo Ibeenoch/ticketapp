@@ -79,10 +79,17 @@ class _SearchState extends State<Search> {
         actions: [
           HomeNavBtn(),
         ],
+        leading: GestureDetector(
+            onTap: () {
+              Navigator.pushNamed(context, AppRoutes.homePage);
+            },
+            child: Icon(Icons.arrow_back)),
       ),
       backgroundColor: AppStyles.defaultBackGroundColor(context),
       body: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        padding: EdgeInsets.symmetric(
+          horizontal: 20.w,
+        ),
         child: ListView(
           children: [
             Text(

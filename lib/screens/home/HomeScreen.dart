@@ -61,7 +61,7 @@ class _HomescreenState extends State<Homescreen> {
   void handleFocus() {
     if (isFocus) {
       Navigator.pushNamed(context, AppRoutes.searchInput,
-          arguments: {'source': 'home'});
+          arguments: {'source': 'Home'});
       setState(() {
         isFocus = false;
       });

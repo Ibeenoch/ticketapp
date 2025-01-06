@@ -64,6 +64,10 @@ class AppStyles {
     return isDarkMode(context) ? backgroundColorlightBlue : Colors.white;
   }
 
+  static Color bottomNavIconColor(BuildContext context) {
+    return isDarkMode(context) ? Colors.white : Colors.cyan;
+  }
+
   static Color borderlineColor(BuildContext context) {
     return isDarkMode(context)
         ? backgroundColorlightBlue
